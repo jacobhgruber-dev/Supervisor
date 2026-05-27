@@ -18,13 +18,15 @@ Visit https://platform.deepseek.com/api_keys and create an API key. This is the 
 
 ### 2. Configure OpenCode
 
-Copy the configuration files to your opencode directory:
+**If you already have an opencode config:** do NOT overwrite your `opencode.json`. Instead, merge just the `provider` block (DeepSeek) and the `agent` block (supervisor) into your existing config. The agent `.md` files can be copied directly — they won't conflict.
+
+**If this is your first opencode setup:** copy the full config:
 
 ```bash
-# Copy config (update the API key first)
+# Copy config (replace the API key placeholder first)
 cp opencode.json ~/.config/opencode/opencode.json
 
-# Copy agent files
+# Copy agent files (always safe — won't conflict with anything)
 cp supervisor.md ~/.config/opencode/agent/supervisor.md
 cp agents/*.md ~/.config/opencode/agents/
 cp AGENTS.md ~/.config/opencode/AGENTS.md
@@ -49,6 +51,27 @@ The Supervisor will appear as a primary agent option. Select it, and you're read
 ```
 
 The Supervisor handles the rest — planning, spawning subagents, reviewing, fixing, and committing.
+
+### Troubleshooting
+
+**"Model not found" or API errors on restart:**
+```
+npm install @ai-sdk/deepseek
+```
+Run this in `~/.config/opencode/`. OpenCode should auto-install provider packages, but if it doesn't, this one-liner fixes it.
+
+**"Agent not found" when the Supervisor tries to spawn a subagent:**
+Make sure the agent `.md` files are in `~/.config/opencode/agents/` — not in a subdirectory. Run:
+```bash
+ls ~/.config/opencode/agents/*.md
+```
+You should see `worker.md`, `architect.md`, `planner.md`, etc.
+
+**Already have an opencode.json?**
+Don't overwrite it. Just merge the `"provider"` and `"agent"` blocks from this repo's `opencode.json` into yours. The agent `.md` files don't conflict with anything.
+
+**Supervisor not appearing as a primary agent?**
+Confirm `supervisor.md` is at `~/.config/opencode/agent/supervisor.md` (note: `agent/` singular, not `agents/` plural).
 
 ## Architecture
 
