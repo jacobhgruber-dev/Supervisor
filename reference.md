@@ -1,207 +1,212 @@
-# Supervisor Reference — Subagents & Commands
+# Full Reference — Agents, Subagents, Modes & Commands
 
-9 subagent roles  •  base tier: DeepSeek V4 Pro Max  •  upgrade path: Claude Sonnet/Opus (see agents/UPGRADING.md)
+A comprehensive catalog of everything available across the base setup, 3-tier upgrade, and all addons. Not everything here applies to every setup — skim the headings and read what's relevant to what you've installed. As you add more pieces (modes, Ollama, Claude tiers), more sections become relevant.
 
----
-
-## How the Supervisor Works
-
-The Supervisor is a primary agent in opencode that orchestrates work through specialized subagents. It plans, delegates, reviews outputs, fixes issues, and commits — all while keeping its own context window clean. You (the user) interact with the Supervisor; it manages the subagents behind the scenes.
-
-Key principle: **Delegate everything.** The Supervisor reads docs for orientation, then spawns subagents for all substantive work. It only self-executes mechanical operations like commits and pushes.
+**Tip:** Keep this somewhere handy: `cp reference.md ~/Desktop/opencode-reference.md`
 
 ---
 
-## Subagents — 9 Roles
+## The Supervisor System
 
-### How tiers work
+The Supervisor is a primary agent that orchestrates work through specialized subagents. It plans, delegates, reviews, fixes, and commits. You talk to the Supervisor. It manages the team.
 
-This repo ships with a single tier of agents powered by DeepSeek V4 Pro Max — a frontier model fully capable of professional work. One key, one model, nine specialized agents.
-
-**If you have an Anthropic API key**, you can graduate to a 3-tier system with the naming convention `junior-*` (DeepSeek), bare name (Claude Sonnet), and `senior-*` (Claude Opus). This mirrors the production setup this repo was extracted from. See `agents/UPGRADING.md` for the complete 27-agent spec table with exact models, step counts, and permissions per role per tier.
-
----
-
-### 1. Architect — System Design & Novel Approaches
-
-Designs new ways to do things. Greenfield thinking, tradeoff analysis.
-
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `architect` | DeepSeek V4 Pro Max | 25 | `#3B82F6` | Read-only + web |
-
-**When to use**: Designing new systems, choosing between approaches, refactoring strategy, pattern selection.
+| Component | Model | Purpose |
+|-----------|-------|---------|
+| **Supervisor** (primary) | DeepSeek V4 Pro Max | Orchestration — plans, delegates, reviews, commits |
+| **9 subagents** (base) | DeepSeek V4 Pro Max | Implementation, research, debugging, design, review, security, planning, editing, quote auditing |
+| **2 local subagents** (addon) | Qwen3 Coder 14B / Gemma 4 (e4b) via Ollama | On-device coding and reasoning, private, zero-cost |
+| **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
 ---
 
-### 2. Planner — Execution Strategy & Sequencing
+## Subagents — Base Tier (DeepSeek V4 Pro Max)
 
-Takes a design and sequences the work. Complements architect (what → how → when).
+All nine run on DeepSeek. One API key covers everything.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `planner` | DeepSeek V4 Pro Max | 25 | `#C4B5FD` | Read-only |
+| Subagent | Use For | Steps | Permissions |
+|----------|---------|-------|-------------|
+| `worker` | Implementation — features, tests, migrations, frontend | 40 | Full (edit, bash, web) |
+| `researcher` | Web research, multi-source synthesis, API/library docs | 35 | Full |
+| `debugger` | Runtime errors, test failures, root cause analysis | 35 | Read-only + bash |
+| `architect` | Design questions, refactoring plans, tradeoff analysis | 25 | Read-only + web |
+| `reviewer` | Code review — quality, bugs, style, pre-commit pass | 30 | Read-only + bash |
+| `security` | Vulnerability scanning — secrets, injections, unsafe patterns | 25 | Read-only + bash + web |
+| `planner` | Task breakdown, sequencing, milestone planning | 25 | Read-only |
+| `editor` | Grammar, spelling, punctuation, readability | 25 | Read-only |
+| `quote-auditor` | Quotation verification against sources | 25 | Read-only |
 
-**When to use**: Task breakdown, dependency mapping, milestone planning, effort estimation.
+### When to Use
 
-**How it differs from architect**: Architect says "build a bridge here using a suspension design." Planner says "Phase 1: survey site. Phase 2: pour foundations. Phase 3: ..."
-
----
-
-### 3. Code Reviewer — Bug Detection & Code Quality
-
-Finds bugs, logic errors, style issues, and security concerns in code.
-
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `reviewer` | DeepSeek V4 Pro Max | 30 | `#FCA5A5` | Read-only + bash |
-
-**When to use**: Pre-merge review, PR feedback, catching edge cases and logic flaws.
-
----
-
-### 4. Debugger — Runtime Failure Investigation
-
-Chases bugs that are happening right now — error messages, stack traces, production issues.
-
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `debugger` | DeepSeek V4 Pro Max | 35 | `#FB7185` | Read-only + bash |
-
-**When to use**: Something broke. Error logs, crash reports, mysterious behavior.
-
-**How it differs from reviewer**: Reviewer catches bugs before they ship. Debugger chases bugs that are already happening.
-
----
-
-### 5. Security Auditor — Vulnerability Assessment
-
-Finds security holes — injections, exposed secrets, unsafe configs, supply chain risks.
-
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `security` | DeepSeek V4 Pro Max | 25 | `#DC2626` | Read-only + bash + web |
-
-**When to use**: Security review before deployment, scanning for exposed secrets, hardening.
-
-**How it differs from reviewer**: Reviewer cares about correctness. Security auditor only cares about exploits.
-
----
-
-### 6. Editor — Content Quality & Writing
-
-Improves writing — structure, clarity, tone, grammar.
-
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `editor` | DeepSeek V4 Pro Max | 25 | `#FDE68A` | Read-only |
-
-**When to use**: Blog posts, documentation, transcripts, any written content that needs polish.
-
----
-
-### 7. Researcher — Information Gathering & Synthesis
-
-Finds, verifies, and synthesizes information from multiple sources.
-
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `researcher` | DeepSeek V4 Pro Max | 35 | `#6EE7B7` | Full |
-
-**When to use**: "Research how X works," "compare Y and Z," "find best practices for W."
-
----
-
-### 8. Quote Auditor — Quotation Integrity & Attribution
-
-Verifies that quotes match their sources exactly. Detects paraphrasing disguised as quotation.
-
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `quote-auditor` | DeepSeek V4 Pro Max | 25 | `#FDBA74` | Read-only |
-
-**When to use**: Verifying transcript quotes, fact-checking article claims, legal/journalistic accuracy.
-
----
-
-### 9. Worker — General Purpose
-
-The go-to for any task that doesn't fit a specialized role. Full access to edit files and run commands.
-
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `worker` | DeepSeek V4 Pro Max | 40 | `#A5B4FC` | Full |
-
-**When to use**: Implementation, feature building, test writing, migrations, any general task.
-
----
-
-## Bonus: Alternative Model Workers
-
-These use different model providers for when you want a specific model's strengths:
-
-| Agent | Model | Setup | Permissions |
-|-------|-------|-------|------------|
-| `grok-worker` | Grok 4.3 (xAI) | Add xAI provider + API key to opencode.json | Full |
-
-See `agents/grok-worker.md` for setup instructions.
-
----
-
-## Quick Reference — When to Use What
-
-| You want to... | Use |
-|---------------|-----|
-| Design a new system / choose approach | `architect` |
-| Plan how to build something | `planner` |
-| Review code before merging | `reviewer` |
-| Figure out why something broke | `debugger` |
-| Check code for security holes | `security` |
-| Improve writing quality | `editor` |
-| Research a topic | `researcher` |
-| Verify quotes match sources | `quote-auditor` |
+| You want to... | Deploy |
+|---------------|--------|
 | Build a feature / fix a bug | `worker` |
-| Any task with Grok's model | `grok-worker` |
+| Research a topic or library | `researcher` |
+| Investigate a crash or error | `debugger` |
+| Design a new system or choose approach | `architect` |
+| Review code before merging | `reviewer` |
+| Check code for security holes | `security` |
+| Break down a large task into steps | `planner` |
+| Polish documentation or prose | `editor` |
+| Verify quotes match their sources | `quote-auditor` |
 
 ---
 
-## How to Invoke a Subagent
+## Upgrading to 3-Tier (Claude Sonnet & Opus)
 
-Subagents are invoked by the Supervisor agent using the Task tool. You (the user) trigger them by asking the Supervisor to delegate.
+If you add an Anthropic API key, the naming convention becomes:
 
-Say things like:
+| Tier | Model | Naming | Default Behavior |
+|------|-------|--------|-----------------|
+| Junior | DeepSeek V4 Pro Max | `junior-worker`, etc. | Default — automatic spawning |
+| Mid | Claude Sonnet 4.6 Max | `worker`, etc. (bare name) | Explicitly invoked |
+| Senior | Claude Opus 4.7 Max | `senior-worker`, etc. | Highest stakes only |
 
-- "Use the architect to design a plan for..."
-- "Have the reviewer look at this PR"
-- "Ask the researcher to find best practices for X"
-- "Send this to the worker for implementation"
+This gives you 27 subagent files across 9 roles × 3 tiers. See `agents/UPGRADING.md` in the repo for the complete spec table and setup instructions.
 
-The Supervisor spawns the subagent with your request. The subagent works independently (in its own context window, with its own model), then returns a final message. The Supervisor presents the result.
+### Quick Cost Guide
 
----
-
-## Mode Switching (Slash Commands)
-
-These trigger words change the main agent's behavior for a request. Use them anywhere in your message:
-
-| Command | What it does |
-|---------|-------------|
-| `/architect` | Full creative redesign mode |
-| `/plan` | Step-by-step planning with options, risks |
-| `/debug` | Bug investigation mode |
-| `/test` | Testing-first mode |
-| `/review` | Code review mode |
-| `/explain` | Teaching mode |
-| `/refine` | Surgical improvements |
-| `/security` | Security audit mode |
-| `/verifyquotes` | Line-by-line quotation audit |
+| Tier | Model | Relative Cost | Best For |
+|------|-------|--------------|----------|
+| Junior | DeepSeek V4 Pro Max | $ | 80% of all tasks |
+| Mid | Claude Sonnet 4.6 Max | $$ | Complex reasoning, deeper reviews |
+| Senior | Claude Opus 4.7 Max | $$$$ | Production-critical, highest stakes |
 
 ---
 
-## Key Design Decisions
+## Local Subagents — Ollama (Addon)
 
-- **Specialized subagents are read-only** (`edit: deny`, `bash: deny`) — they analyze and recommend, never change code. Worker has full access.
-- **Architect vs Planner**: Architect invents new approaches. Planner sequences existing designs into action steps.
-- **Reviewer vs Debugger**: Reviewer finds bugs in code you're about to merge. Debugger investigates bugs that are already happening.
-- **Reviewer vs Security**: Reviewer cares about correctness. Security only cares about exploits.
-- **Editor vs Quote Auditor**: Editor improves writing quality. Quote Auditor verifies factual/attribution accuracy.
+Run entirely on-device. No API calls, no cost, full privacy. Requires Ollama installed.
+
+| Subagent | Model | Use For | Steps | Permissions |
+|----------|-------|---------|-------|-------------|
+| `local-coder` | Qwen3 Coder 14B | Coding tasks — write, edit, debug, refactor | 16 | Full |
+| `local-reasoner` | Gemma 4 (e4b) | Analysis, planning, evaluation | 14 | Read-only + web |
+
+### When to Use Local Agents
+
+- Privacy-sensitive code or documents
+- Straightforward tasks where you don't want to burn API credits
+- Offline work (once models are downloaded)
+- Quick boilerplate, formatting, or small fixes
+
+### Recommended Ollama Models
+
+| Model | Quality | Speed | RAM Needed | Best For |
+|-------|---------|-------|-----------|----------|
+| `freehuntx/qwen3-coder:14b` | Good | Fast | 10 GB | Everyday coding (start here) |
+| `qwen3.6:27b` | High | Moderate | 22 GB | Complex reasoning, analysis |
+| `qwen3.6:27b-coding-nvfp4` | High | Moderate | 18 GB | Coding specialist (27B) |
+| `gemma4:e4b` | Good | Fast | 10 GB | Reasoning, planning |
+| `batiai/qwen3.6-27b:q4` | Good | Fast | 18 GB | Smaller quant of 27B |
+| `batiai/qwen3.6-27b:q3` | Decent | Fast | 14 GB | Smallest quant of 27B |
+
+Install: `brew install ollama` then `ollama pull <model-name>`
+
+---
+
+## Behavioral Modes (Addon)
+
+Trigger words that change how the agent thinks for a single request. Modes don't change the model — they change the behavior. Works with any agent (supervisor or subagent).
+
+| Mode | Trigger Word(s) | What It Does |
+|------|----------------|--------------|
+| **Architect** | `architect` `/architect` | Full creative redesign. Ignores existing code, thinks from scratch. |
+| **Refine** | `refine` `/refine` | Surgical improvements. Small, safe cleanups only. |
+| **Plan** | `plan` `/plan` | Step-by-step planning. Options, risks, tradeoffs before code. |
+| **Debug** | `debug` `/debug` | Root-cause investigation. Questions and checks before fixes. |
+| **Test** | `test` `/test` | Testing-first. Write tests, then make them pass. |
+| **Explain** | `explain` `/explain` | Teaching mode. Simple, beginner-friendly explanations. |
+| **Review** | `review` `/review` | Senior code review. Balanced, experienced feedback. |
+| **Security** | `security` `/security` | Security audit. Vulnerabilities, data safety, input validation. |
+| **Verify Quotes** | `verifyquotes` `/verifyquotes` `auditquotes` `/auditquotes` | Quotation audit. Line-by-line verification against sources. |
+
+### How Modes Work
+
+Include any trigger word anywhere in your message. The agent shifts behavior for that one response, then returns to normal. Modes don't stack — the last trigger word wins.
+
+```
+# Before a big feature:
+architect Design a notification system supporting email, push, and in-app.
+
+# Chasing a bug:
+debug Checkout button works in Chrome but not Safari. Investigate.
+
+# Before merging:
+review Look at src/services/payment.ts before I open the PR.
+
+# Learning a codebase:
+explain How does the auth middleware work in this Express app?
+```
+
+Setup: copy `addons/open-code-modes/AGENTS.md` to `~/.config/opencode/AGENTS.md`.
+
+---
+
+## Custom Commands (Jacob's Setup)
+
+These are registered in `opencode.json` under the `"command"` key. They're workflow-specific and not included in the base repo, but you can create your own using the same pattern.
+
+| Command | Purpose |
+|---------|---------|
+| `/transcribe` | Transcribe audio with whisper (fast) or faster-whisper (high quality) |
+| `/anna` | Search and download books from Anna's Archive |
+| `/audio` | Search and download audiobooks from AudiobookBay |
+
+To create a custom command, add an entry to your `opencode.json`:
+
+```json
+"command": {
+  "my-command": {
+    "description": "What this command does",
+    "template": "Detailed instructions the agent follows when the command is invoked."
+  }
+}
+```
+
+---
+
+## System Architecture
+
+```
+You (the User)
+      |
+      v
+Supervisor Agent (primary, DeepSeek V4 Pro Max)
+      |
+      +---> worker / junior-worker / senior-worker     (implementation)
+      +---> architect / junior-architect / senior-architect  (design)
+      +---> planner / junior-planner / senior-planner  (sequencing)
+      +---> reviewer / junior-reviewer / senior-reviewer  (code review)
+      +---> debugger / junior-debugger / senior-debugger  (runtime errors)
+      +---> security / junior-security / senior-security  (vulnerabilities)
+      +---> researcher / junior-researcher / senior-researcher  (information)
+      +---> editor / junior-editor / senior-editor  (proofreading)
+      +---> quote-auditor / junior-quote-auditor / senior-quote-auditor  (quotes)
+      |
+      +---> local-coder        (on-device coding, Ollama)
+      +---> local-reasoner     (on-device reasoning, Ollama)
+      |
+      +---> grok-worker        (alternative model, Grok 4.3 via xAI)
+
+Behavioral Modes (overlay on any agent):
+  architect | refine | plan | debug | test | explain | review | security | verifyquotes
+```
+
+---
+
+## Quick Lookup — Match Task to Agent
+
+| Task | Agent |
+|------|-------|
+| "Build a REST API endpoint" | `worker` |
+| "Design a new microservice architecture" | `architect` |
+| "Plan the phases for this project" | `planner` |
+| "Review this PR before I merge" | `reviewer` |
+| "The login is broken in production" | `debugger` |
+| "Audit the payment code for vulnerabilities" | `security` |
+| "Research best practices for React state management" | `researcher` |
+| "Proofread this blog post" | `editor` |
+| "Check that all quotes in this article are verbatim" | `quote-auditor` |
+| "Write a simple utility — I want privacy" | `local-coder` |
+| "Analyze this proprietary algorithm — don't send to cloud" | `local-reasoner` |
+| "Any task — I want Grok's model" | `grok-worker` |

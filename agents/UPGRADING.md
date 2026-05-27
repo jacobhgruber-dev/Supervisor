@@ -559,9 +559,9 @@ reserved for conscious escalation, not background convenience. You should not
 silently spend Anthropic credits on tasks that DeepSeek can handle.
 ```
 
-## Updating the reference.md
+## Updating subagents.md
 
-Optionally add a note at the top of `reference.md` that the subagent catalog has shifted to 3-tier. The quickest fix: update the header line to:
+Optionally update the subagent quick reference to reflect the 3-tier naming. The quickest fix: update the header line in `subagents.md` to:
 
 ```
 27 subagent files across 9 roles at 3 tiers • upgrade path: see agents/UPGRADING.md

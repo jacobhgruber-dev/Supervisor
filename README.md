@@ -1,5 +1,19 @@
 # Supervisor — Agent Orchestration for OpenCode
 
+```
+YOU: "Build a REST API for the user model"
+  |
+  v
+SUPERVISOR (plans, delegates, reviews, commits)
+  |
+  +--> worker     (builds it)
+  +--> architect  (designs first if needed)
+  +--> reviewer   (checks the diff)
+  +--> security   (scans for issues)
+  +--> debugger   (fixes failures)
+  +--> ...and 4 more specialized roles
+```
+
 A shareable setup for the Supervisor agent workflow in [OpenCode](https://opencode.ai). The Supervisor is a primary agent that plans, delegates to specialized subagents, reviews outputs, fixes issues, and commits — all while keeping its own context window clean. You talk to the Supervisor. It manages the team.
 
 ## What You Get
@@ -123,9 +137,9 @@ Supervisor/
 ├── supervisor.md                  # Supervisor agent prompt (-> ~/.config/opencode/agent/)
 ├── opencode.json                  # Template config with placeholder API keys
 ├── opencode.json.md               # Config setup instructions
-├── full-reference.md              # Comprehensive agent/mode/command catalog (keep on Desktop!)
+├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
+├── subagents.md                   # Quick reference for the 9 base subagents
 ├── AGENTS.md                      # Behavioral guidelines (-> ~/.config/opencode/)
-├── reference.md                   # Full subagent catalog and quick reference
 ├── agents/
 │   ├── worker.md                  # General-purpose implementation agent
 │   ├── architect.md               # System design and tradeoff analysis
