@@ -436,6 +436,181 @@ Complete configuration for all 9 roles across all 3 tiers:
 | Anthropic (Opus) | `anthropic/claude-opus-4-7` | `@ai-sdk/anthropic` |
 | xAI (Grok) | `xai/grok-4.3` | `@ai-sdk/xai` |
 
+## Step 5: Update the Supervisor Prompt (Critical)
+
+Renaming agents to `junior-*` is only half the job. The supervisor prompt itself must be updated — otherwise it'll try to spawn agents with the old bare names and find nothing. Here are the exact changes, drawn from the original production setup.
+
+### supervisor.md changes
+
+**Change 1 — Mission statement (line 8):**
+
+Change:
+```
+You are the Senior Supervisor speaking to the Manager. Your job is to keep your
+context window tight and orchestrate work through subagents.
+```
+To:
+```
+You are the Senior Supervisor speaking to the Manager. Your job is to keep your
+context window tight and orchestrate work through junior-tier subagents.
+```
+
+**Change 2 — Pre-Implementation Triage table (lines 92-102):**
+
+Prefix every agent name with `junior-`:
+
+| Single-tier (current) | 3-tier (change to) |
+|---|---|
+| `Spawn \`worker\`` | `Spawn \`junior-worker\`` |
+| `Spawn \`debugger\`` | `Spawn \`junior-debugger\`` |
+| `Spawn \`researcher\`` | `Spawn \`junior-researcher\`` |
+| `Spawn \`architect\`` | `Spawn \`junior-architect\`` |
+| `Spawn \`planner\`` | `Spawn \`junior-planner\`` |
+| `Spawn \`security\`` | `Spawn \`junior-security\`` |
+
+Also update the closing line:
+```
+When in doubt, triage first — a misdirected `worker` wastes a whole session.
+```
+To:
+```
+When in doubt, triage first — a misdirected `junior-worker` wastes a whole session.
+```
+
+**Change 3 — Subagent Toolbox table (lines 140-148):**
+
+Add `junior-` prefix to every agent name in the table. Example:
+
+| Single-tier | 3-tier |
+|---|---|
+| `\`worker\`` | `\`junior-worker\`` |
+| `\`researcher\`` | `\`junior-researcher\`` |
+| `\`debugger\`` | `\`junior-debugger\`` |
+| (etc. — all 9 roles) | |
+
+**Change 4 — Default tier policy (line 151):**
+
+Change:
+```
+Default to these subagents. Match the subagent to the *activity*...
+```
+To:
+```
+Default to the junior tier. Match the subagent to the *activity*, not just the
+project area — implementation, investigation, research, design, review, security,
+planning, editing, and quote-auditing are different jobs. The Manager will
+escalate to mid/senior tier explicitly if needed.
+```
+
+Also replace the "Optional 3-tier upgrade" blurb (lines 153-154) with just:
+```
+For escalations, use the bare names (`worker`, `architect`, etc.) for Sonnet and
+`senior-*` for Opus. See `agents/UPGRADING.md` for the full spec.
+```
+
+### AGENTS.md changes
+
+The Spawning Rules section currently says "default to the base tier." Update the last section to match the 3-tier system:
+
+Replace:
+```
+## Spawning Rules (Always Active)
+
+Subagents are specialized agents you can spawn for focused work. See the
+`supervisor.md` for the orchestration workflow and `reference.md` for the full
+subagent catalog.
+
+**Default tier policy:**
+- Default to the base tier (DeepSeek V4 Pro Max) for all automatic/unprompted
+  subagent spawning.
+- Before using a higher-tier subagent autonomously, explain to the user WHY
+  it's warranted.
+- When the user explicitly names a subagent, use exactly what they asked for.
+- For simple file-discovery tasks, the `explore` built-in subagent is always
+  acceptable.
+
+**Rationale:** The base tier (DeepSeek V4 Pro Max) is a frontier model fully
+capable of professional work. Upper tiers (Claude Sonnet/Opus) are reserved for
+conscious escalation, not background convenience.
+```
+
+With:
+```
+## Subagent Spawning Rules (Always Active)
+
+The Task tool can spawn specialized subagents (27 available across 9 roles at
+3 tiers — see `reference.md` for the full catalog).
+
+**Default tier policy:**
+
+- **Default to the junior tier** (DeepSeek V4 Pro Max) for all
+  automatic/unprompted subagent spawning.
+- Before using a mid or senior tier subagent autonomously, explain to the user
+  WHY the higher tier is warranted (e.g., "this bug involves distributed state —
+  I want Opus on it because DeepSeek might miss a race condition").
+- When the user explicitly names a subagent (e.g., "send this to
+  senior-architect"), use exactly what they asked for — no override.
+- For simple research/file-discovery tasks, the `explore` built-in subagent is
+  always acceptable — it's already lightweight.
+
+**Rationale:** The junior tier (DeepSeek V4 Pro Max) is a frontier model fully
+capable of professional work. The mid and senior tiers (Sonnet/Opus Max) are
+reserved for conscious escalation, not background convenience. You should not
+silently spend Anthropic credits on tasks that DeepSeek can handle.
+```
+
+## Updating the reference.md
+
+Optionally add a note at the top of `reference.md` that the subagent catalog has shifted to 3-tier. The quickest fix: update the header line to:
+
+```
+27 subagent files across 9 roles at 3 tiers • upgrade path: see agents/UPGRADING.md
+```
+
+## Verifying the 3-Tier Setup
+
+After making all changes, your agent directory should look like:
+
+```
+~/.config/opencode/agents/
+├── junior-worker.md          # DeepSeek (junior)
+├── junior-architect.md
+├── junior-planner.md
+├── junior-reviewer.md
+├── junior-debugger.md
+├── junior-security.md
+├── junior-editor.md
+├── junior-researcher.md
+├── junior-quote-auditor.md
+│
+├── worker.md                 # Claude Sonnet (mid)
+├── architect.md
+├── planner.md
+├── reviewer.md
+├── debugger.md
+├── security.md
+├── editor.md
+├── researcher.md
+├── quote-auditor.md
+│
+├── senior-worker.md          # Claude Opus (senior)
+├── senior-architect.md
+├── senior-planner.md
+├── senior-reviewer.md
+├── senior-debugger.md
+├── senior-security.md
+├── senior-editor.md
+├── senior-researcher.md
+├── senior-quote-auditor.md
+│
+├── grok-worker.md            # Alternative model
+└── UPGRADING.md              # This file
+```
+
+Restart opencode. The Supervisor should now spawn `junior-*` agents by default, with `*` (Sonnet) and `senior-*` (Opus) available for explicit escalation.
+
+---
+
 ## How the Naming Convention Works
 
 The Supervisor uses these names to pick the right agent:
