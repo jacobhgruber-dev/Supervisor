@@ -2,6 +2,12 @@
 
 The complete system at a glance. This reference covers everything available when you have the base Supervisor setup plus all addons (OpenCode Modes + Ollama Local). Use it as a quick lookup for what to deploy when.
 
+**Tip:** Keep this file somewhere handy for quick reference — your Desktop, a pinned tab, or printed out. It's the decoder ring for the whole system. Copy it wherever you want:
+
+```bash
+cp full-reference.md ~/Desktop/opencode-reference.md
+```
+
 ---
 
 ## The Supervisor System

@@ -119,6 +119,7 @@ Supervisor/
 ├── supervisor.md                  # Supervisor agent prompt (-> ~/.config/opencode/agent/)
 ├── opencode.json                  # Template config with placeholder API keys
 ├── opencode.json.md               # Config setup instructions
+├── full-reference.md              # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── AGENTS.md                      # Behavioral guidelines (-> ~/.config/opencode/)
 ├── reference.md                   # Full subagent catalog and quick reference
 ├── agents/
@@ -135,7 +136,6 @@ Supervisor/
 │   └── UPGRADING.md               # How to add Claude Sonnet/Opus tiers
 ├── addons/
 │   ├── README.md                  # Addon overview
-│   ├── full-reference.md          # Comprehensive agent/mode/command catalog
 │   ├── open-code-modes/           # 9 behavioral modes (trigger words)
 │   │   ├── README.md
 │   │   ├── AGENTS.md              # Mode switching rules (-> ~/.config/opencode/)
