@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "supervisor": {
+      "mode": "primary",
+      "model": "deepseek/deepseek-v4-pro",
+      "description": "Senior supervisor that plans, delegates to subagents, reviews outputs, fixes issues, and commits."
+    }
+  },
+  "provider": {
+    "deepseek": {
+      "npm": "@ai-sdk/deepseek",
+      "name": "DeepSeek",
+      "options": {
+        "apiKey": "YOUR_DEEPSEEK_API_KEY",
+        "baseURL": "https://api.deepseek.com"
+      },
+      "models": {
+        "deepseek-v4-pro": {
+          "name": "DeepSeek V4 Pro Max",
+          "tools": true
+        }
+      }
+    }
+  },
+  "model": "deepseek/deepseek-v4-pro"
+}
