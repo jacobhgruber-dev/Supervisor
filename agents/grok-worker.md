@@ -2,6 +2,7 @@
 description: High-powered, max-capacity worker for any purpose. Fully empowered — writes code, runs commands, edits files, commits. Use for complex investigation, deep implementation, or any task where you want Grok's full power without throttling. Requires xAI API key.
 mode: subagent
 model: xai/grok-4.3
+variant: max
 steps: 40
 color: "#FF6B35"
 permission:

@@ -31,7 +31,7 @@ Want to add other models? Add their provider blocks to the `provider` section:
     "apiKey": "YOUR_ANTHROPIC_API_KEY"
   },
   "models": {
-    "claude-sonnet-4-6-20250514": {
+    "claude-sonnet-4-6": {
       "name": "Claude Sonnet 4.6 Max",
       "tools": true
     }
