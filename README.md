@@ -21,7 +21,7 @@ For a full list of recommended CLI tools, Python packages, and optional services
 
 ### 2. Configure OpenCode
 
-**If you already have an opencode config:** do NOT overwrite your `opencode.json`. Instead, merge just the `provider` block (DeepSeek) and the `agent` block (supervisor) into your existing config. The agent `.md` files can be copied directly — they won't conflict.
+**If you already have an opencode config:** do NOT overwrite your `opencode.json`. Instead, merge just the `provider` block (DeepSeek) and the `agent` block (supervisor) into your existing config. The agent `.md` files can be copied directly — they won't conflict with anything.
 
 **If this is your first opencode setup:** copy the full config:
 
@@ -29,9 +29,13 @@ For a full list of recommended CLI tools, Python packages, and optional services
 # Copy config (replace the API key placeholder first)
 cp opencode.json ~/.config/opencode/opencode.json
 
-# Copy agent files (always safe — won't conflict with anything)
+# Copy supervisor agent
 cp supervisor.md ~/.config/opencode/agent/supervisor.md
+
+# Copy subagent files (rename any that conflict with your own)
 cp agents/*.md ~/.config/opencode/agents/
+
+# Copy behavioral guidelines (merge if you already have AGENTS.md)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
