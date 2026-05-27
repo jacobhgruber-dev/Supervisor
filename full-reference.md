@@ -1,14 +1,8 @@
 # Full Reference — Agents, Subagents, Modes & Commands
 
-This is a **template** reference catalog. It describes the complete system — base + 3-tier upgrade + all addons. Your copy should reflect only what you've actually set up. Trim sections for things you haven't installed yet, and add your own custom commands as you build them.
+A comprehensive catalog of everything available across the base setup, 3-tier upgrade, and all addons. Not everything here applies to every setup — skim the headings and read what's relevant to what you've installed. As you add more pieces (modes, Ollama, Claude tiers), more sections become relevant.
 
-**To personalize:**
-1. Copy this to somewhere handy: `cp full-reference.md ~/Desktop/opencode-reference.md`
-2. Open it and strike through or delete sections for addons/tiers you haven't installed
-3. Add your own custom commands at the bottom as you create them
-4. Re-copy whenever you add something new
-
-The headings are your checklist — if a heading doesn't apply to your setup yet, you know what you could add next.
+**Tip:** Keep this somewhere handy: `cp full-reference.md ~/Desktop/opencode-reference.md`
 
 ---
 
