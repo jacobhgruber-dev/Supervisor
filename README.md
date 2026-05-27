@@ -16,6 +16,8 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 
 Visit https://platform.deepseek.com/api_keys and create an API key. This is the only key you need to get started — all agents run on DeepSeek.
 
+For a full list of recommended CLI tools, Python packages, and optional services, see [DEPENDENCIES.md](DEPENDENCIES.md).
+
 ### 2. Configure OpenCode
 
 **If you already have an opencode config:** do NOT overwrite your `opencode.json`. Instead, merge just the `provider` block (DeepSeek) and the `agent` block (supervisor) into your existing config. The agent `.md` files can be copied directly — they won't conflict.
@@ -112,6 +114,7 @@ Key principle: **Always delegate.** The Supervisor self-executes only mechanical
 ```
 Supervisor/
 ├── README.md                      # This file
+├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
 ├── supervisor.md                  # Supervisor agent prompt (-> ~/.config/opencode/agent/)
 ├── opencode.json                  # Template config with placeholder API keys
 ├── opencode.json.md               # Config setup instructions
@@ -137,8 +140,8 @@ Supervisor/
 
 - [OpenCode](https://opencode.ai) installed
 - A [DeepSeek API key](https://platform.deepseek.com/api_keys) (free tier available)
-- Optional: [Anthropic API key](https://console.anthropic.com) for Claude Sonnet/Opus upgrades
-- Optional: [xAI API key](https://console.x.ai) for Grok worker
+- Node.js (for provider packages and MCP servers)
+- See [DEPENDENCIES.md](DEPENDENCIES.md) for recommended CLI tools and optional services
 
 ## Design Philosophy
 
