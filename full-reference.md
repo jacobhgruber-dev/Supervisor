@@ -1,12 +1,14 @@
 # Full Reference — Agents, Subagents, Modes & Commands
 
-The complete system at a glance. This reference covers everything available when you have the base Supervisor setup plus all addons (OpenCode Modes + Ollama Local). Use it as a quick lookup for what to deploy when.
+This is a **template** reference catalog. It describes the complete system — base + 3-tier upgrade + all addons. Your copy should reflect only what you've actually set up. Trim sections for things you haven't installed yet, and add your own custom commands as you build them.
 
-**Tip:** Keep this file somewhere handy for quick reference — your Desktop, a pinned tab, or printed out. It's the decoder ring for the whole system. Copy it wherever you want:
+**To personalize:**
+1. Copy this to somewhere handy: `cp full-reference.md ~/Desktop/opencode-reference.md`
+2. Open it and strike through or delete sections for addons/tiers you haven't installed
+3. Add your own custom commands at the bottom as you create them
+4. Re-copy whenever you add something new
 
-```bash
-cp full-reference.md ~/Desktop/opencode-reference.md
-```
+The headings are your checklist — if a heading doesn't apply to your setup yet, you know what you could add next.
 
 ---
 
