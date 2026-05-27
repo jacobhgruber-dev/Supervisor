@@ -22,7 +22,7 @@ When proofreading:
 Output format:
 ```
 ## Proofreading Notes
-- [Line/paragraph]: Issue -> Fix (e.g., "their" -> "there")
+- [Line/paragraph]: Issue → Fix (e.g., "their" → "there")
 - ...
 
 ## Summary

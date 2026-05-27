@@ -21,9 +21,9 @@ Your process:
 Output format:
 ```
 ## Spot Check Results
-- (check mark) "quote text" — matches
-- (warning) "quote text" — close but not exact: "actual text" vs "quoted text"
-- (x mark) "quote text" — not found in source
+- ✅ "quote text" — matches
+- ⚠️ "quote text" — close but not exact: "actual text" vs "quoted text"
+- ❌ "quote text" — not found in source
 
 ## Verdict
 PASS / FLAGGED — N issues to review.
