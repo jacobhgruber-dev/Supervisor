@@ -9,6 +9,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Grok worker** — optional alternative model worker for when you want Grok 4.3's strengths.
 - **Upgrade path** — instructions for adding Claude Sonnet/Opus tiers, including a recommended 3-tier naming convention (`junior-*` / `*` / `senior-*`) with the exact specs (model, steps, permissions) used in production.
+- **Optional addons** — OpenCode Modes (9 behavioral trigger words), Ollama Local (on-device agents), and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
 
@@ -132,6 +133,16 @@ Supervisor/
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── grok-worker.md             # Alternative Grok-powered worker
 │   └── UPGRADING.md               # How to add Claude Sonnet/Opus tiers
+├── addons/
+│   ├── README.md                  # Addon overview
+│   ├── full-reference.md          # Comprehensive agent/mode/command catalog
+│   ├── open-code-modes/           # 9 behavioral modes (trigger words)
+│   │   ├── README.md
+│   │   ├── AGENTS.md              # Mode switching rules (-> ~/.config/opencode/)
+│   │   └── modes/                 # Individual mode files
+│   └── ollama-local/              # On-device models via Ollama
+│       ├── README.md              # Setup guide + model recommendations
+│       └── agents/                # Local subagent files
 └── skills/
     └── README.md                  # Skills system documentation
 ```
