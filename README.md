@@ -8,7 +8,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **9 specialized subagents** — worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor. Each powered by DeepSeek V4 Pro Max.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Grok worker** — optional alternative model worker for when you want Grok 4.3's strengths.
-- **Upgrade path** — instructions for adding Claude Sonnet/Opus tiers when you need them.
+- **Upgrade path** — instructions for adding Claude Sonnet/Opus tiers, including a recommended 3-tier naming convention (`junior-*` / `*` / `senior-*`) with the exact specs (model, steps, permissions) used in production.
 
 ## Quick Start
 

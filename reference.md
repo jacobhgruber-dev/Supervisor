@@ -16,11 +16,9 @@ Key principle: **Delegate everything.** The Supervisor reads docs for orientatio
 
 ### How tiers work
 
-This repo ships with a single tier of agents powered by DeepSeek V4 Pro Max — a frontier model fully capable of professional work.
+This repo ships with a single tier of agents powered by DeepSeek V4 Pro Max — a frontier model fully capable of professional work. One key, one model, nine specialized agents.
 
-The tier labels (senior/mid/junior) from the original system have been removed for simplicity. These are just "agents" — capable, general-purpose, and production-ready.
-
-To add Claude Sonnet or Opus versions, see `agents/UPGRADING.md`. The upgrade path is: copy an agent file, change the model, add a prefix. Done.
+**If you have an Anthropic API key**, you can graduate to a 3-tier system with the naming convention `junior-*` (DeepSeek), bare name (Claude Sonnet), and `senior-*` (Claude Opus). This mirrors the production setup this repo was extracted from. See `agents/UPGRADING.md` for the complete 27-agent spec table with exact models, step counts, and permissions per role per tier.
 
 ---
 

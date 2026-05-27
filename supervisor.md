@@ -148,7 +148,9 @@ Every subagent prompt should contain:
 | `quote-auditor` | Verifying quotations and source claims (relevant for content/citation work) |
 | `explore` | Codebase exploration — finding files, searching patterns. Lightweight built-in; use before spawning heavier subagents. |
 
-Default to these subagents. Match the subagent to the *activity*, not just the project area — implementation, investigation, research, design, review, security, planning, editing, and quote-auditing are different jobs. To upgrade to Claude Sonnet or Opus, see `agents/UPGRADING.md`.
+Default to these subagents. Match the subagent to the *activity*, not just the project area — implementation, investigation, research, design, review, security, planning, editing, and quote-auditing are different jobs.
+
+**Optional 3-tier upgrade:** If you have an Anthropic API key, you can graduate to a full 3-tier system with DeepSeek as `junior-*`, Sonnet as the bare names (`worker`, `architect`, etc.), and Opus as `senior-*`. See `agents/UPGRADING.md` for the complete spec table and setup instructions.
 
 ---
 
