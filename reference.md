@@ -59,7 +59,7 @@ If you add an Anthropic API key, the naming convention becomes:
 |------|-------|--------|-----------------|
 | Junior | DeepSeek V4 Pro Max | `junior-worker`, etc. | Default — automatic spawning |
 | Mid | Claude Sonnet 4.6 Max | `worker`, etc. (bare name) | Explicitly invoked |
-| Senior | Claude Opus 4.7 Max | `senior-worker`, etc. | Highest stakes only |
+| Senior | Claude Opus 4.8 Max | `senior-worker`, etc. | Highest stakes only |
 
 This gives you 27 subagent files across 9 roles × 3 tiers. See `agents/UPGRADING.md` in the repo for the complete spec table and setup instructions.
 
@@ -69,7 +69,7 @@ This gives you 27 subagent files across 9 roles × 3 tiers. See `agents/UPGRADIN
 |------|-------|--------------|----------|
 | Junior | DeepSeek V4 Pro Max | $ | 80% of all tasks |
 | Mid | Claude Sonnet 4.6 Max | $$ | Complex reasoning, deeper reviews |
-| Senior | Claude Opus 4.7 Max | $$$$ | Production-critical, highest stakes |
+| Senior | Claude Opus 4.8 Max | $$$$ | Production-critical, highest stakes |
 
 ---
 
@@ -106,36 +106,36 @@ Install: `brew install ollama` then `ollama pull <model-name>`
 
 ## Behavioral Modes (Addon)
 
-Trigger words that change how the agent thinks for a single request. Modes don't change the model — they change the behavior. Works with any agent (supervisor or subagent).
+Slash commands that change how the agent thinks for a single request. Modes don't change the model — they change the behavior. Works with any agent (supervisor or subagent). Most reinforce the Karpathy principles; `/architect` sometimes overrides them for fresh first-principles design.
 
-| Mode | Trigger Word(s) | What It Does |
-|------|----------------|--------------|
-| **Architect** | `architect` `/architect` | Full creative redesign. Ignores existing code, thinks from scratch. |
-| **Refine** | `refine` `/refine` | Surgical improvements. Small, safe cleanups only. |
-| **Plan** | `plan` `/plan` | Step-by-step planning. Options, risks, tradeoffs before code. |
-| **Debug** | `debug` `/debug` | Root-cause investigation. Questions and checks before fixes. |
-| **Test** | `test` `/test` | Testing-first. Write tests, then make them pass. |
-| **Explain** | `explain` `/explain` | Teaching mode. Simple, beginner-friendly explanations. |
-| **Review** | `review` `/review` | Senior code review. Balanced, experienced feedback. |
-| **Security** | `security` `/security` | Security audit. Vulnerabilities, data safety, input validation. |
-| **Verify Quotes** | `verifyquotes` `/verifyquotes` `auditquotes` `/auditquotes` | Quotation audit. Line-by-line verification against sources. |
+| Mode | Trigger | What It Does |
+|------|---------|--------------|
+| **Architect** | `/architect` | Design forces, tradeoffs, refactor scope, cross-cutting concerns, API shape. Fresh-from-scratch when invited; otherwise ground in codebase and design incrementally. |
+| **Refine** | `/refine` | Surgical + gentle improvements. Precise, small cleanups — nothing speculative. |
+| **Plan** | `/plan` | Step-by-step planning. Options, risks, dependencies, and accessibility notes before code. |
+| **Debug** | `/debug` | Bug investigation. Form hypotheses, test systematically, find root cause. |
+| **Test** | `/test` | Testing-first. Write tests, then make them pass. |
+| **Explain** | `/explain` | Teaching mode. Simple, beginner-friendly — assumes no prior context. |
+| **Review** | `/review` | Senior code review. Balanced, severity-tiered feedback. |
+| **Security** | `/security` | Security audit across 7 categories. Thinks like an attacker. |
+| **Verify Quotes** | `/verifyquotes` `/auditquotes` | Quotation audit. Line-by-line, character-by-character verification against sources. Detects paraphrasing, flags every uncertainty. |
 
 ### How Modes Work
 
-Include any trigger word anywhere in your message. The agent shifts behavior for that one response, then returns to normal. Modes don't stack — the last trigger word wins.
+Include any slash command anywhere in your message. The agent shifts behavior for that one response, then returns to normal. Modes don't stack.
 
 ```
 # Before a big feature:
-architect Design a notification system supporting email, push, and in-app.
+/architect Design a notification system supporting email, push, and in-app.
 
 # Chasing a bug:
-debug Checkout button works in Chrome but not Safari. Investigate.
+/debug Checkout button works in Chrome but not Safari. Investigate.
 
 # Before merging:
-review Look at src/services/payment.ts before I open the PR.
+/review Look at src/services/payment.ts before I open the PR.
 
 # Learning a codebase:
-explain How does the auth middleware work in this Express app?
+/explain How does the auth middleware work in this Express app?
 ```
 
 Setup: copy `addons/open-code-modes/AGENTS.md` to `~/.config/opencode/AGENTS.md`.
@@ -189,7 +189,7 @@ Supervisor Agent (primary, DeepSeek V4 Pro Max)
       +---> grok-worker        (alternative model, Grok 4.3 via xAI)
 
 Behavioral Modes (overlay on any agent):
-  architect | refine | plan | debug | test | explain | review | security | verifyquotes
+  /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes
 ```
 
 ---

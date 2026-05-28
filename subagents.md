@@ -184,19 +184,19 @@ The Supervisor spawns the subagent with your request. The subagent works indepen
 
 ## Mode Switching (Slash Commands)
 
-These trigger words change the main agent's behavior for a request. Use them anywhere in your message:
+These slash commands change the main agent's behavior for a single request. Most reinforce the Karpathy principles; `/architect` sometimes overrides them for fresh first-principles design.
 
 | Command | What it does |
 |---------|-------------|
-| `/architect` | Full creative redesign mode |
-| `/plan` | Step-by-step planning with options, risks |
-| `/debug` | Bug investigation mode |
-| `/test` | Testing-first mode |
-| `/review` | Code review mode |
-| `/explain` | Teaching mode |
-| `/refine` | Surgical improvements |
-| `/security` | Security audit mode |
-| `/verifyquotes` | Line-by-line quotation audit |
+| `/architect` | Design forces, tradeoffs, refactor scope, cross-cutting concerns, API shape |
+| `/plan` | Step-by-step planning with options, risks, and accessibility notes |
+| `/debug` | Bug investigation — form hypotheses, test systematically |
+| `/test` | Testing-first — write tests, then make them pass |
+| `/review` | Senior code review — balanced, severity-tiered feedback |
+| `/explain` | Teaching mode — simple, beginner-friendly explanations |
+| `/refine` | Surgical + gentle improvements — precise, small cleanups |
+| `/security` | Security audit across 7 categories — thinks like an attacker |
+| `/verifyquotes` `/auditquotes` | Line-by-line, character-by-character quotation audit — detects paraphrasing |
 
 ---
 
