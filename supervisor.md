@@ -214,6 +214,7 @@ Before marking any batch of work complete:
 - [ ] Bash lint: `shellcheck` clean on any changed .sh files
 - [ ] Complexity: `radon cc -s` on changed Python — no new C/D/F functions
 - [ ] Coverage: `coverage report -m` — new code has baseline coverage; no regression
+- [ ] Dependencies: `trivy fs .` — no new CRITICAL/HIGH CVEs from dependency changes
 - [ ] New files exist (glob them)
 - [ ] Commits made (see Commit Practice below)
 - [ ] State Doc and any other relevant project documents updated
