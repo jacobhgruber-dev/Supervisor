@@ -109,8 +109,8 @@ Supervisor Agent (primary, DeepSeek V4 Pro Max)
       +---> debugger        (runtime errors, 35 steps, read-only + bash)
       +---> security        (vulnerability scan, 25 steps, read-only + bash)
       +---> researcher      (information, 35 steps, full access)
-      +---> editor          (proofreading, 25 steps, read-only)
-      +---> quote-auditor   (quote verification, 25 steps, read-only)
+      +---> editor          (proofreading, 25 steps, read + edit)
+       +---> quote-auditor   (quote verification, 25 steps, read-only + bash)
       +---> grok-worker     (alternative model, 40 steps, full access)
 ```
 
@@ -178,7 +178,7 @@ Supervisor/
 
 **One model, many roles.** All subagents use the same model (DeepSeek V4 Pro Max) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain.
 
-**Read-only by default.** Specialized subagents (architect, reviewer, debugger, security, editor, planner, quote-auditor) can read and analyze but cannot edit files or run commands. Only the worker has full access. This prevents accidental changes from analysis agents.
+**Read-only by default.** Specialized subagents (architect, planner) are strictly read-only — they analyze and recommend, never change code. Editor is the exception among the analysis-focused roles: it has `edit: allow` so it can fix writing in-place. Reviewer, security, and quote-auditor add `bash: allow` for running diagnostic commands and checking source files. Worker, debugger, and researcher have full access. Tiers differ only in model, never in permissions.
 
 **Upgrade when needed.** DeepSeek handles 95% of work. When you hit a wall or the stakes are high, add Claude Sonnet/Opus tiers (see `agents/UPGRADING.md`). The architecture supports this without changing anything else.
 

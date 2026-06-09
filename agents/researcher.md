@@ -3,7 +3,7 @@ description: Researcher for quick facts, definitions, and straightforward lookup
 mode: subagent
 model: deepseek/deepseek-v4-pro
 variant: max
-steps: 35
+steps: 40
 color: "#6EE7B7"
 permission:
   edit: allow

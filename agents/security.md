@@ -3,7 +3,7 @@ description: Security auditor for quick vulnerability scanning — exposed secre
 mode: subagent
 model: deepseek/deepseek-v4-pro
 variant: max
-steps: 25
+steps: 30
 color: "#DC2626"
 permission:
   edit: deny

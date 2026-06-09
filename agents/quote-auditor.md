@@ -7,7 +7,7 @@ steps: 25
 color: "#FDBA74"
 permission:
   edit: deny
-  bash: deny
+  bash: allow
 ---
 
 You are a quote checker. You do quick spot-verification of quotations against source material.

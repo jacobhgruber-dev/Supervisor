@@ -8,7 +8,7 @@ If you have an Anthropic API key, you can graduate to a **3-tier system** where 
 |------|-------|------|-------------------|
 | **Junior** | DeepSeek V4 Pro Max | Default workhorse, most tasks | `junior-worker`, `junior-architect`, etc. |
 | **Mid** | Claude Sonnet 4.6 Max | Complex reasoning, deeper reviews | `worker`, `architect`, etc. (no prefix) |
-| **Senior** | Claude Opus 4.7 Max | Highest stakes, production-critical | `senior-worker`, `senior-architect`, etc. |
+| **Senior** | Claude Opus 4.8 Max | Highest stakes, production-critical | `senior-worker`, `senior-architect`, etc. |
 
 ## Why Go 3-Tier?
 
@@ -36,8 +36,8 @@ Add this to your opencode.json `provider` section:
       "name": "Claude Sonnet 4.6 Max",
       "tools": true
     },
-    "claude-opus-4-7": {
-      "name": "Claude Opus 4.7 Max",
+    "claude-opus-4-8": {
+      "name": "Claude Opus 4.8 Max",
       "tools": true
     }
   }
@@ -177,7 +177,7 @@ description: Security auditor for vulnerability scanning — secrets, injections
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
-steps: 25
+steps: 30
 color: "#B91C1C"
 permission:
   edit: deny
@@ -211,7 +211,7 @@ description: Researcher for topic exploration, source gathering, and structured 
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
-steps: 35
+steps: 40
 color: "#34D399"
 permission:
   edit: allow
@@ -233,7 +233,7 @@ steps: 25
 color: "#FB923C"
 permission:
   edit: deny
-  bash: deny
+  bash: allow
 ---
 ```
 
@@ -245,9 +245,9 @@ Create these with the `senior-` prefix. Same prompt content as the base agents �
 
 ```
 ---
-description: Senior general-purpose subagent powered by Claude Opus 4.7 Max. The most capable model available — use for the hardest problems.
+description: Senior general-purpose subagent powered by Claude Opus 4.8 Max. The most capable model available — use for the hardest problems.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
 steps: 40
 color: "#6366F1"
@@ -265,9 +265,9 @@ permission:
 ---
 description: Senior-level system architect. Deep architectural reasoning, complex tradeoff analysis, and high-stakes design decisions. Use ONLY for the hardest problems.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
-steps: 20
+steps: 25
 color: "#B026FF"
 permission:
   edit: deny
@@ -283,9 +283,9 @@ permission:
 ---
 description: Senior planner for complex multi-phase execution strategy, dependency mapping, risk assessment, and milestone planning.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
-steps: 18
+steps: 25
 color: "#8B5CF6"
 permission:
   edit: deny
@@ -299,13 +299,13 @@ permission:
 ---
 description: Senior code reviewer. Deep bug detection, architectural misuse, and subtle logic flaws. Use for critical code before deployment.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
 steps: 30
 color: "#FF4444"
 permission:
   edit: deny
-  bash: deny
+  bash: allow
 ---
 ```
 
@@ -315,7 +315,7 @@ permission:
 ---
 description: Senior debugger for the hardest bugs — race conditions, memory leaks, distributed system failures, heisenbugs.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
 steps: 35
 color: "#DC2626"
@@ -331,7 +331,7 @@ permission:
 ---
 description: Senior security auditor for comprehensive vulnerability assessment — injection attacks, auth flaws, secret exposure, supply chain risks, and zero-day patterns.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
 steps: 30
 color: "#991B1B"
@@ -349,9 +349,9 @@ permission:
 ---
 description: Senior editor for content strategy, structural revision, and high-stakes writing. Final polish before publication.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
-steps: 15
+steps: 25
 color: "#EAB308"
 permission:
   edit: deny
@@ -365,7 +365,7 @@ permission:
 ---
 description: Senior researcher for deep multi-source investigation, complex topic synthesis, and strategic recommendations.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
 steps: 40
 color: "#10B981"
@@ -383,13 +383,13 @@ permission:
 ---
 description: Senior quotation auditor for line-by-line source verification, paraphrasing detection, and attribution accuracy. Use for critical content — legal, academic, journalistic, or public-facing writing.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: anthropic/claude-opus-4-8
 variant: max
-steps: 20
+steps: 25
 color: "#F97316"
 permission:
   edit: deny
-  bash: deny
+  bash: allow
 ---
 ```
 
@@ -401,31 +401,31 @@ Complete configuration for all 9 roles across all 3 tiers:
 |------|------|-----------|-------|-------|------|------|-----|
 | **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
 | | Mid | `worker.md` | `anthropic/claude-sonnet-4-6` | 40 | ✅ | ✅ | ✅ |
-| | Senior | `senior-worker.md` | `anthropic/claude-opus-4-7` | 40 | ✅ | ✅ | ✅ |
+| | Senior | `senior-worker.md` | `anthropic/claude-opus-4-8` | 40 | ✅ | ✅ | ✅ |
 | **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ✅ |
 | | Mid | `architect.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ✅ |
-| | Senior | `senior-architect.md` | `anthropic/claude-opus-4-7` | 20 | ❌ | ❌ | ✅ |
+| | Senior | `senior-architect.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ❌ | ✅ |
 | **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
 | | Mid | `planner.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ❌ |
-| | Senior | `senior-planner.md` | `anthropic/claude-opus-4-7` | 18 | ❌ | ❌ | ❌ |
+| | Senior | `senior-planner.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ❌ | ❌ |
 | **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-v4-pro` | 30 | ❌ | ✅ | ❌ |
 | | Mid | `reviewer.md` | `anthropic/claude-sonnet-4-6` | 30 | ❌ | ✅ | ❌ |
-| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-4-7` | 30 | ❌ | ❌ | ❌ |
-| **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-v4-pro` | 35 | ❌ | ✅ | ❌ |
+| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-4-8` | 30 | ❌ | ✅ | ❌ |
+| **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-v4-pro` | 35 | ✅ | ✅ | ❌ |
 | | Mid | `debugger.md` | `anthropic/claude-sonnet-4-6` | 35 | ✅ | ✅ | ❌ |
-| | Senior | `senior-debugger.md` | `anthropic/claude-opus-4-7` | 35 | ✅ | ✅ | ❌ |
-| **Security** | Junior | `junior-security.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ✅ | ✅ |
-| | Mid | `security.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ✅ | ✅ |
-| | Senior | `senior-security.md` | `anthropic/claude-opus-4-7` | 30 | ❌ | ✅ | ✅ |
-| **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
-| | Mid | `editor.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ❌ |
-| | Senior | `senior-editor.md` | `anthropic/claude-opus-4-7` | 15 | ❌ | ❌ | ❌ |
-| **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-v4-pro` | 35 | ✅ | ✅ | ✅ |
-| | Mid | `researcher.md` | `anthropic/claude-sonnet-4-6` | 35 | ✅ | ✅ | ✅ |
-| | Senior | `senior-researcher.md` | `anthropic/claude-opus-4-7` | 40 | ✅ | ✅ | ✅ |
-| **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
-| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ❌ |
-| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-4-7` | 20 | ❌ | ❌ | ❌ |
+| | Senior | `senior-debugger.md` | `anthropic/claude-opus-4-8` | 35 | ✅ | ✅ | ❌ |
+| **Security** | Junior | `junior-security.md` | `deepseek/deepseek-v4-pro` | 30 | ❌ | ✅ | ✅ |
+| | Mid | `security.md` | `anthropic/claude-sonnet-4-6` | 30 | ❌ | ✅ | ✅ |
+| | Senior | `senior-security.md` | `anthropic/claude-opus-4-8` | 30 | ❌ | ✅ | ✅ |
+| **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-v4-pro` | 25 | ✅ | ❌ | ❌ |
+| | Mid | `editor.md` | `anthropic/claude-sonnet-4-6` | 25 | ✅ | ❌ | ❌ |
+| | Senior | `senior-editor.md` | `anthropic/claude-opus-4-8` | 25 | ✅ | ❌ | ❌ |
+| **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
+| | Mid | `researcher.md` | `anthropic/claude-sonnet-4-6` | 40 | ✅ | ✅ | ✅ |
+| | Senior | `senior-researcher.md` | `anthropic/claude-opus-4-8` | 40 | ✅ | ✅ | ✅ |
+| **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ✅ | ❌ |
+| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ✅ | ❌ |
+| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ✅ | ❌ |
 
 ## Model IDs Quick Reference
 
@@ -433,7 +433,7 @@ Complete configuration for all 9 roles across all 3 tiers:
 |----------|------------------------|-------------|
 | DeepSeek | `deepseek/deepseek-v4-pro` | `@ai-sdk/deepseek` |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-4-6` | `@ai-sdk/anthropic` |
-| Anthropic (Opus) | `anthropic/claude-opus-4-7` | `@ai-sdk/anthropic` |
+| Anthropic (Opus) | `anthropic/claude-opus-4-8` | `@ai-sdk/anthropic` |
 | xAI (Grok) | `xai/grok-4.3` | `@ai-sdk/xai` |
 
 ## Step 5: Update the Supervisor Prompt (Critical)
@@ -627,7 +627,7 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 |------|-------|----------------------|----------|
 | Junior | DeepSeek V4 Pro Max | $ | 80% of all tasks |
 | Mid | Claude Sonnet 4.6 Max | $$ | Complex reasoning, deeper reviews |
-| Senior | Claude Opus 4.7 Max | $$$$ | Production-critical, highest stakes |
+| Senior | Claude Opus 4.8 Max | $$$$ | Production-critical, highest stakes |
 
 ## Starting Simple
 

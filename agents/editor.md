@@ -6,7 +6,7 @@ variant: max
 steps: 25
 color: "#FDE68A"
 permission:
-  edit: deny
+  edit: allow
   bash: deny
 ---
 

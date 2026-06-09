@@ -26,14 +26,14 @@ All nine run on DeepSeek. One API key covers everything.
 | Subagent | Use For | Steps | Permissions |
 |----------|---------|-------|-------------|
 | `worker` | Implementation — features, tests, migrations, frontend | 40 | Full (edit, bash, web) |
-| `researcher` | Web research, multi-source synthesis, API/library docs | 35 | Full |
-| `debugger` | Runtime errors, test failures, root cause analysis | 35 | Read-only + bash |
+| `researcher` | Web research, multi-source synthesis, API/library docs | 40 | Full |
+| `debugger` | Runtime errors, test failures, root cause analysis | 35 | Full (edit, bash) |
 | `architect` | Design questions, refactoring plans, tradeoff analysis | 25 | Read-only + web |
 | `reviewer` | Code review — quality, bugs, style, pre-commit pass | 30 | Read-only + bash |
-| `security` | Vulnerability scanning — secrets, injections, unsafe patterns | 25 | Read-only + bash + web |
+| `security` | Vulnerability scanning — secrets, injections, unsafe patterns | 30 | Read-only + bash + web |
 | `planner` | Task breakdown, sequencing, milestone planning | 25 | Read-only |
-| `editor` | Grammar, spelling, punctuation, readability | 25 | Read-only |
-| `quote-auditor` | Quotation verification against sources | 25 | Read-only |
+| `editor` | Grammar, spelling, punctuation, readability | 25 | Read + edit |
+| `quote-auditor` | Quotation verification against sources | 25 | Read-only + bash |
 
 ### When to Use
 
@@ -180,7 +180,7 @@ Supervisor Agent (primary, DeepSeek V4 Pro Max)
       +---> debugger / junior-debugger / senior-debugger  (runtime errors)
       +---> security / junior-security / senior-security  (vulnerabilities)
       +---> researcher / junior-researcher / senior-researcher  (information)
-      +---> editor / junior-editor / senior-editor  (proofreading)
+      +---> editor / junior-editor / senior-editor  (proofreading, read + edit)
       +---> quote-auditor / junior-quote-auditor / senior-quote-auditor  (quotes)
       |
       +---> local-coder        (on-device coding, Ollama)

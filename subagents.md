@@ -68,7 +68,7 @@ Chases bugs that are happening right now — error messages, stack traces, produ
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `debugger` | DeepSeek V4 Pro Max | 35 | `#FB7185` | Read-only + bash |
+| `debugger` | DeepSeek V4 Pro Max | 35 | `#FB7185` | Full (edit, bash) |
 
 **When to use**: Something broke. Error logs, crash reports, mysterious behavior.
 
@@ -82,7 +82,7 @@ Finds security holes — injections, exposed secrets, unsafe configs, supply cha
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `security` | DeepSeek V4 Pro Max | 25 | `#DC2626` | Read-only + bash + web |
+| `security` | DeepSeek V4 Pro Max | 30 | `#DC2626` | Read-only + bash + web |
 
 **When to use**: Security review before deployment, scanning for exposed secrets, hardening.
 
@@ -96,7 +96,7 @@ Improves writing — structure, clarity, tone, grammar.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `editor` | DeepSeek V4 Pro Max | 25 | `#FDE68A` | Read-only |
+| `editor` | DeepSeek V4 Pro Max | 25 | `#FDE68A` | Read + edit |
 
 **When to use**: Blog posts, documentation, transcripts, any written content that needs polish.
 
@@ -108,7 +108,7 @@ Finds, verifies, and synthesizes information from multiple sources.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `researcher` | DeepSeek V4 Pro Max | 35 | `#6EE7B7` | Full |
+| `researcher` | DeepSeek V4 Pro Max | 40 | `#6EE7B7` | Full |
 
 **When to use**: "Research how X works," "compare Y and Z," "find best practices for W."
 
@@ -120,7 +120,7 @@ Verifies that quotes match their sources exactly. Detects paraphrasing disguised
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `quote-auditor` | DeepSeek V4 Pro Max | 25 | `#FDBA74` | Read-only |
+| `quote-auditor` | DeepSeek V4 Pro Max | 25 | `#FDBA74` | Read-only + bash |
 
 **When to use**: Verifying transcript quotes, fact-checking article claims, legal/journalistic accuracy.
 
@@ -202,7 +202,7 @@ These slash commands change the main agent's behavior for a single request. Most
 
 ## Key Design Decisions
 
-- **Specialized subagents are read-only** (`edit: deny`, `bash: deny`) — they analyze and recommend, never change code. Worker has full access.
+- **Most specialized subagents are read-only** (`edit: deny`) — they analyze and recommend, never change code. **Exceptions:** `debugger` and `researcher` have full edit and bash access, `reviewer`, `security`, and `quote-auditor` have `bash: allow` for running diagnostic commands. Worker has full access. Tiers differ only in model, never in permissions.
 - **Architect vs Planner**: Architect invents new approaches. Planner sequences existing designs into action steps.
 - **Reviewer vs Debugger**: Reviewer finds bugs in code you're about to merge. Debugger investigates bugs that are already happening.
 - **Reviewer vs Security**: Reviewer cares about correctness. Security only cares about exploits.
