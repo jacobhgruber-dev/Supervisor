@@ -53,6 +53,29 @@ Not essential, but these make the workflow significantly better. All via Homebre
 
 ---
 
+## Tier 3b: Code Quality & Security CLI Tools (14 items)
+
+These are baked into the subagent instructions (reviewer, debugger, worker). They run automatically when agents detect relevant file changes. All via Homebrew or pip.
+
+| CLI | Used by | Install |
+|-----|---------|---------|
+| `ruff` | reviewer, debugger, worker | `pip3 install --break-system-packages ruff` |
+| `mypy` | reviewer, debugger, worker | `pip3 install --break-system-packages mypy` |
+| `shellcheck` | reviewer, debugger, worker | `brew install shellcheck` |
+| `trivy` | reviewer, debugger, worker | `brew install trivy` |
+| `radon` | reviewer, worker | `pip3 install --break-system-packages radon` |
+| `lizard` | reviewer | `pip3 install --break-system-packages lizard` |
+| `py-spy` | debugger, worker | `pip3 install --break-system-packages py-spy` |
+| `scalene` | debugger, worker | `pip3 install --break-system-packages scalene` |
+| `coverage` | reviewer, debugger, worker | `pip3 install --break-system-packages coverage` |
+| `hypothesis` | reviewer, debugger, worker | `pip3 install --break-system-packages hypothesis` |
+| `cosmic-ray` | reviewer (suggest only) | `pip3 install --break-system-packages cosmic-ray` |
+| `pymupdf` | worker | `pip3 install --break-system-packages pymupdf` |
+| `python-docx` | worker | `pip3 install --break-system-packages python-docx` |
+| `beautifulsoup4` | worker | `pip3 install --break-system-packages beautifulsoup4` |
+
+---
+
 ## Tier 4: Python Packages (4 items)
 
 Useful for automation scripts, web scraping, and high-quality transcription.

@@ -18,9 +18,10 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 
 ## What You Get
 
-- **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits.
-- **9 specialized subagents** — worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor. Each powered by DeepSeek V4 Pro Max.
+- **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
+- **9 specialized subagents** — worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor. Each powered by DeepSeek V4 Pro Max, with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
+- **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker** — optional alternative model worker for when you want Grok 4.3's strengths.
 - **Upgrade path** — instructions for adding Claude Sonnet/Opus tiers, including a recommended 3-tier naming convention (`junior-*` / `*` / `senior-*`) with the exact specs (model, steps, permissions) used in production.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words), Ollama Local (on-device agents), and a comprehensive full reference catalog. See [addons/](addons/).

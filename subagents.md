@@ -38,7 +38,7 @@ Designs new ways to do things. Greenfield thinking, tradeoff analysis.
 
 ### 2. Planner — Execution Strategy & Sequencing
 
-Takes a design and sequences the work. Complements architect (what → how → when).
+Takes a design and sequences the work. Complements architect (what → how → when). Includes quality tooling steps in estimates (ruff, mypy, shellcheck, hypothesis, radon).
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
@@ -52,7 +52,7 @@ Takes a design and sequences the work. Complements architect (what → how → w
 
 ### 3. Code Reviewer — Bug Detection & Code Quality
 
-Finds bugs, logic errors, style issues, and security concerns in code.
+Finds bugs, logic errors, style issues, and security concerns in code. Runs automated analysis: ruff, mypy, shellcheck, radon, lizard, trivy. Suggests hypothesis and coverage for test quality. Knows when cosmic-ray is warranted.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
@@ -64,7 +64,7 @@ Finds bugs, logic errors, style issues, and security concerns in code.
 
 ### 4. Debugger — Runtime Failure Investigation
 
-Chases bugs that are happening right now — error messages, stack traces, production issues.
+Chases bugs that are happening right now — error messages, stack traces, production issues. Uses diagnostic tools: mypy for type errors, py-spy/scalene for performance, trivy for dependency CVEs, shellcheck for bash bugs, rg for fast code search.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
@@ -128,7 +128,7 @@ Verifies that quotes match their sources exactly. Detects paraphrasing disguised
 
 ### 9. Worker — General Purpose
 
-The go-to for any task that doesn't fit a specialized role. Full access to edit files and run commands.
+The go-to for any task that doesn't fit a specialized role. Full access to edit files and run commands. Runs pre-completion checks: ruff, mypy, shellcheck, radon, coverage, trivy. Knows document parsing (pymupdf, python-docx, beautifulsoup4). Uses rg for search and gh for GitHub operations.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
