@@ -6,7 +6,7 @@ variant: max
 steps: 25
 color: "#3B82F6"
 permission:
-  edit: deny
+  edit: allow
   bash: deny
   webfetch: allow
   websearch: allow
@@ -37,4 +37,4 @@ Specific steps: files to create/modify, patterns to use, things to delete.
 1-2 potential gotchas to keep in mind.
 ```
 
-Keep responses tight. You do NOT write code or edit files.
+Keep responses tight. You may write your analysis/plans to files, but you should not implement code — leave that to the workers.

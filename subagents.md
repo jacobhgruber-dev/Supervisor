@@ -30,7 +30,7 @@ Designs new ways to do things. Greenfield thinking, tradeoff analysis.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `architect` | DeepSeek V4 Pro Max | 25 | `#3B82F6` | Read-only + web |
+| `architect` | DeepSeek V4 Pro Max | 25 | `#3B82F6` | Edit + web (no bash) |
 
 **When to use**: Designing new systems, choosing between approaches, refactoring strategy, pattern selection.
 
@@ -202,7 +202,7 @@ These slash commands change the main agent's behavior for a single request. Most
 
 ## Key Design Decisions
 
-- **Most specialized subagents are read-only** (`edit: deny`) — they analyze and recommend, never change code. **Exceptions:** `debugger` and `researcher` have full edit and bash access, `reviewer`, `security`, and `quote-auditor` have `bash: allow` for running diagnostic commands. Worker has full access. Tiers differ only in model, never in permissions.
+- **Edit permissions by role:** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`) — they analyze and recommend. For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. Tiers differ only in model, never in permissions.
 - **Architect vs Planner**: Architect invents new approaches. Planner sequences existing designs into action steps.
 - **Reviewer vs Debugger**: Reviewer finds bugs in code you're about to merge. Debugger investigates bugs that are already happening.
 - **Reviewer vs Security**: Reviewer cares about correctness. Security only cares about exploits.

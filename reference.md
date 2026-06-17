@@ -28,7 +28,7 @@ All nine run on DeepSeek. One API key covers everything.
 | `worker` | Implementation — features, tests, migrations, frontend | 40 | Full (edit, bash, web) |
 | `researcher` | Web research, multi-source synthesis, API/library docs | 40 | Full |
 | `debugger` | Runtime errors, test failures, root cause analysis | 35 | Full (edit, bash) |
-| `architect` | Design questions, refactoring plans, tradeoff analysis | 25 | Read-only + web |
+| `architect` | Design questions, refactoring plans, tradeoff analysis | 25 | Edit + web (no bash) |
 | `reviewer` | Code review — quality, bugs, style, pre-commit pass | 30 | Read-only + bash |
 | `security` | Vulnerability scanning — secrets, injections, unsafe patterns | 30 | Read-only + bash + web |
 | `planner` | Task breakdown, sequencing, milestone planning | 25 | Read-only |

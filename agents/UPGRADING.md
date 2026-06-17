@@ -114,7 +114,7 @@ variant: max
 steps: 25
 color: "#7B61FF"
 permission:
-  edit: deny
+  edit: allow
   bash: deny
   webfetch: allow
   websearch: allow
@@ -270,7 +270,7 @@ variant: max
 steps: 25
 color: "#B026FF"
 permission:
-  edit: deny
+  edit: allow
   bash: deny
   webfetch: allow
   websearch: allow
@@ -402,9 +402,9 @@ Complete configuration for all 9 roles across all 3 tiers:
 | **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
 | | Mid | `worker.md` | `anthropic/claude-sonnet-4-6` | 40 | ✅ | ✅ | ✅ |
 | | Senior | `senior-worker.md` | `anthropic/claude-opus-4-8` | 40 | ✅ | ✅ | ✅ |
-| **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ✅ |
-| | Mid | `architect.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ✅ |
-| | Senior | `senior-architect.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ❌ | ✅ |
+| **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-v4-pro` | 25 | ✅ | ❌ | ✅ |
+| | Mid | `architect.md` | `anthropic/claude-sonnet-4-6` | 25 | ✅ | ❌ | ✅ |
+| | Senior | `senior-architect.md` | `anthropic/claude-opus-4-8` | 25 | ✅ | ❌ | ✅ |
 | **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
 | | Mid | `planner.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ❌ |
 | | Senior | `senior-planner.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ❌ | ❌ |
