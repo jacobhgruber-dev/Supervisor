@@ -24,7 +24,8 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker** — optional alternative model worker for when you want Grok 4.3's strengths.
 - **Full 3-tier system built in** — all 27 agents ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
-- **Optional addons** — OpenCode Modes (9 behavioral trigger words), Ollama Local (on-device agents), and a comprehensive full reference catalog. See [addons/](addons/).
+- **Observer subagent** — multimodal visual analysis via Claude Sonnet 4.6. Paste screenshots, get structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image.
+- **Optional addons** — OpenCode Modes (9 behavioral trigger words), Ollama Local (on-device agents), Observer (visual understanding), and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
 
@@ -109,10 +110,11 @@ Supervisor Agent (primary, DeepSeek V4 Pro Max)
        +---> reviewer        (code review, 30 steps, read-only)
        +---> debugger        (runtime errors, 35 steps, edit + web + playwright)
        +---> security        (vulnerability scan, 25 steps, read-only + bash + web + playwright)
-      +---> researcher      (information, 35 steps, full access)
-      +---> editor          (proofreading, 25 steps, read + edit)
-       +---> quote-auditor   (quote verification, 25 steps, read-only + bash)
-      +---> grok-worker     (alternative model, 40 steps, full access)
+       +---> researcher      (information, 35 steps, full access)
+       +---> editor          (proofreading, 25 steps, read + edit)
+        +---> quote-auditor   (quote verification, 25 steps, read-only + bash)
+       +---> grok-worker     (alternative model, 40 steps, full access)
+       +---> observer        (visual analysis, multimodal, read-only)
 ```
 
 ## How It Works
@@ -162,6 +164,11 @@ Supervisor/
 │   └── ollama-local/              # On-device models via Ollama
 │       ├── README.md              # Setup guide + model recommendations
 │       └── agents/                # Local subagent files
+│   └── observer/                  # Visual understanding for text-only supervisors
+│       ├── README.md              # Setup guide + usage
+│       ├── observer.md            # Multimodal observer subagent
+│       ├── observer-bridge.js     # Paste-interception plugin
+│       └── AGENTS-patch.md        # Visual context awareness block (merge into AGENTS.md)
 └── skills/
     └── README.md                  # Skills system documentation
 ```
