@@ -1,8 +1,6 @@
-# Upgrading: The Full 3-Tier System
+# Tier System Reference
 
-The default setup ships with one tier — DeepSeek V4 Pro Max for everything. That's a great starting point and handles most work at low cost.
-
-If you have an Anthropic API key, you can graduate to a **3-tier system** where the model dictates the tier, and DeepSeek becomes your workhorse "junior" tier:
+The Supervisor ships with a complete 3-tier agent system. All 9 roles are available at every tier out of the box.
 
 | Tier | Model | Role | Naming Convention |
 |------|-------|------|-------------------|
@@ -10,7 +8,7 @@ If you have an Anthropic API key, you can graduate to a **3-tier system** where 
 | **Mid** | Claude Sonnet 4.6 Max | Complex reasoning, deeper reviews | `worker`, `architect`, etc. (no prefix) |
 | **Senior** | Claude Opus 4.8 Max | Highest stakes, production-critical | `senior-worker`, `senior-architect`, etc. |
 
-## Why Go 3-Tier?
+## Why 3 Tiers?
 
 The naming convention creates a natural escalation path:
 
@@ -20,72 +18,13 @@ The naming convention creates a natural escalation path:
 
 The Supervisor's default policy is to spawn junior-tier agents automatically and escalate only when the user asks or the task warrants it. This keeps costs predictable while still having the big guns available.
 
-## Step 1: Add the Anthropic Provider
+## Agent Specifications by Tier
 
-Add this to your opencode.json `provider` section:
+These are the frontmatter specs for each agent. The prompt content (the body of each `.md` file) is the same across tiers — only the model and description change.
 
-```json
-"anthropic": {
-  "npm": "@ai-sdk/anthropic",
-  "name": "Anthropic (Claude)",
-  "options": {
-    "apiKey": "YOUR_ANTHROPIC_API_KEY"
-  },
-  "models": {
-    "claude-sonnet-4-6": {
-      "name": "Claude Sonnet 4.6 Max",
-      "tools": true
-    },
-    "claude-opus-4-8": {
-      "name": "Claude Opus 4.8 Max",
-      "tools": true
-    }
-  }
-}
-```
+### Mid-Tier Agents (Claude Sonnet)
 
-Get your key at: https://console.anthropic.com
-
-## Step 2: Rename Existing DeepSeek Agents to Junior Tier
-
-Since your existing agents are DeepSeek, they become the junior tier. Rename them:
-
-```bash
-cd ~/.config/opencode/agents/
-
-# Worker
-mv worker.md junior-worker.md
-
-# Specialized roles
-mv architect.md junior-architect.md
-mv planner.md junior-planner.md
-mv reviewer.md junior-reviewer.md
-mv debugger.md junior-debugger.md
-mv security.md junior-security.md
-mv editor.md junior-editor.md
-mv researcher.md junior-researcher.md
-mv quote-auditor.md junior-quote-auditor.md
-```
-
-Then update the `description` field in each file to say "junior" instead of just the role name. For example, in `junior-worker.md`, change:
-
-```
-description: General-purpose subagent powered by DeepSeek V4 Pro Max...
-```
-
-to:
-
-```
-description: Junior general-purpose subagent powered by DeepSeek V4 Pro Max...
-```
-
-The model, steps, permissions, and prompt content stay the same — they were already correct for the junior tier.
-
-## Step 3: Add Mid-Tier Agents (Claude Sonnet)
-
-Create these files. The prompt content is the same as the corresponding junior agent — copy from the junior file and just update the frontmatter.
-
-### `worker.md` (Sonnet)
+#### `worker.md` (Sonnet)
 
 ```
 ---
@@ -100,10 +39,11 @@ permission:
   bash: allow
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `architect.md` (Sonnet)
+#### `architect.md` (Sonnet)
 
 ```
 ---
@@ -118,10 +58,11 @@ permission:
   bash: deny
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `planner.md` (Sonnet)
+#### `planner.md` (Sonnet)
 
 ```
 ---
@@ -137,7 +78,7 @@ permission:
 ---
 ```
 
-### `reviewer.md` (Sonnet)
+#### `reviewer.md` (Sonnet)
 
 ```
 ---
@@ -153,7 +94,7 @@ permission:
 ---
 ```
 
-### `debugger.md` (Sonnet)
+#### `debugger.md` (Sonnet)
 
 ```
 ---
@@ -166,10 +107,13 @@ color: "#EF4444"
 permission:
   edit: allow
   bash: allow
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `security.md` (Sonnet)
+#### `security.md` (Sonnet)
 
 ```
 ---
@@ -184,10 +128,11 @@ permission:
   bash: allow
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `editor.md` (Sonnet)
+#### `editor.md` (Sonnet)
 
 ```
 ---
@@ -203,7 +148,7 @@ permission:
 ---
 ```
 
-### `researcher.md` (Sonnet)
+#### `researcher.md` (Sonnet)
 
 ```
 ---
@@ -218,10 +163,11 @@ permission:
   bash: allow
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `quote-auditor.md` (Sonnet)
+#### `quote-auditor.md` (Sonnet)
 
 ```
 ---
@@ -237,11 +183,9 @@ permission:
 ---
 ```
 
-## Step 4: Add Senior-Tier Agents (Claude Opus)
+### Senior-Tier Agents (Claude Opus)
 
-Create these with the `senior-` prefix. Same prompt content as the base agents — just different frontmatter.
-
-### `senior-worker.md` (Opus)
+#### `senior-worker.md` (Opus)
 
 ```
 ---
@@ -256,10 +200,11 @@ permission:
   bash: allow
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `senior-architect.md` (Opus)
+#### `senior-architect.md` (Opus)
 
 ```
 ---
@@ -277,7 +222,7 @@ permission:
 ---
 ```
 
-### `senior-planner.md` (Opus)
+#### `senior-planner.md` (Opus)
 
 ```
 ---
@@ -293,7 +238,7 @@ permission:
 ---
 ```
 
-### `senior-reviewer.md` (Opus)
+#### `senior-reviewer.md` (Opus)
 
 ```
 ---
@@ -309,7 +254,7 @@ permission:
 ---
 ```
 
-### `senior-debugger.md` (Opus)
+#### `senior-debugger.md` (Opus)
 
 ```
 ---
@@ -322,10 +267,13 @@ color: "#DC2626"
 permission:
   edit: allow
   bash: allow
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `senior-security.md` (Opus)
+#### `senior-security.md` (Opus)
 
 ```
 ---
@@ -340,10 +288,11 @@ permission:
   bash: allow
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `senior-editor.md` (Opus)
+#### `senior-editor.md` (Opus)
 
 ```
 ---
@@ -359,7 +308,7 @@ permission:
 ---
 ```
 
-### `senior-researcher.md` (Opus)
+#### `senior-researcher.md` (Opus)
 
 ```
 ---
@@ -374,10 +323,11 @@ permission:
   bash: allow
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 ```
 
-### `senior-quote-auditor.md` (Opus)
+#### `senior-quote-auditor.md` (Opus)
 
 ```
 ---
@@ -397,7 +347,7 @@ permission:
 
 Complete configuration for all 9 roles across all 3 tiers:
 
-| Role | Tier | File Name | Model | Steps | Edit | Bash | Web |
+| Role | Tier | File Name | Model | Steps | Edit | Bash | Web/Playwright |
 |------|------|-----------|-------|-------|------|------|-----|
 | **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
 | | Mid | `worker.md` | `anthropic/claude-sonnet-4-6` | 40 | ✅ | ✅ | ✅ |
@@ -411,9 +361,9 @@ Complete configuration for all 9 roles across all 3 tiers:
 | **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-v4-pro` | 30 | ❌ | ✅ | ❌ |
 | | Mid | `reviewer.md` | `anthropic/claude-sonnet-4-6` | 30 | ❌ | ✅ | ❌ |
 | | Senior | `senior-reviewer.md` | `anthropic/claude-opus-4-8` | 30 | ❌ | ✅ | ❌ |
-| **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-v4-pro` | 35 | ✅ | ✅ | ❌ |
-| | Mid | `debugger.md` | `anthropic/claude-sonnet-4-6` | 35 | ✅ | ✅ | ❌ |
-| | Senior | `senior-debugger.md` | `anthropic/claude-opus-4-8` | 35 | ✅ | ✅ | ❌ |
+| **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-v4-pro` | 35 | ✅ | ✅ | ✅ |
+| | Mid | `debugger.md` | `anthropic/claude-sonnet-4-6` | 35 | ✅ | ✅ | ✅ |
+| | Senior | `senior-debugger.md` | `anthropic/claude-opus-4-8` | 35 | ✅ | ✅ | ✅ |
 | **Security** | Junior | `junior-security.md` | `deepseek/deepseek-v4-pro` | 30 | ❌ | ✅ | ✅ |
 | | Mid | `security.md` | `anthropic/claude-sonnet-4-6` | 30 | ❌ | ✅ | ✅ |
 | | Senior | `senior-security.md` | `anthropic/claude-opus-4-8` | 30 | ❌ | ✅ | ✅ |
@@ -436,140 +386,9 @@ Complete configuration for all 9 roles across all 3 tiers:
 | Anthropic (Opus) | `anthropic/claude-opus-4-8` | `@ai-sdk/anthropic` |
 | xAI (Grok) | `xai/grok-4.3` | `@ai-sdk/xai` |
 
-## Step 5: Update the Supervisor Prompt (Critical)
+## Agent Directory Layout
 
-Renaming agents to `junior-*` is only half the job. The supervisor prompt itself must be updated — otherwise it'll try to spawn agents with the old bare names and find nothing. Here are the exact changes, drawn from the original production setup.
-
-### supervisor.md changes
-
-**Change 1 — Mission statement (line 8):**
-
-Change:
-```
-You are the Senior Supervisor speaking to the Manager. Your job is to keep your
-context window tight and orchestrate work through subagents.
-```
-To:
-```
-You are the Senior Supervisor speaking to the Manager. Your job is to keep your
-context window tight and orchestrate work through junior-tier subagents.
-```
-
-**Change 2 — Pre-Implementation Triage table (lines 92-102):**
-
-Prefix every agent name with `junior-`:
-
-| Single-tier (current) | 3-tier (change to) |
-|---|---|
-| `Spawn \`worker\`` | `Spawn \`junior-worker\`` |
-| `Spawn \`debugger\`` | `Spawn \`junior-debugger\`` |
-| `Spawn \`researcher\`` | `Spawn \`junior-researcher\`` |
-| `Spawn \`architect\`` | `Spawn \`junior-architect\`` |
-| `Spawn \`planner\`` | `Spawn \`junior-planner\`` |
-| `Spawn \`security\`` | `Spawn \`junior-security\`` |
-
-Also update the closing line:
-```
-When in doubt, triage first — a misdirected `worker` wastes a whole session.
-```
-To:
-```
-When in doubt, triage first — a misdirected `junior-worker` wastes a whole session.
-```
-
-**Change 3 — Subagent Toolbox table (lines 140-148):**
-
-Add `junior-` prefix to every agent name in the table. Example:
-
-| Single-tier | 3-tier |
-|---|---|
-| `\`worker\`` | `\`junior-worker\`` |
-| `\`researcher\`` | `\`junior-researcher\`` |
-| `\`debugger\`` | `\`junior-debugger\`` |
-| (etc. — all 9 roles) | |
-
-**Change 4 — Default tier policy (line 151):**
-
-Change:
-```
-Default to these subagents. Match the subagent to the *activity*...
-```
-To:
-```
-Default to the junior tier. Match the subagent to the *activity*, not just the
-project area — implementation, investigation, research, design, review, security,
-planning, editing, and quote-auditing are different jobs. The Manager will
-escalate to mid/senior tier explicitly if needed.
-```
-
-Also replace the "Optional 3-tier upgrade" blurb (lines 153-154) with just:
-```
-For escalations, use the bare names (`worker`, `architect`, etc.) for Sonnet and
-`senior-*` for Opus. See `agents/UPGRADING.md` for the full spec.
-```
-
-### AGENTS.md changes
-
-The Spawning Rules section currently says "default to the base tier." Update the last section to match the 3-tier system:
-
-Replace:
-```
-## Spawning Rules (Always Active)
-
-Subagents are specialized agents you can spawn for focused work. See the
-`supervisor.md` for the orchestration workflow and `reference.md` for the full
-subagent catalog.
-
-**Default tier policy:**
-- Default to the base tier (DeepSeek V4 Pro Max) for all automatic/unprompted
-  subagent spawning.
-- Before using a higher-tier subagent autonomously, explain to the user WHY
-  it's warranted.
-- When the user explicitly names a subagent, use exactly what they asked for.
-- For simple file-discovery tasks, the `explore` built-in subagent is always
-  acceptable.
-
-**Rationale:** The base tier (DeepSeek V4 Pro Max) is a frontier model fully
-capable of professional work. Upper tiers (Claude Sonnet/Opus) are reserved for
-conscious escalation, not background convenience.
-```
-
-With:
-```
-## Subagent Spawning Rules (Always Active)
-
-The Task tool can spawn specialized subagents (27 available across 9 roles at
-3 tiers — see `reference.md` for the full catalog).
-
-**Default tier policy:**
-
-- **Default to the junior tier** (DeepSeek V4 Pro Max) for all
-  automatic/unprompted subagent spawning.
-- Before using a mid or senior tier subagent autonomously, explain to the user
-  WHY the higher tier is warranted (e.g., "this bug involves distributed state —
-  I want Opus on it because DeepSeek might miss a race condition").
-- When the user explicitly names a subagent (e.g., "send this to
-  senior-architect"), use exactly what they asked for — no override.
-- For simple research/file-discovery tasks, the `explore` built-in subagent is
-  always acceptable — it's already lightweight.
-
-**Rationale:** The junior tier (DeepSeek V4 Pro Max) is a frontier model fully
-capable of professional work. The mid and senior tiers (Sonnet/Opus Max) are
-reserved for conscious escalation, not background convenience. You should not
-silently spend Anthropic credits on tasks that DeepSeek can handle.
-```
-
-## Updating subagents.md
-
-Optionally update the subagent quick reference to reflect the 3-tier naming. The quickest fix: update the header line in `subagents.md` to:
-
-```
-27 subagent files across 9 roles at 3 tiers • upgrade path: see agents/UPGRADING.md
-```
-
-## Verifying the 3-Tier Setup
-
-After making all changes, your agent directory should look like:
+The agent directory ships with all 27 agents across 3 tiers:
 
 ```
 ~/.config/opencode/agents/
@@ -604,12 +423,8 @@ After making all changes, your agent directory should look like:
 ├── senior-quote-auditor.md
 │
 ├── grok-worker.md            # Alternative model
-└── UPGRADING.md              # This file
+└── tier-system-reference.md  # This file
 ```
-
-Restart opencode. The Supervisor should now spawn `junior-*` agents by default, with `*` (Sonnet) and `senior-*` (Opus) available for explicit escalation.
-
----
 
 ## How the Naming Convention Works
 
@@ -631,9 +446,9 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 
 ## Starting Simple
 
-Don't feel pressure to set up all 3 tiers at once. The single-tier DeepSeek setup (what ships in this repo) works great on its own. Add tiers gradually:
+The repo ships with all 3 tiers already configured — 27 agent files across 9 roles. Scaling down is just about which API keys you configure:
 
-1. **Start with DeepSeek only** — one key, one model, works for everything
-2. **Add a mid-tier worker** — just `worker.md` with Sonnet, for when you want deeper reasoning on specific tasks
-3. **Add senior workers** — `senior-worker.md` and `senior-architect.md` with Opus, for the hardest problems
-4. **Fill out the full 3-tier grid** — if you find yourself wanting different models for different roles
+1. **DeepSeek only (junior tier)** — one key, one model, works for everything. The mid and senior agent files sit unused until you add their API keys.
+2. **Add Anthropic (mid tier)** — configure your Anthropic API key in `opencode.json` and the bare-name agents (`worker`, `architect`, etc.) become available with Sonnet.
+3. **Add Opus (senior tier)** — the `senior-*` agents become available once both Anthropic models are configured.
+4. **Full 3-tier** — all 27 agents active, automatic escalation from junior to mid/senior when warranted.

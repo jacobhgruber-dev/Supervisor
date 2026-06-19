@@ -1,10 +1,10 @@
 ---
-description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Sonnet 4.6 Max.
+description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Opus 4.8 Max.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-opus-4-8
 variant: max
 steps: 40
-color: "#818CF8"
+color: "#6366F1"
 permission:
   edit: allow
   bash: allow

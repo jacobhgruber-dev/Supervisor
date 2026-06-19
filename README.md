@@ -19,11 +19,11 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **9 specialized subagents** — worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor. Each powered by DeepSeek V4 Pro Max, with built-in awareness of 14+ CLI code quality and security tools.
+- **27 specialized subagents across 3 tiers** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro Max), mid (Claude Sonnet 4.6 Max), and senior (Claude Opus 4.8 Max) tiers. All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker** — optional alternative model worker for when you want Grok 4.3's strengths.
-- **Upgrade path** — instructions for adding Claude Sonnet/Opus tiers, including a recommended 3-tier naming convention (`junior-*` / `*` / `senior-*`) with the exact specs (model, steps, permissions) used in production.
+- **Full 3-tier system built in** — all 27 agents ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words), Ollama Local (on-device agents), and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
@@ -103,12 +103,12 @@ You (the User)
       v
 Supervisor Agent (primary, DeepSeek V4 Pro Max)
       |
-      +---> worker          (implementation, 40 steps, full access)
-      +---> architect       (design, 25 steps, edit + web)
-      +---> planner         (sequencing, 25 steps, read-only)
-      +---> reviewer        (code review, 30 steps, read-only)
-      +---> debugger        (runtime errors, 35 steps, read-only + bash)
-      +---> security        (vulnerability scan, 25 steps, read-only + bash)
+       +---> worker          (implementation, 40 steps, full access)
+       +---> architect       (design, 25 steps, edit + web + playwright)
+       +---> planner         (sequencing, 25 steps, read-only)
+       +---> reviewer        (code review, 30 steps, read-only)
+       +---> debugger        (runtime errors, 35 steps, edit + web + playwright)
+       +---> security        (vulnerability scan, 25 steps, read-only + bash + web + playwright)
       +---> researcher      (information, 35 steps, full access)
       +---> editor          (proofreading, 25 steps, read + edit)
        +---> quote-auditor   (quote verification, 25 steps, read-only + bash)
@@ -152,7 +152,7 @@ Supervisor/
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── grok-worker.md             # Alternative Grok-powered worker
-│   └── UPGRADING.md               # How to add Claude Sonnet/Opus tiers
+│   └── tier-system-reference.md    # Complete 3-tier agent specs and naming conventions
 ├── addons/
 │   ├── README.md                  # Addon overview
 │   ├── open-code-modes/           # 9 behavioral modes (trigger words)
@@ -179,9 +179,9 @@ Supervisor/
 
 **One model, many roles.** All subagents use the same model (DeepSeek V4 Pro Max) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain.
 
-**Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. Tiers differ only in model, never in permissions.
+**Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 
-**Upgrade when needed.** DeepSeek handles 95% of work. When you hit a wall or the stakes are high, add Claude Sonnet/Opus tiers (see `agents/UPGRADING.md`). The architecture supports this without changing anything else.
+**Tiers scale with your needs.** All 3 tiers ship in the repo. DeepSeek handles 95% of work on its own. Mid and senior agents (Claude Sonnet/Opus) are already configured and activate when you add an Anthropic API key (see `agents/tier-system-reference.md`). No architectural changes needed.
 
 ## Credits
 

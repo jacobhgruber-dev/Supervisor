@@ -1,6 +1,6 @@
 # Subagents — Quick Reference
 
-9 subagent roles  •  base tier: DeepSeek V4 Pro Max  •  upgrade path: Claude Sonnet/Opus (see agents/UPGRADING.md)
+27 agent files across 9 roles at 3 tiers  •  junior: DeepSeek V4 Pro Max  •  mid: Claude Sonnet 4.6 Max  •  senior: Claude Opus 4.8 Max (see agents/tier-system-reference.md)
 
 For the full system reference including modes, local agents, and commands, see [reference.md](reference.md).
 
@@ -18,9 +18,7 @@ Key principle: **Delegate everything.** The Supervisor reads docs for orientatio
 
 ### How tiers work
 
-This repo ships with a single tier of agents powered by DeepSeek V4 Pro Max — a frontier model fully capable of professional work. One key, one model, nine specialized agents.
-
-**If you have an Anthropic API key**, you can graduate to a 3-tier system with the naming convention `junior-*` (DeepSeek), bare name (Claude Sonnet), and `senior-*` (Claude Opus). This mirrors the production setup this repo was extracted from. See `agents/UPGRADING.md` for the complete 27-agent spec table with exact models, step counts, and permissions per role per tier.
+This repo ships with all 3 tiers of agents already configured — 27 agent files across 9 roles. The junior tier (`junior-*`) runs on DeepSeek V4 Pro Max and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you configure an Anthropic API key in your `opencode.json`. See `agents/tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
 
 ---
 
@@ -30,7 +28,7 @@ Designs new ways to do things. Greenfield thinking, tradeoff analysis.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `architect` | DeepSeek V4 Pro Max | 25 | `#3B82F6` | Edit + web (no bash) |
+| `architect` | DeepSeek V4 Pro Max | 25 | `#3B82F6` | Edit + web + playwright (no bash) |
 
 **When to use**: Designing new systems, choosing between approaches, refactoring strategy, pattern selection.
 
@@ -68,7 +66,7 @@ Chases bugs that are happening right now — error messages, stack traces, produ
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `debugger` | DeepSeek V4 Pro Max | 35 | `#FB7185` | Full (edit, bash) |
+| `debugger` | DeepSeek V4 Pro Max | 35 | `#FB7185` | Full (edit, bash, web, playwright) |
 
 **When to use**: Something broke. Error logs, crash reports, mysterious behavior.
 
@@ -82,7 +80,7 @@ Finds security holes — injections, exposed secrets, unsafe configs, supply cha
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `security` | DeepSeek V4 Pro Max | 30 | `#DC2626` | Read-only + bash + web |
+| `security` | DeepSeek V4 Pro Max | 30 | `#DC2626` | Read-only + bash + web + playwright |
 
 **When to use**: Security review before deployment, scanning for exposed secrets, hardening.
 
@@ -202,7 +200,7 @@ These slash commands change the main agent's behavior for a single request. Most
 
 ## Key Design Decisions
 
-- **Edit permissions by role:** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`) — they analyze and recommend. For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. Tiers differ only in model, never in permissions.
+- **Edit permissions by role:** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`) — they analyze and recommend. For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 - **Architect vs Planner**: Architect invents new approaches. Planner sequences existing designs into action steps.
 - **Reviewer vs Debugger**: Reviewer finds bugs in code you're about to merge. Debugger investigates bugs that are already happening.
 - **Reviewer vs Security**: Reviewer cares about correctness. Security only cares about exploits.

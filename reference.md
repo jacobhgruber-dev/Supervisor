@@ -13,24 +13,24 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek V4 Pro Max | Orchestration — plans, delegates, reviews, commits |
-| **9 subagents** (base) | DeepSeek V4 Pro Max | Implementation, research, debugging, design, review, security, planning, editing, quote auditing |
+| **27 subagents** (3 tiers) | DeepSeek V4 Pro Max / Claude Sonnet 4.6 Max / Claude Opus 4.8 Max | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at each tier |
 | **2 local subagents** (addon) | Qwen3 Coder 14B / Gemma 4 (e4b) via Ollama | On-device coding and reasoning, private, zero-cost |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
 ---
 
-## Subagents — Base Tier (DeepSeek V4 Pro Max)
+## Subagent Tiers
 
-All nine run on DeepSeek. One API key covers everything.
+The Supervisor ships with 27 agents across 3 tiers — 9 roles at each tier. The junior tier (DeepSeek V4 Pro Max) is the default workhorse. Mid (Claude Sonnet) and senior (Claude Opus) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
 | Subagent | Use For | Steps | Permissions |
 |----------|---------|-------|-------------|
-| `worker` | Implementation — features, tests, migrations, frontend | 40 | Full (edit, bash, web) |
+| `worker` | Implementation — features, tests, migrations, frontend | 40 | Full (edit, bash, web, playwright) |
 | `researcher` | Web research, multi-source synthesis, API/library docs | 40 | Full |
-| `debugger` | Runtime errors, test failures, root cause analysis | 35 | Full (edit, bash) |
-| `architect` | Design questions, refactoring plans, tradeoff analysis | 25 | Edit + web (no bash) |
+| `debugger` | Runtime errors, test failures, root cause analysis | 35 | Full (edit, bash, web, playwright) |
+| `architect` | Design questions, refactoring plans, tradeoff analysis | 25 | Edit + web + playwright (no bash) |
 | `reviewer` | Code review — quality, bugs, style, pre-commit pass | 30 | Read-only + bash |
-| `security` | Vulnerability scanning — secrets, injections, unsafe patterns | 30 | Read-only + bash + web |
+| `security` | Vulnerability scanning — secrets, injections, unsafe patterns | 30 | Read-only + bash + web + playwright |
 | `planner` | Task breakdown, sequencing, milestone planning | 25 | Read-only |
 | `editor` | Grammar, spelling, punctuation, readability | 25 | Read + edit |
 | `quote-auditor` | Quotation verification against sources | 25 | Read-only + bash |
@@ -51,9 +51,9 @@ All nine run on DeepSeek. One API key covers everything.
 
 ---
 
-## Upgrading to 3-Tier (Claude Sonnet & Opus)
+## Tier Breakdown
 
-If you add an Anthropic API key, the naming convention becomes:
+The 3-tier system is fully configured in the repo. The naming convention:
 
 | Tier | Model | Naming | Default Behavior |
 |------|-------|--------|-----------------|
@@ -61,7 +61,7 @@ If you add an Anthropic API key, the naming convention becomes:
 | Mid | Claude Sonnet 4.6 Max | `worker`, etc. (bare name) | Explicitly invoked |
 | Senior | Claude Opus 4.8 Max | `senior-worker`, etc. | Highest stakes only |
 
-This gives you 27 subagent files across 9 roles × 3 tiers. See `agents/UPGRADING.md` in the repo for the complete spec table and setup instructions.
+This gives you 27 subagent files across 9 roles × 3 tiers. See `agents/tier-system-reference.md` for the complete spec table and agent specifications.
 
 ### Quick Cost Guide
 

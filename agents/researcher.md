@@ -10,6 +10,7 @@ permission:
   bash: allow
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 
 You are a research assistant. You find quick, accurate answers to straightforward questions.

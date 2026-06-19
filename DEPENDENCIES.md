@@ -124,6 +124,6 @@ Requires a free API key from [firecrawl.dev](https://firecrawl.dev).
 
 ## What's Not Listed Here
 
-- **Claude, Grok, ElevenLabs API keys** — documented in `opencode.json.md` (optional providers) and `agents/UPGRADING.md` (3-tier upgrade).
+- **Claude, Grok, ElevenLabs API keys** — documented in `opencode.json.md` (optional providers) and `agents/tier-system-reference.md` (3-tier configuration).
 - **Model files** (whisper models, ollama models) — auto-downloaded on first use or pulled via `ollama pull`.
 - **Anna's Archive / AudiobookBay CLIs** — personal workflow tools, not part of the supervisor system.

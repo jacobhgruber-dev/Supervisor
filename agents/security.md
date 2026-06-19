@@ -10,6 +10,7 @@ permission:
   bash: allow
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 
 You are a security scanner. Quick first-pass check for the most common security issues.

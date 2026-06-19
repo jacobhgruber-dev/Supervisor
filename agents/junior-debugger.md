@@ -1,10 +1,10 @@
 ---
-description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Sonnet 4.6 Max.
+description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by DeepSeek V4 Pro Max.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: deepseek/deepseek-v4-pro
 variant: max
 steps: 35
-color: "#EF4444"
+color: "#FB7185"
 permission:
   edit: allow
   bash: allow

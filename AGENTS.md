@@ -97,7 +97,7 @@ After the request, automatically return to normal careful Karpathy mode.
 
 ## Subagent Spawning Rules (Always Active)
 
-The Task tool can spawn specialized subagents (9 available, plus `explore`. See `reference.md` for the full catalog. For the optional 3-tier upgrade, see `agents/UPGRADING.md`).
+The Task tool can spawn specialized subagents (27 available across 9 roles at 3 tiers, plus `explore`. See `reference.md` for the full catalog. For the tier system specs, see `agents/tier-system-reference.md`).
 
 **When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `agent/supervisor.md` instead.
 
@@ -105,6 +105,6 @@ The Task tool can spawn specialized subagents (9 available, plus `explore`. See 
 
 - All subagents use the same model (DeepSeek V4 Pro Max). The specialization comes from the instructions, not the model.
 - For simple research/file-discovery tasks, the `explore` built-in subagent is always acceptable — it's already lightweight.
-- If you later add Anthropic tiers (see `agents/UPGRADING.md`), the default automatic spawning shifts to the `junior-*` tier and the bare names become Sonnet.
+- Mid and senior tier agents (`worker`, `senior-*`) are already present in the repo. They activate as soon as an Anthropic API key is configured. See `agents/tier-system-reference.md`.
 
 **Rationale:** DeepSeek V4 Pro Max is a frontier model fully capable of professional work. One model, many roles — the subagent's prompt, not the model, makes it a security auditor or an editor.
