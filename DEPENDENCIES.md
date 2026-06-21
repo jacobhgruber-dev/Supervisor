@@ -119,6 +119,8 @@ It also includes **three optional MCP servers, disabled by default.** Each needs
 | `railway` | Deploy & manage apps on Railway | Install the [Railway CLI](https://docs.railway.com/guides/cli), then `railway login` |
 | `screenpipe` | Search 24/7 screen + audio history | Install & run the [screenpipe](https://screenpi.pe) app (records locally). Cross-platform. |
 | `macos-automator` | Control native **macOS** apps via AppleScript/JXA | macOS only. Node 24+, plus Automation + Accessibility permission. |
+| `context7` | Live, version-accurate library/API docs | Works keyless; optional free key from [context7.com](https://context7.com) for higher limits. |
+| `github` | Manage GitHub issues, PRs, repos | [Docker](https://www.docker.com) + a [GitHub token](https://github.com/settings/tokens) → `YOUR_GITHUB_TOKEN`. |
 
 **Windows desktop control:** `macos-automator` is macOS-only. On Windows, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) (follow its repo setup) and add it to `"mcp"` the same opt-in way. `screenpipe` runs on Windows already.
 

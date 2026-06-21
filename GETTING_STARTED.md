@@ -228,6 +228,8 @@ The Claude-powered agents (and Observer) sit ready but inactive until the key is
 
 > 💰 **Heads up on cost.** Claude (especially Opus/"senior") is **much** pricier than DeepSeek. Use junior agents by default; call in the seniors only when it really matters. The Supervisor already follows this policy automatically.
 
+> 💸 **Built-in saver.** The config sets a `small_model` (DeepSeek) so cheap background chores — naming conversations, short summaries — never run on an expensive model. Once you add a Gemini key, you can point `small_model` at `gemini-api/gemini-2.5-flash-lite` for an even cheaper option.
+
 ### 👁️ Observer — paste screenshots into chat (built in)
 
 Your Supervisor runs on a text-only model, so it can't see images. **Observer** fixes that: it's a Claude vision agent that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
@@ -251,7 +253,7 @@ The config ships with two browser/automation tools **already enabled** and ready
 - **`playwright`** — lets agents drive a real browser (clicks, forms, login flows).
 - **`chrome-devtools`** — inspect pages, console, and network for debugging web apps.
 
-It also includes five **optional** MCP servers that are **disabled by default**. They each need a key, an app, or extra install, so you turn them on only if you want them:
+It also includes seven **optional** MCP servers that are **disabled by default**. Most need a key, an app, or an extra install, so you turn them on only if you want them:
 
 | MCP | What it adds | To enable |
 |-----|--------------|-----------|
@@ -260,6 +262,8 @@ It also includes five **optional** MCP servers that are **disabled by default**.
 | **`railway`** | Deploy & manage apps on Railway | Install the [Railway CLI](https://docs.railway.com/guides/cli) and run `railway login` |
 | **`screenpipe`** | Searches your 24/7 screen + audio history ("what was on screen at 2pm?") | Install & run the [screenpipe](https://screenpi.pe) app (records locally, stays on your machine). Works on macOS, Windows, and Linux. |
 | **`macos-automator`** | Lets agents control native **macOS** apps via AppleScript/JXA — open apps, click buttons, read Mail/Safari, toggle settings | macOS only. Needs Node 24+ and Automation/Accessibility permission (System Settings → Privacy & Security). |
+| **`context7`** | Live, version-accurate library/API docs so coding agents aren't guessing from old memory | Just flip it on — works keyless. (Optional free key at [context7.com](https://context7.com) for higher rate limits.) |
+| **`github`** | Manage GitHub issues, PRs, and repos directly | Needs [Docker](https://www.docker.com) installed and a [GitHub token](https://github.com/settings/tokens) in `YOUR_GITHUB_TOKEN`. |
 
 > 🪟 **On Windows?** `macos-automator` is macOS-only. For equivalent native desktop control on Windows, use **[CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP)** — follow that repo's setup, then add it to your `"mcp"` block the same way (disabled until you opt in). `screenpipe` already works on Windows.
 

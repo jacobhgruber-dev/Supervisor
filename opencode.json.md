@@ -78,6 +78,8 @@ The `mcp` block gives agents extra capabilities. The config ships with two enabl
 | `railway` | Deploy & manage apps | Railway CLI + `railway login` |
 | `screenpipe` | Search 24/7 screen + audio history | Run the screenpipe app (https://screenpi.pe); cross-platform |
 | `macos-automator` | Control native macOS apps (AppleScript/JXA) | macOS only; Node 24+, Automation + Accessibility permission |
+| `context7` | Live, version-accurate library/API docs | Works keyless; optional key from https://context7.com |
+| `github` | Manage GitHub issues, PRs, repos | Docker + GitHub token in `YOUR_GITHUB_TOKEN` |
 
 > **Windows:** `macos-automator` is macOS-only. For native Windows control, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) and add it to `"mcp"` the same opt-in way. `screenpipe` works on Windows too.
 
