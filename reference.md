@@ -1,6 +1,6 @@
 # Full Reference — Agents, Subagents, Modes & Commands
 
-A comprehensive catalog of everything available across the base setup, 3-tier upgrade, and all addons. Not everything here applies to every setup — skim the headings and read what's relevant to what you've installed. As you add more pieces (modes, Ollama, Claude tiers), more sections become relevant.
+A comprehensive catalog of everything available across the base setup, 3-tier upgrade, and all addons. Not everything here applies to every setup — skim the headings and read what's relevant to what you've installed. As you add more pieces (modes, Claude tiers), more sections become relevant.
 
 **Tip:** Keep this somewhere handy: `cp reference.md ~/Desktop/opencode-reference.md`
 
@@ -14,7 +14,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek V4 Pro Max | Orchestration — plans, delegates, reviews, commits |
 | **27 subagents** (3 tiers) | DeepSeek V4 Pro Max / Claude Sonnet 4.6 Max / Claude Opus 4.8 Max | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at each tier |
-| **2 local subagents** (addon) | Qwen3 Coder 14B / Gemma 4 (e4b) via Ollama | On-device coding and reasoning, private, zero-cost |
+| **Observer** (built in) | Claude Sonnet 4.6 | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
 ---
@@ -70,37 +70,6 @@ This gives you 27 subagent files across 9 roles × 3 tiers. See `agents/tier-sys
 | Junior | DeepSeek V4 Pro Max | $ | 80% of all tasks |
 | Mid | Claude Sonnet 4.6 Max | $$ | Complex reasoning, deeper reviews |
 | Senior | Claude Opus 4.8 Max | $$$$ | Production-critical, highest stakes |
-
----
-
-## Local Subagents — Ollama (Addon)
-
-Run entirely on-device. No API calls, no cost, full privacy. Requires Ollama installed.
-
-| Subagent | Model | Use For | Steps | Permissions |
-|----------|-------|---------|-------|-------------|
-| `local-coder` | Qwen3 Coder 14B | Coding tasks — write, edit, debug, refactor | 16 | Full |
-| `local-reasoner` | Gemma 4 (e4b) | Analysis, planning, evaluation | 14 | Read-only + web |
-
-### When to Use Local Agents
-
-- Privacy-sensitive code or documents
-- Straightforward tasks where you don't want to burn API credits
-- Offline work (once models are downloaded)
-- Quick boilerplate, formatting, or small fixes
-
-### Recommended Ollama Models
-
-| Model | Quality | Speed | RAM Needed | Best For |
-|-------|---------|-------|-----------|----------|
-| `freehuntx/qwen3-coder:14b` | Good | Fast | 10 GB | Everyday coding (start here) |
-| `qwen3.6:27b` | High | Moderate | 22 GB | Complex reasoning, analysis |
-| `qwen3.6:27b-coding-nvfp4` | High | Moderate | 18 GB | Coding specialist (27B) |
-| `gemma4:e4b` | Good | Fast | 10 GB | Reasoning, planning |
-| `batiai/qwen3.6-27b:q4` | Good | Fast | 18 GB | Smaller quant of 27B |
-| `batiai/qwen3.6-27b:q3` | Decent | Fast | 14 GB | Smallest quant of 27B |
-
-Install: `brew install ollama` then `ollama pull <model-name>`
 
 ---
 
@@ -179,10 +148,9 @@ Supervisor Agent (primary, DeepSeek V4 Pro Max)
       +---> editor / junior-editor / senior-editor  (proofreading, read + edit)
       +---> quote-auditor / junior-quote-auditor / senior-quote-auditor  (quotes)
       |
-      +---> local-coder        (on-device coding, Ollama)
-      +---> local-reasoner     (on-device reasoning, Ollama)
-      |
+      +---> observer           (visual analysis, Claude Sonnet 4.6)
       +---> grok-worker        (alternative model, Grok 4.3 via xAI)
+      +---> gemini-worker      (alternative model, Gemini 3 Pro)
 
 Behavioral Modes (overlay on any agent):
   /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes
@@ -203,6 +171,5 @@ Behavioral Modes (overlay on any agent):
 | "Research best practices for React state management" | `researcher` |
 | "Proofread this blog post" | `editor` |
 | "Check that all quotes in this article are verbatim" | `quote-auditor` |
-| "Write a simple utility — I want privacy" | `local-coder` |
-| "Analyze this proprietary algorithm — don't send to cloud" | `local-reasoner` |
+| "Read the screenshot I just pasted" | `observer` |
 | "Any task — I want Grok's model" | `grok-worker` |

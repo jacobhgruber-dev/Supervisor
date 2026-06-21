@@ -60,25 +60,6 @@ Get key: https://console.anthropic.com
 
 Get key: https://console.x.ai
 
-### Ollama (Local)
-```json
-"ollama": {
-  "npm": "@ai-sdk/openai-compatible",
-  "name": "Ollama (local)",
-  "options": {
-    "baseURL": "http://localhost:11434/v1"
-  },
-  "models": {
-    "qwen3.6:27b": {
-      "tools": true,
-      "name": "Qwen 3.6 27B"
-    }
-  }
-}
-```
-
-Install: https://ollama.com
-
 ## MCP Servers
 
 The `mcp` block gives agents extra capabilities. The config ships with two enabled (no keys needed) and three optional ones disabled by default.

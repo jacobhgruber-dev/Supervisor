@@ -27,7 +27,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **Grok worker** — optional alternative model worker for when you want Grok 4.3's strengths.
 - **Full 3-tier system built in** — all 27 agents ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
 - **Observer (built in)** — a multimodal Claude Sonnet 4.6 subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once an Anthropic key is configured.
-- **Optional addons** — OpenCode Modes (9 behavioral trigger words), Ollama Local (on-device agents), and a comprehensive full reference catalog. See [addons/](addons/).
+- **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
 
@@ -163,13 +163,10 @@ Supervisor/
 │   └── observer-bridge.js         # Paste-a-screenshot interception (-> ~/.config/opencode/plugin/)
 ├── addons/
 │   ├── README.md                  # Addon overview
-│   ├── open-code-modes/           # 9 behavioral modes (trigger words)
-│   │   ├── README.md
-│   │   ├── AGENTS.md              # Mode switching rules (-> ~/.config/opencode/)
-│   │   └── modes/                 # Individual mode files
-│   └── ollama-local/              # On-device models via Ollama
-│       ├── README.md              # Setup guide + model recommendations
-│       └── agents/                # Local subagent files
+│   └── open-code-modes/           # 9 behavioral modes (trigger words)
+│       ├── README.md
+│       ├── AGENTS.md              # Mode switching rules (-> ~/.config/opencode/)
+│       └── modes/                 # Individual mode files
 └── skills/
     └── README.md                  # Skills system documentation
 ```

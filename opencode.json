@@ -62,27 +62,6 @@
           "name": "Gemini 2.5 Flash Lite"
         }
       }
-    },
-    "ollama": {
-      "name": "Ollama (local)",
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "http://localhost:11434/v1"
-      },
-      "models": {
-        "freehuntx/qwen3-coder:14b": {
-          "name": "Qwen3 Coder 14B",
-          "tools": true
-        },
-        "qwen3.6:27b": {
-          "name": "Qwen 3.6 27B",
-          "tools": true
-        },
-        "gemma4:e4b": {
-          "name": "Gemma 4 (e4b)",
-          "tools": true
-        }
-      }
     }
   },
   "mcp": {

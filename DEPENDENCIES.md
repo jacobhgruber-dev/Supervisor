@@ -143,4 +143,4 @@ Example — enabling Firecrawl:
 ## What's Not Listed Here
 
 - **Anthropic and Gemini API keys** — documented in `opencode.json.md` (providers) and `agents/tier-system-reference.md` (3-tier configuration).
-- **Model files** (whisper models, ollama models) — auto-downloaded on first use or pulled via `ollama pull`.
+- **Model files** (whisper models) — auto-downloaded on first use.
