@@ -18,25 +18,25 @@ The bare minimum. Install these and you have a working supervisor.
 
 ## Tier 2: Plugins (5 items)
 
-These go in the `"plugin"` array in your `opencode.json`. OpenCode auto-installs them — no manual install needed.
+These go in the `"plugin"` array in your `opencode.json`. OpenCode auto-installs them — no manual install needed. The shipped config includes `opencode-xai-auth`; the rest are optional quality-of-life additions.
 
 ```json
 "plugin": [
+  "opencode-xai-auth",
   "opencode-wakelock",
   "opencode-pty",
   "opencode-websearch-cited",
-  "opencode-notificator",
-  "opencode-gemini-auth"
+  "opencode-notificator"
 ]
 ```
 
 | Plugin | What it does |
 |--------|-------------|
+| `opencode-xai-auth` | xAI (Grok) authentication — shipped in the config |
 | `opencode-wakelock` | Keeps screen awake during long agent runs |
 | `opencode-pty` | Terminal integration |
 | `opencode-websearch-cited` | Web search with source citations |
 | `opencode-notificator` | Desktop notifications when tasks complete |
-| `opencode-gemini-auth` | Gemini Code Assist authentication |
 
 ---
 
@@ -144,5 +144,5 @@ Example — enabling Firecrawl:
 
 ## What's Not Listed Here
 
-- **Anthropic and Gemini API keys** — documented in `opencode.json.md` (providers) and `agents/tier-system-reference.md` (3-tier configuration).
+- **Anthropic API key** — documented in `opencode.json.md` (providers) and `tier-system-reference.md` (3-tier configuration).
 - **Model files** (whisper models) — auto-downloaded on first use.

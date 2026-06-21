@@ -61,7 +61,7 @@ The 3-tier system is fully configured in the repo. The naming convention:
 | Mid | Claude Sonnet 4.6 Max | `worker`, etc. (bare name) | Explicitly invoked |
 | Senior | Claude Opus 4.8 Max | `senior-worker`, etc. | Highest stakes only |
 
-This gives you 27 subagent files across 9 roles × 3 tiers. See `agents/tier-system-reference.md` for the complete spec table and agent specifications.
+This gives you 27 subagent files across 9 roles × 3 tiers. See `tier-system-reference.md` for the complete spec table and agent specifications.
 
 ### Quick Cost Guide
 
@@ -150,7 +150,6 @@ Supervisor Agent (primary, DeepSeek V4 Pro Max)
       |
       +---> observer           (visual analysis, Claude Sonnet 4.6)
       +---> grok-worker        (alternative model, Grok 4.3 via xAI)
-      +---> gemini-worker      (alternative model, Gemini 3 Pro)
 
 Behavioral Modes (overlay on any agent):
   /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes

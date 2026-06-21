@@ -39,7 +39,7 @@ For a full list of recommended CLI tools, Python packages, and optional services
 
 ### 2. Configure OpenCode
 
-**If you already have an opencode config:** do NOT overwrite your `opencode.json`. Instead, merge just the `provider` block (DeepSeek) and the `agent` block (supervisor) into your existing config. The agent `.md` files can be copied directly — they won't conflict with anything.
+**If you already have an opencode config:** do NOT overwrite your `opencode.json`. Instead, merge just the `provider` block (DeepSeek) into your existing config. The agent `.md` files can be copied directly — they won't conflict with anything.
 
 **If this is your first opencode setup:** copy the full config:
 
@@ -47,19 +47,24 @@ For a full list of recommended CLI tools, Python packages, and optional services
 # Copy config (replace the API key placeholder first)
 cp opencode.json ~/.config/opencode/opencode.json
 
-# Copy supervisor agent
-cp supervisor.md ~/.config/opencode/agent/supervisor.md
+# Copy ALL agents — supervisor + subagents — into the same folder (plural "agents")
+mkdir -p ~/.config/opencode/agents
+cp supervisor.md ~/.config/opencode/agents/supervisor.md
+cp agents/*.md   ~/.config/opencode/agents/
 
-# Copy subagent files (rename any that conflict with your own)
-cp agents/*.md ~/.config/opencode/agents/
+# Copy the Observer plugin (lets you paste screenshots into chat)
+mkdir -p ~/.config/opencode/plugin
+cp plugin/*.js ~/.config/opencode/plugin/
 
 # Copy behavioral guidelines (merge if you already have AGENTS.md)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
+> **Note:** OpenCode loads every markdown agent — the primary Supervisor *and* the subagents — from `~/.config/opencode/agents/` (plural). The `mode:` field inside each file (`primary` vs `subagent`) is what distinguishes them, not the folder. There is no singular `agent/` folder.
+
 ### 3. Edit opencode.json
 
-Replace `YOUR_DEEPSEEK_API_KEY` with your actual key. If you don't have an opencode config yet, this file becomes your full config. If you already have one, merge the provider and agent sections into your existing config.
+Replace `YOUR_DEEPSEEK_API_KEY` with your actual key. If you don't have an opencode config yet, this file becomes your full config. If you already have one, merge the provider section into your existing config.
 
 ### 4. Restart OpenCode
 
@@ -93,10 +98,10 @@ ls ~/.config/opencode/agents/*.md
 You should see `worker.md`, `architect.md`, `planner.md`, etc.
 
 **Already have an opencode.json?**
-Don't overwrite it. Just merge the `"provider"` and `"agent"` blocks from this repo's `opencode.json` into yours. The agent `.md` files don't conflict with anything.
+Don't overwrite it. Just merge the `"provider"` block from this repo's `opencode.json` into yours. The agent `.md` files don't conflict with anything.
 
 **Supervisor not appearing as a primary agent?**
-Confirm `supervisor.md` is at `~/.config/opencode/agent/supervisor.md` (note: `agent/` singular, not `agents/` plural).
+Confirm `supervisor.md` is at `~/.config/opencode/agents/supervisor.md` (plural `agents/`) and that its frontmatter says `mode: primary`. OpenCode has no singular `agent/` folder — everything goes in `agents/`.
 
 ## Architecture
 
@@ -139,13 +144,14 @@ Key principle: **Always delegate.** The Supervisor self-executes only mechanical
 Supervisor/
 ├── README.md                      # This file
 ├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
-├── supervisor.md                  # Supervisor agent prompt (-> ~/.config/opencode/agent/)
+├── supervisor.md                  # Primary Supervisor agent (-> ~/.config/opencode/agents/)
 ├── opencode.json                  # Template config with placeholder API keys
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── subagents.md                   # Quick reference for the 9 base subagents
+├── tier-system-reference.md       # Complete 3-tier agent specs and naming conventions
 ├── AGENTS.md                      # Behavioral guidelines (-> ~/.config/opencode/)
-├── agents/
+├── agents/                        # All subagents (-> ~/.config/opencode/agents/, plural)
 │   ├── worker.md                  # General-purpose implementation agent
 │   ├── architect.md               # System design and tradeoff analysis
 │   ├── planner.md                 # Task breakdown and sequencing
@@ -155,10 +161,9 @@ Supervisor/
 │   ├── researcher.md              # Information gathering and synthesis
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
+│   ├── junior-* / senior-*        # Same 9 roles at DeepSeek (junior) and Opus (senior) tiers
 │   ├── grok-worker.md             # Alternative Grok-powered worker
-│   ├── gemini-worker.md           # Alternative Gemini-powered worker
-│   ├── observer.md                # Multimodal Observer subagent (Claude Sonnet 4.6)
-│   └── tier-system-reference.md    # Complete 3-tier agent specs and naming conventions
+│   └── observer.md                # Multimodal Observer subagent (Claude Sonnet 4.6)
 ├── plugin/
 │   └── observer-bridge.js         # Paste-a-screenshot interception (-> ~/.config/opencode/plugin/)
 ├── addons/
@@ -186,7 +191,7 @@ Supervisor/
 
 **Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 
-**Tiers scale with your needs.** All 3 tiers ship in the repo. DeepSeek handles 95% of work on its own. Mid and senior agents (Claude Sonnet/Opus) are already configured and activate when you add an Anthropic API key (see `agents/tier-system-reference.md`). No architectural changes needed.
+**Tiers scale with your needs.** All 3 tiers ship in the repo. DeepSeek handles 95% of work on its own. Mid and senior agents (Claude Sonnet/Opus) are already configured and activate when you add an Anthropic API key (see `tier-system-reference.md`). No architectural changes needed.
 
 ## Credits
 

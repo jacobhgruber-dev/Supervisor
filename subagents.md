@@ -1,6 +1,6 @@
 # Subagents — Quick Reference
 
-27 agent files across 9 roles at 3 tiers  •  junior: DeepSeek V4 Pro Max  •  mid: Claude Sonnet 4.6 Max  •  senior: Claude Opus 4.8 Max (see agents/tier-system-reference.md)
+27 agent files across 9 roles at 3 tiers  •  junior: DeepSeek V4 Pro Max  •  mid: Claude Sonnet 4.6 Max  •  senior: Claude Opus 4.8 Max (see tier-system-reference.md)
 
 For the full system reference including modes, local agents, and commands, see [reference.md](reference.md).
 
@@ -18,7 +18,7 @@ Key principle: **Delegate everything.** The Supervisor reads docs for orientatio
 
 ### How tiers work
 
-This repo ships with all 3 tiers of agents already configured — 27 agent files across 9 roles. The junior tier (`junior-*`) runs on DeepSeek V4 Pro Max and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you configure an Anthropic API key in your `opencode.json`. See `agents/tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
+This repo ships with all 3 tiers of agents already configured — 27 agent files across 9 roles. The junior tier (`junior-*`) runs on DeepSeek V4 Pro Max and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you configure an Anthropic API key in your `opencode.json`. See `tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
 
 ---
 

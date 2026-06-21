@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Loaded by every opencode agent (primary, supervisor, and subagents) and applies to all of them. Merge with project-specific instructions as needed. For supervisor-specific orchestration behavior, see `agent/supervisor.md`.
+Behavioral guidelines to reduce common LLM coding mistakes. Loaded by every opencode agent (primary, supervisor, and subagents) and applies to all of them. Merge with project-specific instructions as needed. For supervisor-specific orchestration behavior, see `supervisor.md`.
 
 ## Core Integrity Rules (Always Active — Highest Priority)
 
@@ -97,15 +97,15 @@ After the request, automatically return to normal careful Karpathy mode.
 
 ## Subagent Spawning Rules (Always Active)
 
-The Task tool can spawn specialized subagents (27 available across 9 roles at 3 tiers, plus `explore`. See `reference.md` for the full catalog. For the tier system specs, see `agents/tier-system-reference.md`).
+The Task tool can spawn specialized subagents (27 available across 9 roles at 3 tiers, plus `explore`. See `reference.md` for the full catalog. For the tier system specs, see `tier-system-reference.md`).
 
-**When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `agent/supervisor.md` instead.
+**When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `supervisor.md` instead.
 
 **Default tier policy:**
 
 - All subagents use the same model (DeepSeek V4 Pro Max). The specialization comes from the instructions, not the model.
 - For simple research/file-discovery tasks, the `explore` built-in subagent is always acceptable — it's already lightweight.
-- Mid and senior tier agents (`worker`, `senior-*`) are already present in the repo. They activate as soon as an Anthropic API key is configured. See `agents/tier-system-reference.md`.
+- Mid and senior tier agents (`worker`, `senior-*`) are already present in the repo. They activate as soon as an Anthropic API key is configured. See `tier-system-reference.md`.
 
 **Rationale:** DeepSeek V4 Pro Max is a frontier model fully capable of professional work. One model, many roles — the subagent's prompt, not the model, makes it a security auditor or an editor.
 
@@ -120,7 +120,7 @@ The supervisor is text-only and cannot see images. It has visual tools that suba
 | **macos-automator** | macOS desktop control — captures UI state of native apps (Windows: Windows-MCP) |
 | **screenpipe** | Searches 24/7 screen/audio history for past activity |
 
-When a user pastes a screenshot, the `observer-bridge` plugin saves it and leaves a `[Image saved to: <path>]` marker; the supervisor spawns @observer to read it. (@observer needs an Anthropic API key — see `agents/tier-system-reference.md`.)
+When a user pastes a screenshot, the `observer-bridge` plugin saves it and leaves a `[Image saved to: <path>]` marker; the supervisor spawns @observer to read it. (@observer needs an Anthropic API key — see `tier-system-reference.md`.)
 
 As a subagent, flag when visual verification would help instead of silently working around it:
 - "I need to know what this UI looks like right now" → ask the supervisor to capture via playwright/macos-automator

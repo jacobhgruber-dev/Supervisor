@@ -122,30 +122,28 @@ Now copy the pieces into place. Paste these one block at a time:
 
 ```bash
 # 1. Make sure the config folders exist
-mkdir -p ~/.config/opencode/agent
 mkdir -p ~/.config/opencode/agents
 mkdir -p ~/.config/opencode/plugin
 
 # 2. The main config file
 cp opencode.json ~/.config/opencode/opencode.json
 
-# 3. The Supervisor (your primary agent) — note: "agent" SINGULAR
-cp supervisor.md ~/.config/opencode/agent/supervisor.md
+# 3. ALL agents go in the SAME folder — "agents" (plural).
+#    The Supervisor (a primary agent) and every subagent live together here.
+cp supervisor.md ~/.config/opencode/agents/supervisor.md
+cp agents/*.md   ~/.config/opencode/agents/
 
-# 4. All specialist subagents (every tier + Observer) — note: "agents" PLURAL
-cp agents/*.md ~/.config/opencode/agents/
-
-# 5. The Observer plugin (lets you paste screenshots into chat)
+# 4. The Observer plugin (lets you paste screenshots into chat)
 cp plugin/*.js ~/.config/opencode/plugin/
 
-# 6. Behavioral guidelines (coding conventions for the agents)
+# 5. Behavioral guidelines (coding conventions for the agents)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
-> 🪤 **The #1 beginner footgun — singular vs. plural folders.**
-> The **Supervisor** goes in `agent/` (**singular**). The **subagents** go in `agents/` (**plural**). They are two different folders and OpenCode is picky about it. If your Supervisor never shows up, or it can't find its team, this is almost always why. The commands above already handle it correctly — just don't "tidy" them into one folder.
+> 🪤 **The #1 beginner footgun — one folder, and it's plural.**
+> *Every* agent — the Supervisor **and** the 27 subagents — goes in `~/.config/opencode/agents/` (**plural**). What makes the Supervisor "primary" is the `mode: primary` line inside `supervisor.md`, **not** a separate folder. OpenCode does **not** read a singular `agent/` folder, so if you put `supervisor.md` there, it silently won't load and the Supervisor won't show up. Keep everything in `agents/`.
 
-> 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! Instead, open both files and copy just the `"provider"` block and the `"agent"` block from this repo into yours. The `.md` agent files are safe to copy as-is — they won't clash with anything.
+> 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! Instead, open both files and copy just the `"provider"` block from this repo into yours. The `.md` agent files are safe to copy as-is — they won't clash with anything.
 
 ---
 
@@ -228,7 +226,7 @@ The Claude-powered agents (and Observer) sit ready but inactive until the key is
 
 > 💰 **Heads up on cost.** Claude (especially Opus/"senior") is **much** pricier than DeepSeek. Use junior agents by default; call in the seniors only when it really matters. The Supervisor already follows this policy automatically.
 
-> 💸 **Built-in saver.** The config sets a `small_model` (DeepSeek) so cheap background chores — naming conversations, short summaries — never run on an expensive model. Once you add a Gemini key, you can point `small_model` at `gemini-api/gemini-2.5-flash-lite` for an even cheaper option.
+> 💸 **Built-in saver.** The config sets a `small_model` (DeepSeek) so cheap background chores — naming conversations, short summaries — never run on an expensive model.
 
 ### 👁️ Observer — paste screenshots into chat (built in)
 
@@ -242,8 +240,8 @@ It activates automatically once your Anthropic key is in place (it runs on Claud
 
 These are extras you can ignore until you want them:
 
-- **Gemini (Google)** — a `gemini-api` provider block is already in the config. Add a Google AI Studio key and the `opencode-gemini-auth` plugin handles login. Good as a cheaper alternative for some research tasks. Models are pre-listed in `opencode.json` under `provider → gemini-api`.
-- **Addons** (`addons/` folder) — behavioral "modes," an Observer that reads screenshots, and more. See [`addons/README.md`](addons/README.md).
+- **Grok (xAI)** — an alternative-model `grok-worker` ships in `agents/`. Add an xAI key (the `opencode-xai-auth` plugin handles login) when you want Grok's model for a task.
+- **Addons** (`addons/` folder) — behavioral "modes" and a full reference catalog. See [`addons/README.md`](addons/README.md).
 - **CLI quality tools** — the reviewer/debugger agents can use tools like `ruff`, `mypy`, and `trivy` when present. Optional but nice. See [`DEPENDENCIES.md`](DEPENDENCIES.md).
 
 ### Optional MCP servers (nice-to-haves)
@@ -284,8 +282,9 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 
 | Symptom | Most likely cause | Fix |
 |---------|------------------|-----|
-| **Supervisor doesn't appear** | It's in the wrong folder | Confirm `supervisor.md` is in `~/.config/opencode/agent/` (**singular**). Run `ls ~/.config/opencode/agent/`. |
-| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~27 files. If empty, re-run the copy command in Step 3. |
+| **Supervisor doesn't appear** | `supervisor.md` in the wrong folder, or missing `mode: primary` | Confirm it's in `~/.config/opencode/agents/` (**plural**) with `ls ~/.config/opencode/agents/supervisor.md`, and that its frontmatter says `mode: primary`. There is no singular `agent/` folder. |
+| **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in the agents folder | Only real agent files belong in `~/.config/opencode/agents/`. Remove any docs: `rm ~/.config/opencode/agents/tier-system-reference.md`. |
+| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~29 files. If empty, re-run the copy command in Step 3. |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
 | **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` |
 | **"Invalid API key"** | Typo or placeholder left in | Re-open `opencode.json` and confirm your real `sk-...` key replaced `YOUR_DEEPSEEK_API_KEY` (no extra spaces or quotes). |
@@ -296,7 +295,7 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 ## 🗺️ Where to go next
 
 - **[README.md](README.md)** — the full architecture and design philosophy.
-- **[agents/tier-system-reference.md](agents/tier-system-reference.md)** — exact specs for all 27 agents.
+- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 27 agents.
 - **[DEPENDENCIES.md](DEPENDENCIES.md)** — every optional tool, organized by tier.
 - **[addons/README.md](addons/README.md)** — modes, local models, and the visual Observer.
 

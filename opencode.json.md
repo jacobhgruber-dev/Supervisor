@@ -101,12 +101,14 @@ Example — enabling Firecrawl:
 
 ## Adding Agent Files
 
-Once your opencode.json is configured, copy the agent files to your opencode config:
+Once your opencode.json is configured, copy the agent files to your opencode config. **All markdown agents — the primary supervisor and every subagent — go in the same `agents/` (plural) folder.** OpenCode does not read a singular `agent/` folder; `mode: primary` inside `supervisor.md` is what makes it the primary agent.
 
 ```
-cp supervisor.md ~/.config/opencode/agent/supervisor.md
-cp agents/*.md ~/.config/opencode/agents/
-cp AGENTS.md ~/.config/opencode/AGENTS.md
+mkdir -p ~/.config/opencode/agents ~/.config/opencode/plugin
+cp supervisor.md ~/.config/opencode/agents/supervisor.md
+cp agents/*.md   ~/.config/opencode/agents/
+cp plugin/*.js   ~/.config/opencode/plugin/
+cp AGENTS.md     ~/.config/opencode/AGENTS.md
 ```
 
 Restart opencode — the supervisor will appear as your primary agent option.

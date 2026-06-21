@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Loaded by every opencode agent (primary, supervisor, and subagents) and applies to all of them. Merge with project-specific instructions as needed. For supervisor-specific orchestration behavior, see `agent/supervisor.md`.
+Behavioral guidelines to reduce common LLM coding mistakes. Loaded by every opencode agent (primary, supervisor, and subagents) and applies to all of them. Merge with project-specific instructions as needed. For supervisor-specific orchestration behavior, see `supervisor.md`.
 
 ## Core Integrity Rules (Always Active — Highest Priority)
 
@@ -99,7 +99,7 @@ After the request, automatically return to normal careful Karpathy mode.
 
 The Task tool can spawn specialized subagents (30 available — 9 roles at 3 tiers, plus 2 local agents and grok-worker. See ~/Desktop/opencode-reference.md for the full catalog).
 
-**When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `agent/supervisor.md` instead.
+**When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `supervisor.md` instead.
 
 **Default tier policy:**
 

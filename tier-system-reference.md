@@ -388,10 +388,12 @@ Complete configuration for all 9 roles across all 3 tiers:
 
 ## Agent Directory Layout
 
-The agent directory ships with all 27 agents across 3 tiers:
+**Every** markdown agent — the primary Supervisor and all subagents — installs into the same folder, `~/.config/opencode/agents/` (plural). That's the only location OpenCode loads markdown agents from. This reference doc is **not** an agent and lives at the repo root, not in that folder.
 
 ```
 ~/.config/opencode/agents/
+├── supervisor.md             # Primary agent (mode: primary)
+│
 ├── junior-worker.md          # DeepSeek (junior)
 ├── junior-architect.md
 ├── junior-planner.md
@@ -422,8 +424,8 @@ The agent directory ships with all 27 agents across 3 tiers:
 ├── senior-researcher.md
 ├── senior-quote-auditor.md
 │
-├── grok-worker.md            # Alternative model
-└── tier-system-reference.md  # This file
+├── observer.md               # Multimodal Observer (Claude Sonnet)
+└── grok-worker.md            # Alternative model
 ```
 
 ## How the Naming Convention Works

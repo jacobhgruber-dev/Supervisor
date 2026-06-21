@@ -260,13 +260,14 @@
           <p>Download the repo, then put the pieces where OpenCode looks for them.</p>
           <div class="code"><button class="copy">Copy</button>git clone https://github.com/jacobhgruber-dev/Supervisor.git
 cd Supervisor
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
+mkdir -p ~/.config/opencode/agents ~/.config/opencode/plugin
 cp opencode.json ~/.config/opencode/opencode.json
-cp supervisor.md ~/.config/opencode/agent/supervisor.md   <span class="cmt"># singular</span>
-cp agents/*.md  ~/.config/opencode/agents/                <span class="cmt"># plural</span>
-cp AGENTS.md    ~/.config/opencode/AGENTS.md</div>
+cp supervisor.md ~/.config/opencode/agents/supervisor.md  <span class="cmt"># same folder…</span>
+cp agents/*.md   ~/.config/opencode/agents/               <span class="cmt"># …as the subagents</span>
+cp plugin/*.js   ~/.config/opencode/plugin/
+cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
           <div class="callout trap" style="margin-top:14px;">
-            <b>🪤 The #1 footgun:</b> the Supervisor goes in <code>agent/</code> (singular); the 27 subagents go in <code>agents/</code> (plural). Two different folders — don't merge them, or the team won't load.
+            <b>🪤 The #1 footgun:</b> every agent — Supervisor <em>and</em> subagents — goes in <code>agents/</code> (<b>plural</b>). The <code>mode: primary</code> line inside <code>supervisor.md</code> is what makes it the primary agent, not a separate folder. There is no singular <code>agent/</code> folder, and a stray non-agent file dropped in here shows up as a phantom agent.
           </div>
         </div>
       </div>
@@ -322,7 +323,7 @@ cp AGENTS.md    ~/.config/opencode/AGENTS.md</div>
       </tbody>
     </table>
     <div class="callout warn" style="margin-top:18px;">
-      All 27 agent files already ship in the repo. The Claude-powered ones simply sit unused until you paste an Anthropic key into the <code>"anthropic"</code> block of your config. <b>Gemini</b> is wired up too as an optional expansion. Full details in the <a href="GETTING_STARTED.md">guide</a>.
+      All 27 agent files already ship in the repo. The Claude-powered ones simply sit unused until you paste an Anthropic key into the <code>"anthropic"</code> block of your config. Full details in the <a href="GETTING_STARTED.md">guide</a>.
     </div>
   </div>
 </section>
@@ -339,7 +340,7 @@ cp AGENTS.md    ~/.config/opencode/AGENTS.md</div>
     </details>
     <details>
       <summary>The Supervisor doesn't show up. What did I do wrong?</summary>
-      <p>Almost always the singular/plural folder trap. Confirm <code>supervisor.md</code> is in <code>~/.config/opencode/agent/</code> (singular) and the rest are in <code>~/.config/opencode/agents/</code> (plural). Re-run the Step 3 commands exactly.</p>
+      <p>Confirm <code>supervisor.md</code> is in <code>~/.config/opencode/agents/</code> (<b>plural</b> — the same folder as every subagent) and that its frontmatter says <code>mode: primary</code>. OpenCode has no singular <code>agent/</code> folder. Re-run the Step 3 commands exactly.</p>
     </details>
     <details>
       <summary>I get “insufficient balance” errors.</summary>
@@ -359,7 +360,7 @@ cp AGENTS.md    ~/.config/opencode/AGENTS.md</div>
 <footer>
   <div class="wrap">
     <div class="big">That's the whole journey — zero to a working AI team. 🎈</div>
-    <p>Want every step spelled out? Read the <a href="GETTING_STARTED.md">complete Zero-to-Hero guide</a> · See the <a href="README.md">architecture</a> · Browse the <a href="agents/tier-system-reference.md">agent specs</a>.</p>
+    <p>Want every step spelled out? Read the <a href="GETTING_STARTED.md">complete Zero-to-Hero guide</a> · See the <a href="README.md">architecture</a> · Browse the <a href="tier-system-reference.md">agent specs</a>.</p>
     <p style="margin-top:18px;font-size:.85rem;">Supervisor — agent orchestration for <a href="https://opencode.ai">OpenCode</a> · MIT licensed</p>
   </div>
 </footer>
