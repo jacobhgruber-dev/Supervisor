@@ -136,15 +136,15 @@ The go-to for any task that doesn't fit a specialized role. Full access to edit 
 
 ---
 
-## Bonus: Alternative Model Workers
+## Bonus: Alternative Model Worker (Optional Addon)
 
-These use different model providers for when you want a specific model's strengths:
+When you want a specific model's strengths, the optional `grok-worker` addon adds a full-access worker on xAI's Grok 4.3. It lives outside the core agent set so it never auto-loads.
 
 | Agent | Model | Setup | Permissions |
 |-------|-------|-------|------------|
-| `grok-worker` | Grok 4.3 (xAI) | Add xAI provider + API key to opencode.json | Full |
+| `grok-worker` | Grok 4.3 (xAI) | Add an xAI provider block + key, copy one file | Full |
 
-See `agents/grok-worker.md` for setup instructions.
+See [`addons/grok-worker/README.md`](addons/grok-worker/README.md) for setup. No auth plugin required.
 
 ---
 
@@ -161,7 +161,7 @@ See `agents/grok-worker.md` for setup instructions.
 | Research a topic | `researcher` |
 | Verify quotes match sources | `quote-auditor` |
 | Build a feature / fix a bug | `worker` |
-| Any task with Grok's model | `grok-worker` |
+| Any task with Grok's model | `grok-worker` *(optional addon)* |
 
 ---
 

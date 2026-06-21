@@ -24,7 +24,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **27 specialized subagents across 3 tiers** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro Max), mid (Claude Sonnet 4.6 Max), and senior (Claude Opus 4.8 Max) tiers. All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
-- **Grok worker** — optional alternative model worker for when you want Grok 4.3's strengths.
+- **Grok worker (optional addon)** — an alternative-model worker on xAI's Grok 4.3, in `addons/grok-worker/`. Opt in when you want Grok's model; the core system doesn't depend on it.
 - **Full 3-tier system built in** — all 27 agents ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
 - **Observer (built in)** — a multimodal Claude Sonnet 4.6 subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once an Anthropic key is configured.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
@@ -120,9 +120,10 @@ Supervisor Agent (primary, DeepSeek V4 Pro Max)
        +---> researcher      (information, 35 steps, full access)
        +---> editor          (proofreading, 25 steps, read + edit)
         +---> quote-auditor   (quote verification, 25 steps, read-only + bash)
-       +---> grok-worker     (alternative model, 40 steps, full access)
        +---> observer        (visual analysis, multimodal, read-only)
 ```
+
+(Each role also has `junior-*` and `senior-*` tier variants. An optional `grok-worker` addon adds an xAI Grok worker — see [addons/grok-worker/](addons/grok-worker/).)
 
 ## How It Works
 
@@ -162,12 +163,12 @@ Supervisor/
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── junior-* / senior-*        # Same 9 roles at DeepSeek (junior) and Opus (senior) tiers
-│   ├── grok-worker.md             # Alternative Grok-powered worker
 │   └── observer.md                # Multimodal Observer subagent (Claude Sonnet 4.6)
 ├── plugin/
 │   └── observer-bridge.js         # Paste-a-screenshot interception (-> ~/.config/opencode/plugin/)
 ├── addons/
 │   ├── README.md                  # Addon overview
+│   ├── grok-worker/               # Optional xAI Grok worker (+ setup README)
 │   └── open-code-modes/           # 9 behavioral modes (trigger words)
 │       ├── README.md
 │       ├── AGENTS.md              # Mode switching rules (-> ~/.config/opencode/)

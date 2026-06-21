@@ -149,7 +149,8 @@ Supervisor Agent (primary, DeepSeek V4 Pro Max)
       +---> quote-auditor / junior-quote-auditor / senior-quote-auditor  (quotes)
       |
       +---> observer           (visual analysis, Claude Sonnet 4.6)
-      +---> grok-worker        (alternative model, Grok 4.3 via xAI)
+
+(Optional addon: grok-worker — alternative model, Grok 4.3 via xAI.)
 
 Behavioral Modes (overlay on any agent):
   /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes
@@ -171,4 +172,4 @@ Behavioral Modes (overlay on any agent):
 | "Proofread this blog post" | `editor` |
 | "Check that all quotes in this article are verbatim" | `quote-auditor` |
 | "Read the screenshot I just pasted" | `observer` |
-| "Any task — I want Grok's model" | `grok-worker` |
+| "Any task — I want Grok's model" | `grok-worker` *(optional addon)* |

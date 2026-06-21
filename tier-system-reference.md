@@ -424,9 +424,10 @@ Complete configuration for all 9 roles across all 3 tiers:
 ├── senior-researcher.md
 ├── senior-quote-auditor.md
 │
-├── observer.md               # Multimodal Observer (Claude Sonnet)
-└── grok-worker.md            # Alternative model
+└── observer.md               # Multimodal Observer (Claude Sonnet)
 ```
+
+(The optional `grok-worker` addon installs one more file here when you opt in — see `addons/grok-worker/`.)
 
 ## How the Naming Convention Works
 

@@ -240,8 +240,8 @@ It activates automatically once your Anthropic key is in place (it runs on Claud
 
 These are extras you can ignore until you want them:
 
-- **Grok (xAI)** — an alternative-model `grok-worker` ships in `agents/`. Add an xAI key (the `opencode-xai-auth` plugin handles login) when you want Grok's model for a task.
-- **Addons** (`addons/` folder) — behavioral "modes" and a full reference catalog. See [`addons/README.md`](addons/README.md).
+- **Grok (xAI)** — an optional `grok-worker` addon adds an alternative-model worker on Grok 4.3. Add an xAI provider block + key and copy one file. See [`addons/grok-worker/`](addons/grok-worker/). No auth plugin needed.
+- **Addons** (`addons/` folder) — behavioral "modes," the Grok worker, and a full reference catalog. See [`addons/README.md`](addons/README.md).
 - **CLI quality tools** — the reviewer/debugger agents can use tools like `ruff`, `mypy`, and `trivy` when present. Optional but nice. See [`DEPENDENCIES.md`](DEPENDENCIES.md).
 
 ### Optional MCP servers (nice-to-haves)

@@ -16,13 +16,12 @@ The bare minimum. Install these and you have a working supervisor.
 
 ---
 
-## Tier 2: Plugins (5 items)
+## Tier 2: Plugins (optional, 4 items)
 
-These go in the `"plugin"` array in your `opencode.json`. OpenCode auto-installs them — no manual install needed. The shipped config includes `opencode-xai-auth`; the rest are optional quality-of-life additions.
+The base config ships with **no plugins** (`"plugin": []`). These are optional quality-of-life additions — drop any you want into the `"plugin"` array and OpenCode auto-installs them, no manual install needed.
 
 ```json
 "plugin": [
-  "opencode-xai-auth",
   "opencode-wakelock",
   "opencode-pty",
   "opencode-websearch-cited",
@@ -32,7 +31,6 @@ These go in the `"plugin"` array in your `opencode.json`. OpenCode auto-installs
 
 | Plugin | What it does |
 |--------|-------------|
-| `opencode-xai-auth` | xAI (Grok) authentication — shipped in the config |
 | `opencode-wakelock` | Keeps screen awake during long agent runs |
 | `opencode-pty` | Terminal integration |
 | `opencode-websearch-cited` | Web search with source citations |
