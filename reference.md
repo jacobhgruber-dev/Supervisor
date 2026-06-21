@@ -12,8 +12,8 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 
 | Component | Model | Purpose |
 |-----------|-------|---------|
-| **Supervisor** (primary) | DeepSeek V4 Pro Max | Orchestration — plans, delegates, reviews, commits |
-| **27 subagents** (3 tiers) | DeepSeek V4 Pro Max / Claude Sonnet 4.6 Max / Claude Opus 4.8 Max | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at each tier |
+| **Supervisor** (primary) | DeepSeek V4 Pro | Orchestration — plans, delegates, reviews, commits |
+| **27 subagents** (3 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 4.8 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at each tier |
 | **Observer** (built in) | Claude Sonnet 4.6 | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
@@ -21,7 +21,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 
 ## Subagent Tiers
 
-The Supervisor ships with 27 agents across 3 tiers — 9 roles at each tier. The junior tier (DeepSeek V4 Pro Max) is the default workhorse. Mid (Claude Sonnet) and senior (Claude Opus) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
+The Supervisor ships with 27 agents across 3 tiers — 9 roles at each tier. The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet) and senior (Claude Opus) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
 | Subagent | Use For | Steps | Permissions |
 |----------|---------|-------|-------------|
@@ -57,9 +57,9 @@ The 3-tier system is fully configured in the repo. The naming convention:
 
 | Tier | Model | Naming | Default Behavior |
 |------|-------|--------|-----------------|
-| Junior | DeepSeek V4 Pro Max | `junior-worker`, etc. | Default — automatic spawning |
-| Mid | Claude Sonnet 4.6 Max | `worker`, etc. (bare name) | Explicitly invoked |
-| Senior | Claude Opus 4.8 Max | `senior-worker`, etc. | Highest stakes only |
+| Junior | DeepSeek V4 Pro | `junior-worker`, etc. | Default — automatic spawning |
+| Mid | Claude Sonnet 4.6 | `worker`, etc. (bare name) | Explicitly invoked |
+| Senior | Claude Opus 4.8 | `senior-worker`, etc. | Highest stakes only |
 
 This gives you 27 subagent files across 9 roles × 3 tiers. See `tier-system-reference.md` for the complete spec table and agent specifications.
 
@@ -67,9 +67,9 @@ This gives you 27 subagent files across 9 roles × 3 tiers. See `tier-system-ref
 
 | Tier | Model | Relative Cost | Best For |
 |------|-------|--------------|----------|
-| Junior | DeepSeek V4 Pro Max | $ | 80% of all tasks |
-| Mid | Claude Sonnet 4.6 Max | $$ | Complex reasoning, deeper reviews |
-| Senior | Claude Opus 4.8 Max | $$$$ | Production-critical, highest stakes |
+| Junior | DeepSeek V4 Pro | $ | 80% of all tasks |
+| Mid | Claude Sonnet 4.6 | $$ | Complex reasoning, deeper reviews |
+| Senior | Claude Opus 4.8 | $$$$ | Production-critical, highest stakes |
 
 ---
 
@@ -136,7 +136,7 @@ To create one, add an entry to your `opencode.json`:
 You (the User)
       |
       v
-Supervisor Agent (primary, DeepSeek V4 Pro Max)
+Supervisor Agent (primary, DeepSeek V4 Pro)
       |
       +---> worker / junior-worker / senior-worker     (implementation)
       +---> architect / junior-architect / senior-architect  (design)

@@ -1,5 +1,5 @@
 ---
-description: Software architect for design decisions, refactoring plans, and system structure. Powered by Claude Sonnet 4.6 Max.
+description: Software architect for design decisions, refactoring plans, and system structure. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max

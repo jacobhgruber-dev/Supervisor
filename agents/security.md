@@ -1,5 +1,5 @@
 ---
-description: Security auditor for vulnerability scanning — secrets, injections, unsafe dependencies, and common attack vectors. Powered by Claude Sonnet 4.6 Max.
+description: Security auditor for vulnerability scanning — secrets, injections, unsafe dependencies, and common attack vectors. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max

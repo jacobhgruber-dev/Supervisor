@@ -1,5 +1,5 @@
 ---
-description: Quote auditor subagent — line-by-line source verification, paraphrasing detection, attribution accuracy, flagging every uncertainty. Powered by DeepSeek V4 Pro Max.
+description: Quote auditor subagent — line-by-line source verification, paraphrasing detection, attribution accuracy, flagging every uncertainty. Powered by DeepSeek V4 Pro.
 mode: subagent
 model: deepseek/deepseek-v4-pro
 variant: max

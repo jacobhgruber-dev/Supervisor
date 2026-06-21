@@ -21,7 +21,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **27 specialized subagents across 3 tiers** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro Max), mid (Claude Sonnet 4.6 Max), and senior (Claude Opus 4.8 Max) tiers. All with built-in awareness of 14+ CLI code quality and security tools.
+- **27 specialized subagents across 3 tiers** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 4.6), and senior (Claude Opus 4.8) tiers. All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker (optional addon)** — an alternative-model worker on xAI's Grok 4.3, in `addons/grok-worker/`. Opt in when you want Grok's model; the core system doesn't depend on it.
@@ -116,7 +116,7 @@ Confirm `supervisor.md` is at `~/.config/opencode/agents/supervisor.md` (plural 
 You (the User)
       |
       v
-Supervisor Agent (primary, DeepSeek V4 Pro Max)
+Supervisor Agent (primary, DeepSeek V4 Pro)
       |
        +---> worker          (implementation, 40 steps, full access)
        +---> architect       (design, 25 steps, edit + web + playwright)
@@ -195,7 +195,7 @@ Supervisor/
 
 **Delegate everything.** The Supervisor's job is orchestration, not implementation. Subagents do the work. The Supervisor's value is synthesis — seeing the combined output of multiple subagents and making decisions.
 
-**One model, many roles.** All subagents use the same model (DeepSeek V4 Pro Max) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain.
+**One model, many roles.** All subagents use the same model (DeepSeek V4 Pro) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain.
 
 **Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 

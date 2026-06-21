@@ -1,5 +1,5 @@
 ---
-description: Editor subagent — structural revision, clarity, flow, voice, audience awareness, and mechanical proofreading (grammar/spelling/punctuation/formatting). Powered by DeepSeek V4 Pro Max.
+description: Editor subagent — structural revision, clarity, flow, voice, audience awareness, and mechanical proofreading (grammar/spelling/punctuation/formatting). Powered by DeepSeek V4 Pro.
 mode: subagent
 model: deepseek/deepseek-v4-pro
 variant: max

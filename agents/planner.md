@@ -1,5 +1,5 @@
 ---
-description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Sonnet 4.6 Max.
+description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max

@@ -1,5 +1,5 @@
 ---
-description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by DeepSeek V4 Pro Max.
+description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by DeepSeek V4 Pro.
 mode: subagent
 model: deepseek/deepseek-v4-pro
 variant: max

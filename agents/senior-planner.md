@@ -1,5 +1,5 @@
 ---
-description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Opus 4.8 Max.
+description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Opus 4.8.
 mode: subagent
 model: anthropic/claude-opus-4-8
 variant: max

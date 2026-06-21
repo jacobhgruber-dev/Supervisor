@@ -1,5 +1,5 @@
 ---
-description: Quote auditor for verifying quotations against their sources. Powered by Claude Sonnet 4.6 Max.
+description: Quote auditor for verifying quotations against their sources. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max

@@ -1,5 +1,5 @@
 ---
-description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Sonnet 4.6 Max.
+description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max

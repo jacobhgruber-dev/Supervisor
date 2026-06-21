@@ -1,5 +1,5 @@
 ---
-description: Researcher for topic exploration, source gathering, and structured answers. Powered by Claude Sonnet 4.6 Max.
+description: Researcher for topic exploration, source gathering, and structured answers. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max

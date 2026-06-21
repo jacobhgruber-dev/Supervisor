@@ -1,5 +1,5 @@
 ---
-description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Opus 4.8 Max.
+description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Opus 4.8.
 mode: subagent
 model: anthropic/claude-opus-4-8
 variant: max

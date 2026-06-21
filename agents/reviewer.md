@@ -1,5 +1,5 @@
 ---
-description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Sonnet 4.6 Max.
+description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max

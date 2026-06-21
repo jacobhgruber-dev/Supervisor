@@ -103,11 +103,11 @@ The Task tool can spawn specialized subagents (27 available across 9 roles at 3 
 
 **Default tier policy:**
 
-- All subagents use the same model (DeepSeek V4 Pro Max). The specialization comes from the instructions, not the model.
+- All subagents use the same model (DeepSeek V4 Pro). The specialization comes from the instructions, not the model.
 - For simple research/file-discovery tasks, the `explore` built-in subagent is always acceptable — it's already lightweight.
 - Mid and senior tier agents (`worker`, `senior-*`) are already present in the repo. They activate as soon as an Anthropic API key is configured. See `tier-system-reference.md`.
 
-**Rationale:** DeepSeek V4 Pro Max is a frontier model fully capable of professional work. One model, many roles — the subagent's prompt, not the model, makes it a security auditor or an editor.
+**Rationale:** DeepSeek V4 Pro is a frontier model fully capable of professional work. One model, many roles — the subagent's prompt, not the model, makes it a security auditor or an editor.
 
 ## Visual Context Awareness (Always Active)
 

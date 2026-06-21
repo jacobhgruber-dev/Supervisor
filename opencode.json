@@ -9,7 +9,7 @@
       "name": "DeepSeek",
       "models": {
         "deepseek-v4-pro": {
-          "name": "DeepSeek V4 Pro Max",
+          "name": "DeepSeek V4 Pro",
           "tools": true
         }
       }
@@ -19,11 +19,11 @@
       "name": "Anthropic (Claude)",
       "models": {
         "claude-sonnet-4-6": {
-          "name": "Claude Sonnet 4.6 Max",
+          "name": "Claude Sonnet 4.6",
           "tools": true
         },
         "claude-opus-4-8": {
-          "name": "Claude Opus 4.8 Max",
+          "name": "Claude Opus 4.8",
           "tools": true
         }
       }

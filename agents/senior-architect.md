@@ -1,5 +1,5 @@
 ---
-description: Architecture subagent for design decisions, tradeoff analysis, refactor scoping, cross-cutting concerns, API design, and fresh first-principles thinking. Powered by Claude Opus 4.8 Max.
+description: Architecture subagent for design decisions, tradeoff analysis, refactor scoping, cross-cutting concerns, API design, and fresh first-principles thinking. Powered by Claude Opus 4.8.
 mode: subagent
 model: anthropic/claude-opus-4-8
 variant: max

@@ -4,9 +4,9 @@ The Supervisor ships with a complete 3-tier agent system. All 9 roles are availa
 
 | Tier | Model | Role | Naming Convention |
 |------|-------|------|-------------------|
-| **Junior** | DeepSeek V4 Pro Max | Default workhorse, most tasks | `junior-worker`, `junior-architect`, etc. |
-| **Mid** | Claude Sonnet 4.6 Max | Complex reasoning, deeper reviews | `worker`, `architect`, etc. (no prefix) |
-| **Senior** | Claude Opus 4.8 Max | Highest stakes, production-critical | `senior-worker`, `senior-architect`, etc. |
+| **Junior** | DeepSeek V4 Pro | Default workhorse, most tasks | `junior-worker`, `junior-architect`, etc. |
+| **Mid** | Claude Sonnet 4.6 | Complex reasoning, deeper reviews | `worker`, `architect`, etc. (no prefix) |
+| **Senior** | Claude Opus 4.8 | Highest stakes, production-critical | `senior-worker`, `senior-architect`, etc. |
 
 ## Why 3 Tiers?
 
@@ -28,7 +28,7 @@ These are the frontmatter specs for each agent. The prompt content (the body of 
 
 ```
 ---
-description: General-purpose subagent powered by Claude Sonnet 4.6 Max. Mid-tier worker for tasks needing deeper reasoning than DeepSeek. Full edit and bash access.
+description: General-purpose subagent powered by Claude Sonnet 4.6. Mid-tier worker for tasks needing deeper reasoning than DeepSeek. Full edit and bash access.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -47,7 +47,7 @@ permission:
 
 ```
 ---
-description: Software architect for design decisions, refactoring plans, and system structure. Powered by Claude Sonnet 4.6 Max.
+description: Software architect for design decisions, refactoring plans, and system structure. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -66,7 +66,7 @@ permission:
 
 ```
 ---
-description: Planner for breaking down tasks into ordered steps, identifying dependencies, and estimating effort. Powered by Claude Sonnet 4.6 Max.
+description: Planner for breaking down tasks into ordered steps, identifying dependencies, and estimating effort. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -82,7 +82,7 @@ permission:
 
 ```
 ---
-description: Code reviewer for bugs, logic errors, and code quality. Powered by Claude Sonnet 4.6 Max.
+description: Code reviewer for bugs, logic errors, and code quality. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -98,7 +98,7 @@ permission:
 
 ```
 ---
-description: Debugger for runtime errors, stack traces, and unexpected behavior. Powered by Claude Sonnet 4.6 Max.
+description: Debugger for runtime errors, stack traces, and unexpected behavior. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -117,7 +117,7 @@ permission:
 
 ```
 ---
-description: Security auditor for vulnerability scanning — secrets, injections, unsafe dependencies, and common attack vectors. Powered by Claude Sonnet 4.6 Max.
+description: Security auditor for vulnerability scanning — secrets, injections, unsafe dependencies, and common attack vectors. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -136,7 +136,7 @@ permission:
 
 ```
 ---
-description: Content editor for clarity, flow, and readability. Powered by Claude Sonnet 4.6 Max.
+description: Content editor for clarity, flow, and readability. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -152,7 +152,7 @@ permission:
 
 ```
 ---
-description: Researcher for topic exploration, source gathering, and structured answers. Powered by Claude Sonnet 4.6 Max.
+description: Researcher for topic exploration, source gathering, and structured answers. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -171,7 +171,7 @@ permission:
 
 ```
 ---
-description: Quote auditor for verifying quotations against their sources. Powered by Claude Sonnet 4.6 Max.
+description: Quote auditor for verifying quotations against their sources. Powered by Claude Sonnet 4.6.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
 variant: max
@@ -189,7 +189,7 @@ permission:
 
 ```
 ---
-description: Senior general-purpose subagent powered by Claude Opus 4.8 Max. The most capable model available — use for the hardest problems.
+description: Senior general-purpose subagent powered by Claude Opus 4.8. The most capable model available — use for the hardest problems.
 mode: subagent
 model: anthropic/claude-opus-4-8
 variant: max
@@ -443,9 +443,9 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 
 | Tier | Model | Approx. Relative Cost | Best For |
 |------|-------|----------------------|----------|
-| Junior | DeepSeek V4 Pro Max | $ | 80% of all tasks |
-| Mid | Claude Sonnet 4.6 Max | $$ | Complex reasoning, deeper reviews |
-| Senior | Claude Opus 4.8 Max | $$$$ | Production-critical, highest stakes |
+| Junior | DeepSeek V4 Pro | $ | 80% of all tasks |
+| Mid | Claude Sonnet 4.6 | $$ | Complex reasoning, deeper reviews |
+| Senior | Claude Opus 4.8 | $$$$ | Production-critical, highest stakes |
 
 ## Starting Simple
 
