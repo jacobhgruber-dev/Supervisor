@@ -452,6 +452,6 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 The repo ships with all 3 tiers already configured — 27 agent files across 9 roles. Scaling down is just about which API keys you configure:
 
 1. **DeepSeek only (junior tier)** — one key, one model, works for everything. The mid and senior agent files sit unused until you add their API keys.
-2. **Add Anthropic (mid tier)** — configure your Anthropic API key in `opencode.json` and the bare-name agents (`worker`, `architect`, etc.) become available with Sonnet.
+2. **Add Anthropic (mid tier)** — connect your Anthropic key with `opencode auth login` and the bare-name agents (`worker`, `architect`, etc.) become available with Sonnet.
 3. **Add Opus (senior tier)** — the `senior-*` agents become available once both Anthropic models are configured.
 4. **Full 3-tier** — all 27 agents active, automatic escalation from junior to mid/senior when warranted.

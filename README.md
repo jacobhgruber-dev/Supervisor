@@ -44,7 +44,7 @@ For a full list of recommended CLI tools, Python packages, and optional services
 **If this is your first opencode setup:** copy the full config:
 
 ```bash
-# Copy config (replace the API key placeholder first)
+# Copy config (no API keys live in here — see step 3)
 cp opencode.json ~/.config/opencode/opencode.json
 
 # Copy ALL agents — supervisor + subagents — into the same folder (plural "agents")
@@ -62,9 +62,16 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 
 > **Note:** OpenCode loads every markdown agent — the primary Supervisor *and* the subagents — from `~/.config/opencode/agents/` (plural). The `mode:` field inside each file (`primary` vs `subagent`) is what distinguishes them, not the folder. There is no singular `agent/` folder.
 
-### 3. Edit opencode.json
+### 3. Connect your keys with `opencode auth login`
 
-Replace `YOUR_DEEPSEEK_API_KEY` with your actual key. If you don't have an opencode config yet, this file becomes your full config. If you already have one, merge the provider section into your existing config.
+No keys go in `opencode.json`. Authenticate natively instead:
+
+```bash
+opencode auth login   # choose DeepSeek, paste your key
+opencode auth login   # run again, choose Anthropic, paste your key
+```
+
+OpenCode stores the keys in its own secure file (`~/.local/share/opencode/auth.json`) — or read them from the `DEEPSEEK_API_KEY` / `ANTHROPIC_API_KEY` environment variables if you prefer. The provider blocks in `opencode.json` only declare which models exist; auth comes from your login. (If DeepSeek isn't in the menu, pick **Other** and enter `deepseek` as the id.)
 
 ### 4. Restart OpenCode
 

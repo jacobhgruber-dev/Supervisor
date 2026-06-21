@@ -52,7 +52,7 @@ An **API key** is a long password that lets your computer talk to an AI model (l
 A few things that surprise beginners:
 
 - **It costs money, but barely.** You pay per use (per word in and out). The default model in this setup, **DeepSeek**, is extremely cheap — a typical task costs a fraction of a cent. Most people put **$2–$5** of credit on their account and it lasts for weeks.
-- **Treat it like a password.** Anyone with your key can spend your money. Never post it publicly or commit it to GitHub. (This repo uses `YOUR_DEEPSEEK_API_KEY` as a *placeholder* — you swap in your real key locally and it never leaves your machine.)
+- **Treat it like a password.** Anyone with your key can spend your money. Never post it publicly or commit it to GitHub. (You'll connect your key with OpenCode's built-in `auth login`, which tucks it into its own secure file on your machine — it never goes into this repo's config, so there's nothing to accidentally commit.)
 - **You can delete it anytime.** If a key ever leaks, you log into the provider's website and revoke it. No harm done.
 
 That's the whole concept. Now let's get one.
@@ -147,30 +147,24 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 
 ---
 
-## 🟢 Step 4 — Paste your key into the config
+## 🟢 Step 4 — Connect your key (no editing files)
 
-Open the config file you just copied in any text editor. For example:
+You **don't** paste your key into any config file. Instead, let OpenCode store it securely using its built-in login. In your terminal, run:
 
 ```bash
-open -e ~/.config/opencode/opencode.json     # Mac (TextEdit)
-# or: nano ~/.config/opencode/opencode.json   # in-terminal editor
+opencode auth login
 ```
 
-Find this line (it's near the bottom, under `"provider" → "deepseek"`):
+You'll get a menu of providers. Then:
 
-```json
-"apiKey": "YOUR_DEEPSEEK_API_KEY"
-```
+1. Choose **DeepSeek**. (If DeepSeek isn't in the list, choose **Other**, and type `deepseek` as the provider id.)
+2. Paste the `sk-...` key from Step 2 and press Enter.
 
-Replace `YOUR_DEEPSEEK_API_KEY` with the real `sk-...` key from Step 2:
+That's it. OpenCode saves the key in its own secure store (`~/.local/share/opencode/auth.json`) — **not** in this repo's `opencode.json`, so there's no risk of committing it to GitHub. The provider blocks in `opencode.json` just tell OpenCode which models exist; the key comes from your login.
 
-```json
-"apiKey": "sk-1a2b3c4d5e6f..."
-```
+> 💡 **Prefer environment variables?** That works too — set `DEEPSEEK_API_KEY` (and later `ANTHROPIC_API_KEY`) in your shell and OpenCode will pick them up. Use whichever you like; you don't need both.
 
-**Save and close the file.**
-
-> 💡 Leave the `YOUR_ANTHROPIC_API_KEY` placeholder alone for now — that's for the optional upgrade later (Step 7). The setup works perfectly with just DeepSeek.
+**Checkpoint:** Run `opencode auth list` — you should see `deepseek` listed. ✅
 
 ---
 
@@ -221,7 +215,11 @@ The Claude-powered agents (and Observer) sit ready but inactive until the key is
 **To switch them on:**
 
 1. Get a key at **[console.anthropic.com](https://console.anthropic.com)** (same idea as DeepSeek — sign up, add a little credit, create a key starting with `sk-ant-...`).
-2. Open `~/.config/opencode/opencode.json`, find `"YOUR_ANTHROPIC_API_KEY"` under `"provider" → "anthropic"`, and paste your real key.
+2. Connect it the same native way — no file editing:
+   ```bash
+   opencode auth login
+   ```
+   Choose **Anthropic** and paste your `sk-ant-...` key. (Or set `ANTHROPIC_API_KEY` in your environment.)
 3. Restart OpenCode. Now you can say *"use the senior architect for this,"* and you can **paste a screenshot** straight into chat — Observer reads it (see below).
 
 > 💰 **Heads up on cost.** Claude (especially Opus/"senior") is **much** pricier than DeepSeek. Use junior agents by default; call in the seniors only when it really matters. The Supervisor already follows this policy automatically.
@@ -287,7 +285,7 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 | **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~29 files. If empty, re-run the copy command in Step 3. |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
 | **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` |
-| **"Invalid API key"** | Typo or placeholder left in | Re-open `opencode.json` and confirm your real `sk-...` key replaced `YOUR_DEEPSEEK_API_KEY` (no extra spaces or quotes). |
+| **"Invalid API key" / "not authenticated"** | Key not connected, or a typo | Re-run `opencode auth login` and re-enter the key (no extra spaces). Confirm with `opencode auth list` that the provider shows up. |
 | **MCP error on startup** (e.g. firecrawl/elevenlabs/railway) | An optional MCP got enabled without its key/install | Harmless to the Supervisor. Either set that server back to `"enabled": false` in `opencode.json`, or finish its setup (see Step 8). |
 
 ---

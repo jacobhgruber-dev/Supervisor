@@ -275,10 +275,10 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
       <div class="step">
         <div class="num">4</div>
         <div>
-          <h3>Paste your key into the config</h3>
-          <p>Open the config and replace the placeholder with your real key.</p>
-          <div class="code"><button class="copy">Copy</button>open -e ~/.config/opencode/opencode.json</div>
-          <p style="margin-top:10px;">Find <code>"YOUR_DEEPSEEK_API_KEY"</code> and swap in your <code>sk-...</code> key. Save and close.</p>
+          <h3>Connect your key (no file editing)</h3>
+          <p>Let OpenCode store your key securely — it never goes in the repo config.</p>
+          <div class="code"><button class="copy">Copy</button>opencode auth login</div>
+          <p style="margin-top:10px;">Choose <b>DeepSeek</b> (or <b>Other</b> → <code>deepseek</code>) and paste your <code>sk-...</code> key. Later, run it again and choose <b>Anthropic</b> to unlock the Claude tiers + Observer.</p>
         </div>
       </div>
 
@@ -323,7 +323,7 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
       </tbody>
     </table>
     <div class="callout warn" style="margin-top:18px;">
-      All 27 agent files already ship in the repo. The Claude-powered ones simply sit unused until you paste an Anthropic key into the <code>"anthropic"</code> block of your config. Full details in the <a href="GETTING_STARTED.md">guide</a>.
+      All 27 agent files already ship in the repo. The Claude-powered ones simply sit unused until you connect an Anthropic key with <code>opencode auth login</code>. Full details in the <a href="GETTING_STARTED.md">guide</a>.
     </div>
   </div>
 </section>

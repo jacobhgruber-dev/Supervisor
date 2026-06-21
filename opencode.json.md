@@ -12,43 +12,31 @@ cp opencode.json ~/.config/opencode/opencode.json
 copy opencode.json %APPDATA%\opencode\opencode.json
 ```
 
-## Required: DeepSeek API Key
+## Connecting Your Keys (no keys in this file)
 
-1. Get your API key at: https://platform.deepseek.com/api_keys
-2. Replace `YOUR_DEEPSEEK_API_KEY` in the provider section with your actual key
-3. The supervisor agent and all subagents run on DeepSeek V4 Pro Max — you only need this one key to get started
+The shipped config already defines the **DeepSeek** and **Anthropic** providers (model names only — no API keys). You connect keys natively with OpenCode's login, which stores them in `~/.local/share/opencode/auth.json`, not in this repo:
+
+```bash
+opencode auth login   # choose DeepSeek, paste your key
+opencode auth login   # run again, choose Anthropic, paste your key
+```
+
+- DeepSeek key: https://platform.deepseek.com/api_keys (if DeepSeek isn't in the menu, choose **Other** → id `deepseek`)
+- Anthropic key: https://console.anthropic.com
+- Prefer env vars? `DEEPSEEK_API_KEY` and `ANTHROPIC_API_KEY` are read automatically.
+
+DeepSeek alone runs the supervisor + junior tier. Adding Anthropic lights up the mid/senior tiers and Observer.
 
 ## Optional Providers
 
-Want to add other models? Add their provider blocks to the `provider` section:
+### xAI (Grok) — for the optional grok-worker addon
 
-### Anthropic (Claude)
-```json
-"anthropic": {
-  "npm": "@ai-sdk/anthropic",
-  "name": "Anthropic (Claude)",
-  "options": {
-    "apiKey": "YOUR_ANTHROPIC_API_KEY"
-  },
-  "models": {
-    "claude-sonnet-4-6": {
-      "name": "Claude Sonnet 4.6 Max",
-      "tools": true
-    }
-  }
-}
-```
+Add this provider block if you use the [grok-worker addon](addons/grok-worker/), then connect the key with `opencode auth login` (choose xAI) or the `XAI_API_KEY` env var — same native flow, no key in the file:
 
-Get key: https://console.anthropic.com
-
-### xAI (Grok)
 ```json
 "xai": {
   "npm": "@ai-sdk/xai",
   "name": "xAI (Grok)",
-  "options": {
-    "apiKey": "YOUR_XAI_API_KEY"
-  },
   "models": {
     "grok-4.3": {
       "name": "Grok 4.3",

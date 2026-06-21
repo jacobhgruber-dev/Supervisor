@@ -7,9 +7,6 @@
     "deepseek": {
       "npm": "@ai-sdk/deepseek",
       "name": "DeepSeek",
-      "options": {
-        "apiKey": "YOUR_DEEPSEEK_API_KEY"
-      },
       "models": {
         "deepseek-v4-pro": {
           "name": "DeepSeek V4 Pro Max",
@@ -20,9 +17,6 @@
     "anthropic": {
       "npm": "@ai-sdk/anthropic",
       "name": "Anthropic (Claude)",
-      "options": {
-        "apiKey": "YOUR_ANTHROPIC_API_KEY"
-      },
       "models": {
         "claude-sonnet-4-6": {
           "name": "Claude Sonnet 4.6 Max",
