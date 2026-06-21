@@ -35,14 +35,14 @@ export default async function () {
           "You are a text-only model. You cannot see images directly. Use the @observer subagent for all visual tasks.\n\n" +
           "### When to use @observer\n" +
           "- A message contains `[Image saved to: <path>]` — the user pasted an image. Call @observer immediately.\n" +
-          "- A macos-use tool response contains a screenshot path — call @observer to understand the UI state.\n" +
+          "- A macos-automator tool response contains a screenshot path — call @observer to understand the UI state.\n" +
           "- A screenpipe search result references screenshots — call @observer to interpret them.\n" +
           "- You need to compare two screenshots (e.g., before/after a UI change) — pass both paths to @observer.\n\n" +
           "### How to call @observer\n" +
           "Spawn @observer as a subagent with a message like:\n" +
-          "  \"Read the image at /tmp/macos-use/screenshot_12345.png and tell me what the UI looks like.\"\n\n" +
+          "  \"Read the image at /tmp/macos-automator/screenshot_12345.png and tell me what the UI looks like.\"\n\n" +
           "### Verification loop (for UI changes)\n" +
-          "1. Use playwright (web) or macos-use (native) to capture the app state\n" +
+          "1. Use playwright (web) or macos-automator (native) to capture the app state\n" +
           "2. Spawn @observer with the screenshot path to analyze visual state\n" +
           "3. Compare with expected behavior\n" +
           "4. Fix discrepancies, repeat from step 1",

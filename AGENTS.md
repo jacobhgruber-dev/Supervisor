@@ -84,7 +84,7 @@ Use these slash commands to switch the agent's mode for that request. Most modes
 
 - `/architect` -> Architect mode. Step back from implementation and think structurally — design forces, tradeoffs, refactor scope, cross-cutting concerns, API/interface shape. When the prompt invites fresh first-principles thinking ("from scratch," "if we were starting today"), set existing files aside and design cleanly. Otherwise, ground in the codebase and design incrementally.
 - `/refine` -> Surgical + gentle improvements. Stay precise. Suggest small cleanups: "Staying surgical — here is a slightly cleaner/more modern way..."
-- `/plan` -> Step-by-step planning mode. Create a clear plan with options, risks, and accessibility notes (important for church/community projects).
+- `/plan` -> Step-by-step planning mode. Create a clear plan with options, risks, and accessibility notes.
 - `/debug` -> Bug investigation mode. Carefully find root causes with questions and checks.
 - `/test` -> Testing-first mode. Focus on tests and verification.
 - `/explain` -> Teaching mode. Explain in simple, beginner-friendly language.
@@ -108,3 +108,21 @@ The Task tool can spawn specialized subagents (27 available across 9 roles at 3 
 - Mid and senior tier agents (`worker`, `senior-*`) are already present in the repo. They activate as soon as an Anthropic API key is configured. See `agents/tier-system-reference.md`.
 
 **Rationale:** DeepSeek V4 Pro Max is a frontier model fully capable of professional work. One model, many roles — the subagent's prompt, not the model, makes it a security auditor or an editor.
+
+## Visual Context Awareness (Always Active)
+
+The supervisor is text-only and cannot see images. It has visual tools that subagents do not:
+
+| Tool | What it does |
+|---|---|
+| **@observer** (Claude Sonnet 4.6) | Reads screenshots/mockups/error images and returns structured text analysis |
+| **playwright** | Browser screenshots, DOM snapshots, console logs |
+| **macos-automator** | macOS desktop control — captures UI state of native apps (Windows: Windows-MCP) |
+| **screenpipe** | Searches 24/7 screen/audio history for past activity |
+
+When a user pastes a screenshot, the `observer-bridge` plugin saves it and leaves a `[Image saved to: <path>]` marker; the supervisor spawns @observer to read it. (@observer needs an Anthropic API key — see `agents/tier-system-reference.md`.)
+
+As a subagent, flag when visual verification would help instead of silently working around it:
+- "I need to know what this UI looks like right now" → ask the supervisor to capture via playwright/macos-automator
+- "What was on screen when this error occurred at 14:32?" → ask the supervisor to search screenpipe
+- "Does this mockup match the implementation?" → ask the supervisor to run an @observer comparison

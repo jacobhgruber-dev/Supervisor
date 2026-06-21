@@ -16,6 +16,8 @@ SUPERVISOR (plans, delegates, reviews, commits)
 
 A shareable setup for the Supervisor agent workflow in [OpenCode](https://opencode.ai). The Supervisor is a primary agent that plans, delegates to specialized subagents, reviews outputs, fixes issues, and commits — all while keeping its own context window clean. You talk to the Supervisor. It manages the team.
 
+> 🚀 **New to all this?** If you've never set up OpenCode or used an API key before, start with **[GETTING_STARTED.md](GETTING_STARTED.md)** — a step-by-step, idiot-proof walkthrough that takes you from zero to a working agent team in ~15 minutes. There's also a visual version at [`index.html`](index.html) (open it in a browser, or host it via GitHub Pages). The README below assumes you already know your way around OpenCode.
+
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
@@ -24,8 +26,8 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker** — optional alternative model worker for when you want Grok 4.3's strengths.
 - **Full 3-tier system built in** — all 27 agents ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
-- **Observer subagent** — multimodal visual analysis via Claude Sonnet 4.6. Paste screenshots, get structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image.
-- **Optional addons** — OpenCode Modes (9 behavioral trigger words), Ollama Local (on-device agents), Observer (visual understanding), and a comprehensive full reference catalog. See [addons/](addons/).
+- **Observer (built in)** — a multimodal Claude Sonnet 4.6 subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once an Anthropic key is configured.
+- **Optional addons** — OpenCode Modes (9 behavioral trigger words), Ollama Local (on-device agents), and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
 
@@ -154,7 +156,11 @@ Supervisor/
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── grok-worker.md             # Alternative Grok-powered worker
+│   ├── gemini-worker.md           # Alternative Gemini-powered worker
+│   ├── observer.md                # Multimodal Observer subagent (Claude Sonnet 4.6)
 │   └── tier-system-reference.md    # Complete 3-tier agent specs and naming conventions
+├── plugin/
+│   └── observer-bridge.js         # Paste-a-screenshot interception (-> ~/.config/opencode/plugin/)
 ├── addons/
 │   ├── README.md                  # Addon overview
 │   ├── open-code-modes/           # 9 behavioral modes (trigger words)
@@ -164,11 +170,6 @@ Supervisor/
 │   └── ollama-local/              # On-device models via Ollama
 │       ├── README.md              # Setup guide + model recommendations
 │       └── agents/                # Local subagent files
-│   └── observer/                  # Visual understanding for text-only supervisors
-│       ├── README.md              # Setup guide + usage
-│       ├── observer.md            # Multimodal observer subagent
-│       ├── observer-bridge.js     # Paste-interception plugin
-│       └── AGENTS-patch.md        # Visual context awareness block (merge into AGENTS.md)
 └── skills/
     └── README.md                  # Skills system documentation
 ```

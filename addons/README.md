@@ -8,8 +8,9 @@ The Supervisor repo ships with everything you need out of the box: one API key, 
 |-------|-------------|------------|
 | [OpenCode Modes](open-code-modes/) | 9 behavioral modes for the main agent — trigger words that change how it thinks (architect, debug, review, etc.) | 1 minute — copy one file |
 | [Ollama Local](ollama-local/) | Run models 100% on your device via Ollama — two local subagents (coder + reasoner), no cloud API calls, data stays private | 10 minutes — install Ollama + pull models |
-| [Observer](observer/) | Visual understanding for text-only supervisors — a multimodal Claude subagent that reads screenshots, UI states, and error logs. Paste images, get structured text analysis | 2 minutes — copy 2 files + add Anthropic API key |
 | [Reference](../reference.md) | Comprehensive catalog of all agents, subagents, modes, commands, and model costs — the complete picture when you have everything | 0 minutes — read |
+
+> **Observer is no longer an addon — it's built into the base setup.** The multimodal screenshot-reading subagent (`agents/observer.md`) and its paste-interception plugin (`plugin/observer-bridge.js`) ship with the core repo and activate once an Anthropic key is configured. See [GETTING_STARTED.md](../GETTING_STARTED.md).
 
 ## How Addons Work
 

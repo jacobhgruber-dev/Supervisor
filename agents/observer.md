@@ -26,7 +26,7 @@ Output language must match the language of the user's request.
 Scan the current conversation context for image file paths. Any path matching these conditions should be processed:
 
 - A path wrapped in `[Image saved to: ...]` (user-pasted image)
-- A path in `/tmp/macos-use/` (desktop automation screenshot)
+- A path in `/tmp/macos-automator/` (desktop automation screenshot)
 - An image path the main agent explicitly tells you to read
 - A path referenced in a screenpipe search result
 
