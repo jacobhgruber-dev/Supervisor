@@ -108,4 +108,4 @@ The Task tool can spawn specialized subagents (27 across 9 roles at 3 tiers, plu
 - When the user explicitly names a subagent (e.g., "send this to senior-architect"), use exactly what they asked for — no override.
 - For simple research/file-discovery tasks, the `explore` built-in subagent is always acceptable — it's already lightweight.
 
-**Rationale:** The junior tier (DeepSeek V4 Pro) is a frontier model fully capable of professional work. The mid and senior tiers (Sonnet/Opus Max) are reserved for conscious escalation, not background convenience. You should not silently spend Anthropic credits on tasks that DeepSeek can handle.
+**Rationale:** The junior tier (DeepSeek V4 Pro) is a frontier model fully capable of professional work. The mid and senior tiers (Sonnet/Opus) are reserved for conscious escalation, not background convenience. You should not silently spend Anthropic credits on tasks that DeepSeek can handle.
