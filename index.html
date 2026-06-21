@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Supervisor — Zero to Hero Setup for OpenCode</title>
+<meta name="description" content="An idiot-proof, zero-to-hero guide to setting up the Supervisor agent team in OpenCode. No experience needed." />
+<style>
+  :root{
+    --gold:#c4a35a;
+    --gold-soft:#e3c98a;
+    --bg:#0d0f14;
+    --bg-2:#141821;
+    --card:#1a1f2b;
+    --card-2:#20283a;
+    --ink:#e8ecf4;
+    --ink-dim:#9aa6bd;
+    --line:#2a3346;
+    --green:#3ecf8e;
+    --blue:#6aa9ff;
+    --code:#11151d;
+    --radius:16px;
+    --maxw:980px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 50% -200px, rgba(196,163,90,.18), transparent 70%),
+      var(--bg);
+    color:var(--ink);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--gold-soft);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
+
+  /* HERO */
+  header.hero{
+    text-align:center;
+    padding:88px 22px 56px;
+  }
+  .badge-pill{
+    display:inline-block;
+    font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold-soft);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 16px;margin-bottom:26px;
+    background:rgba(196,163,90,.06);
+  }
+  .hero h1{
+    font-size:clamp(2.4rem,6vw,4rem);
+    line-height:1.05;
+    margin:0 0 16px;
+    background:linear-gradient(180deg,#fff, var(--gold-soft));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-weight:800;letter-spacing:-.02em;
+  }
+  .hero p.sub{
+    font-size:clamp(1.05rem,2.4vw,1.3rem);
+    color:var(--ink-dim);
+    max-width:640px;margin:0 auto 32px;
+  }
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:34px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:14px 26px;border-radius:12px;font-weight:700;font-size:1rem;
+    border:1px solid transparent;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);text-decoration:none;}
+  .btn-primary{background:linear-gradient(180deg,var(--gold-soft),var(--gold));color:#1a1306;box-shadow:0 10px 30px rgba(196,163,90,.28);}
+  .btn-ghost{background:var(--card);color:var(--ink);border-color:var(--line);}
+  .stat-row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;color:var(--ink-dim);font-size:.92rem;}
+  .stat-row b{color:var(--ink);}
+
+  /* FLOW DIAGRAM */
+  .flow{
+    margin:46px auto 0;max-width:560px;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 22px;text-align:center;
+  }
+  .flow .you{color:var(--ink-dim);font-size:.9rem;}
+  .flow .sup{
+    display:inline-block;margin:12px 0;padding:12px 28px;border-radius:12px;
+    background:linear-gradient(180deg,rgba(196,163,90,.22),rgba(196,163,90,.08));
+    border:1px solid var(--gold);color:var(--gold-soft);font-weight:800;letter-spacing:.02em;
+  }
+  .flow .arrow{color:var(--gold);font-size:1.3rem;line-height:1;}
+  .roles{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+  .role-chip{
+    font-size:.78rem;color:var(--ink-dim);background:var(--bg-2);
+    border:1px solid var(--line);border-radius:8px;padding:5px 11px;
+  }
+
+  /* SECTIONS */
+  section{padding:54px 0;border-top:1px solid var(--line);}
+  section h2{
+    font-size:clamp(1.5rem,3.4vw,2rem);margin:0 0 8px;font-weight:800;letter-spacing:-.01em;
+  }
+  section .lede{color:var(--ink-dim);margin:0 0 30px;font-size:1.05rem;max-width:680px;}
+  .eyebrow{color:var(--gold-soft);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+
+  /* WHAT-IS callout */
+  .callout{
+    background:var(--card);border:1px solid var(--line);border-left:3px solid var(--gold);
+    border-radius:12px;padding:20px 22px;margin:18px 0;color:var(--ink-dim);
+  }
+  .callout b{color:var(--ink);}
+
+  /* STEP CARDS */
+  .steps{display:flex;flex-direction:column;gap:18px;counter-reset:step;}
+  .step{
+    display:grid;grid-template-columns:54px 1fr;gap:18px;align-items:start;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 24px;
+  }
+  .step .num{
+    width:42px;height:42px;border-radius:11px;display:grid;place-items:center;
+    font-weight:800;font-size:1.15rem;color:#1a1306;
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold));
+  }
+  .step h3{margin:2px 0 6px;font-size:1.18rem;}
+  .step p{margin:0 0 8px;color:var(--ink-dim);}
+  .step .opt{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-weight:700;}
+
+  /* CODE */
+  .code{
+    position:relative;background:var(--code);border:1px solid var(--line);border-radius:10px;
+    padding:14px 50px 14px 16px;margin:10px 0;overflow-x:auto;
+    font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.86rem;color:#cfe3ff;white-space:pre;
+  }
+  .code .cmt{color:#5f7088;}
+  .copy{
+    position:absolute;top:8px;right:8px;border:1px solid var(--line);background:var(--card-2);
+    color:var(--ink-dim);border-radius:7px;padding:4px 10px;font-size:.72rem;cursor:pointer;
+  }
+  .copy:hover{color:var(--ink);border-color:var(--gold);}
+  .copy.copied{color:var(--green);border-color:var(--green);}
+
+  /* warn */
+  .warn{border-left-color:var(--green);}
+  .trap{border-left-color:#ff6b6b;background:rgba(255,107,107,.05);}
+  .trap b{color:#ffd2d2;}
+
+  /* TIER TABLE */
+  .tier-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.92rem;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .tier-table th,.tier-table td{padding:13px 15px;text-align:left;border-bottom:1px solid var(--line);}
+  .tier-table th{background:var(--card-2);color:var(--gold-soft);font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;}
+  .tier-table tr:last-child td{border-bottom:none;}
+  .tier-table td:first-child{color:var(--ink);}
+  .dollar{color:var(--green);font-weight:700;}
+  .dollar.mid{color:var(--gold-soft);}
+  .dollar.hi{color:#ff9b6b;}
+
+  /* FAQ */
+  details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 20px;margin-bottom:12px;}
+  details summary{cursor:pointer;padding:16px 0;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::after{content:"+";color:var(--gold);font-size:1.4rem;}
+  details[open] summary::after{content:"–";}
+  details p{margin:0 0 16px;color:var(--ink-dim);}
+
+  footer{padding:48px 22px 64px;text-align:center;color:var(--ink-dim);border-top:1px solid var(--line);}
+  footer .big{color:var(--ink);font-size:1.15rem;font-weight:700;margin-bottom:8px;}
+
+  @media(max-width:560px){
+    .step{grid-template-columns:1fr;}
+    .step .num{margin-bottom:-6px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <span class="badge-pill">★ Beginner-friendly · ~15 minutes · ~$1 to start</span>
+    <h1>Build your own AI<br>coding team.</h1>
+    <p class="sub">The <b>Supervisor</b> turns OpenCode into a manager that plans your work, delegates to 27 specialist agents, reviews their output, and reports back. You talk to one agent — it runs the whole team.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="GETTING_STARTED.md">📖 Read the Zero-to-Hero Guide</a>
+      <a class="btn btn-ghost" href="#start">⚡ Quick Start</a>
+    </div>
+    <div class="stat-row">
+      <span><b>1</b> API key to start</span>
+      <span><b>27</b> specialist agents</span>
+      <span><b>3</b> power tiers</span>
+      <span><b>$0</b> for the software</span>
+    </div>
+
+    <div class="flow">
+      <div class="you">YOU — “Build a REST API for the user model”</div>
+      <div class="arrow">↓</div>
+      <div class="sup">SUPERVISOR</div>
+      <div style="color:var(--ink-dim);font-size:.82rem;margin-bottom:8px;">plans → delegates → reviews → fixes → commits</div>
+      <div class="arrow">↓</div>
+      <div class="roles">
+        <span class="role-chip">worker</span>
+        <span class="role-chip">architect</span>
+        <span class="role-chip">reviewer</span>
+        <span class="role-chip">security</span>
+        <span class="role-chip">debugger</span>
+        <span class="role-chip">+4 more</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- WHAT IS THIS -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">The 30-second explanation</div>
+    <h2>What am I actually setting up?</h2>
+    <p class="lede">If you've never used an AI coding agent, here's the whole idea in plain English — no jargon.</p>
+
+    <div class="callout">
+      <b>OpenCode</b> is a free app that runs in your terminal. On its own it's just a chat box for an AI. This repo upgrades it into a <b>Supervisor</b> — think of hiring a project manager instead of a single freelancer. You give one instruction; the Supervisor splits it into tasks, hands each to the right specialist, checks the work, fixes mistakes, and reports back.
+    </div>
+    <div class="callout">
+      <b>An API key</b> is a long password that lets your computer talk to an AI model over the internet. The model runs on the provider's servers, not your laptop, and you pay a tiny amount per use. The default model here — <b>DeepSeek</b> — is so cheap that a few dollars of credit lasts weeks. Treat the key like a password: never share it, and you can revoke it anytime.
+    </div>
+  </div>
+</section>
+
+<!-- QUICK START STEPS -->
+<section id="start">
+  <div class="wrap">
+    <div class="eyebrow">Quick start</div>
+    <h2>Zero to hero, in 6 steps</h2>
+    <p class="lede">Paste each grey box into your terminal (Mac: press <code>Cmd+Space</code>, type “Terminal”). The full hand-holding version — with screenshots-in-words and every footgun explained — is in the <a href="GETTING_STARTED.md">complete guide</a>.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="num">1</div>
+        <div>
+          <h3>Install OpenCode</h3>
+          <p>Needs <a href="https://nodejs.org">Node.js</a> first (check with <code>node --version</code>).</p>
+          <div class="code"><button class="copy">Copy</button>npm install -g opencode</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">2</div>
+        <div>
+          <h3>Get a DeepSeek API key</h3>
+          <p>The only key you need to start. Sign up at <a href="https://platform.deepseek.com/api_keys">platform.deepseek.com</a>, add <b>$2–$5</b> of credit, then create a key (starts with <code>sk-</code>). Copy it now — you can't view it again.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">3</div>
+        <div>
+          <h3>Copy the files into place</h3>
+          <p>Download the repo, then put the pieces where OpenCode looks for them.</p>
+          <div class="code"><button class="copy">Copy</button>git clone https://github.com/jacobhgruber-dev/Supervisor.git
+cd Supervisor
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
+cp opencode.json ~/.config/opencode/opencode.json
+cp supervisor.md ~/.config/opencode/agent/supervisor.md   <span class="cmt"># singular</span>
+cp agents/*.md  ~/.config/opencode/agents/                <span class="cmt"># plural</span>
+cp AGENTS.md    ~/.config/opencode/AGENTS.md</div>
+          <div class="callout trap" style="margin-top:14px;">
+            <b>🪤 The #1 footgun:</b> the Supervisor goes in <code>agent/</code> (singular); the 27 subagents go in <code>agents/</code> (plural). Two different folders — don't merge them, or the team won't load.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">4</div>
+        <div>
+          <h3>Paste your key into the config</h3>
+          <p>Open the config and replace the placeholder with your real key.</p>
+          <div class="code"><button class="copy">Copy</button>open -e ~/.config/opencode/opencode.json</div>
+          <p style="margin-top:10px;">Find <code>"YOUR_DEEPSEEK_API_KEY"</code> and swap in your <code>sk-...</code> key. Save and close.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">5</div>
+        <div>
+          <h3>Launch &amp; pick the Supervisor</h3>
+          <div class="code"><button class="copy">Copy</button>opencode</div>
+          <p style="margin-top:10px;">Open the agent selector and choose <b>Supervisor</b>. You're now talking to your project manager.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">6</div>
+        <div>
+          <h3>Give it your first task 🏆</h3>
+          <p>Try one of these and watch it delegate, review, and report back on its own:</p>
+          <div class="code"><button class="copy">Copy</button>"Review this project and tell me what needs work"
+"Build a small command-line to-do app in Python"
+"Fix the login bug"</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TIERS -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">When you want more power</div>
+    <h2>Three tiers, one naming trick</h2>
+    <p class="lede">Everything above runs on cheap DeepSeek. Add an <a href="https://console.anthropic.com">Anthropic (Claude)</a> key and the mid + senior agents wake up automatically — no extra setup. The Supervisor escalates only when it's worth it.</p>
+    <table class="tier-table">
+      <thead>
+        <tr><th>Tier</th><th>Agent name</th><th>Model</th><th>Powered by</th><th>Relative cost</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Junior</b> · the default</td><td><code>junior-worker</code></td><td>DeepSeek V4 Pro</td><td>DeepSeek key</td><td class="dollar">$</td></tr>
+        <tr><td><b>Mid</b> · deeper reasoning</td><td><code>worker</code></td><td>Claude Sonnet 4.6</td><td>Anthropic key</td><td class="dollar mid">$$</td></tr>
+        <tr><td><b>Senior</b> · highest stakes</td><td><code>senior-worker</code></td><td>Claude Opus 4.8</td><td>Anthropic key</td><td class="dollar hi">$$$$</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn" style="margin-top:18px;">
+      All 27 agent files already ship in the repo. The Claude-powered ones simply sit unused until you paste an Anthropic key into the <code>"anthropic"</code> block of your config. <b>Gemini</b> is wired up too as an optional expansion. Full details in the <a href="GETTING_STARTED.md">guide</a>.
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Common questions</div>
+    <h2>Beginner FAQ</h2>
+
+    <details>
+      <summary>Is this going to cost a lot?</summary>
+      <p>No. The software is free. DeepSeek (the default) charges a fraction of a cent per task — most people load $2–$5 and it lasts weeks. Claude's “senior” tier is far pricier, so it's used only when you explicitly ask.</p>
+    </details>
+    <details>
+      <summary>The Supervisor doesn't show up. What did I do wrong?</summary>
+      <p>Almost always the singular/plural folder trap. Confirm <code>supervisor.md</code> is in <code>~/.config/opencode/agent/</code> (singular) and the rest are in <code>~/.config/opencode/agents/</code> (plural). Re-run the Step 3 commands exactly.</p>
+    </details>
+    <details>
+      <summary>I get “insufficient balance” errors.</summary>
+      <p>Your key works, but the account has $0. Add a few dollars of credit at platform.deepseek.com and try again.</p>
+    </details>
+    <details>
+      <summary>What are the “mcp” entries in the config? Do I need them?</summary>
+      <p>Two browser tools (<code>playwright</code>, <code>chrome-devtools</code>) ship enabled and need no keys. Five more (<code>firecrawl</code>, <code>elevenlabs</code>, <code>railway</code>, <code>screenpipe</code> for screen history, and <code>macos-automator</code> for native Mac control) are optional nice-to-haves, <b>disabled by default</b> — turn one on only if you want it. (On Windows, swap <code>macos-automator</code> for <a href="https://github.com/CursorTouch/Windows-MCP">Windows-MCP</a>.) The Supervisor runs perfectly without any of them. See the <a href="GETTING_STARTED.md">guide</a> for how to enable one.</p>
+    </details>
+    <details>
+      <summary>I already have an OpenCode config — will this overwrite it?</summary>
+      <p>Don't copy <code>opencode.json</code> over your existing one. Instead, copy just the <code>"provider"</code> and <code>"agent"</code> blocks into yours. The <code>.md</code> agent files are safe to add as-is.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="big">That's the whole journey — zero to a working AI team. 🎈</div>
+    <p>Want every step spelled out? Read the <a href="GETTING_STARTED.md">complete Zero-to-Hero guide</a> · See the <a href="README.md">architecture</a> · Browse the <a href="agents/tier-system-reference.md">agent specs</a>.</p>
+    <p style="margin-top:18px;font-size:.85rem;">Supervisor — agent orchestration for <a href="https://opencode.ai">OpenCode</a> · MIT licensed</p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var code = btn.parentElement.cloneNode(true);
+      code.querySelector('.copy').remove();
+      var text = code.innerText.replace(/ /g,' ');
+      navigator.clipboard.writeText(text.trim()).then(function(){
+        btn.textContent = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(function(){ btn.textContent='Copy'; btn.classList.remove('copied'); }, 1600);
+      });
+    });
+  });
+</script>
+</body>
+</html>
