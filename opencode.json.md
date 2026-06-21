@@ -79,9 +79,28 @@ Get key: https://console.x.ai
 
 Install: https://ollama.com
 
-## MCP Servers (optional)
+## MCP Servers
 
-Add MCP servers under the `mcp` key for extended capabilities:
+The `mcp` block gives agents extra capabilities. The config ships with two enabled (no keys needed) and three optional ones disabled by default.
+
+**Enabled by default** — browser/automation tools, run via `npx` on first use:
+
+- `playwright` — drive a real browser (clicks, forms, login)
+- `chrome-devtools` — inspect pages, console, and network
+
+**Optional (disabled by default)** — each needs a key or extra install. To use one, set `"enabled": true` **and** flip its line in the top-level `"permission"` block from `"deny"` to `"allow"`:
+
+| MCP | Adds | Setup |
+|-----|------|-------|
+| `firecrawl` | Web scraping + search | Key from https://firecrawl.dev |
+| `elevenlabs` | Text-to-speech / voice | Key from https://elevenlabs.io; needs `uv` |
+| `railway` | Deploy & manage apps | Railway CLI + `railway login` |
+| `screenpipe` | Search 24/7 screen + audio history | Run the screenpipe app (https://screenpi.pe); cross-platform |
+| `macos-automator` | Control native macOS apps (AppleScript/JXA) | macOS only; Node 24+, Automation + Accessibility permission |
+
+> **Windows:** `macos-automator` is macOS-only. For native Windows control, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) and add it to `"mcp"` the same opt-in way. `screenpipe` works on Windows too.
+
+Example — enabling Firecrawl:
 
 ```json
 "mcp": {
@@ -89,14 +108,13 @@ Add MCP servers under the `mcp` key for extended capabilities:
     "type": "local",
     "command": ["npx", "-y", "firecrawl-mcp"],
     "enabled": true,
-    "env": {
-      "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY"
-    }
+    "environment": { "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY" }
   }
+},
+"permission": {
+  "firecrawl_*": "allow"
 }
 ```
-
-Get key: https://firecrawl.dev
 
 ## Adding Agent Files
 

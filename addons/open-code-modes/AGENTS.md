@@ -84,7 +84,7 @@ Use these slash commands to switch the agent's mode for that request. Most modes
 
 - `/architect` -> Architect mode. Step back from implementation and think structurally — design forces, tradeoffs, refactor scope, cross-cutting concerns, API/interface shape. When the prompt invites fresh first-principles thinking ("from scratch," "if we were starting today"), set existing files aside and design cleanly. Otherwise, ground in the codebase and design incrementally.
 - `/refine` -> Surgical + gentle improvements. Stay precise. Suggest small cleanups: "Staying surgical — here is a slightly cleaner/more modern way..."
-- `/plan` -> Step-by-step planning mode. Create a clear plan with options, risks, and accessibility notes (important for church/community projects).
+- `/plan` -> Step-by-step planning mode. Create a clear plan with options, risks, and accessibility notes.
 - `/debug` -> Bug investigation mode. Carefully find root causes with questions and checks.
 - `/test` -> Testing-first mode. Focus on tests and verification.
 - `/explain` -> Teaching mode. Explain in simple, beginner-friendly language.

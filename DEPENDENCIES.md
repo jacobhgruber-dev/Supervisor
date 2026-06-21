@@ -92,8 +92,8 @@ Useful for automation scripts, web scraping, and high-quality transcription.
 For high-quality transcription (better accuracy than `whisper-cpp`), install in a dedicated venv:
 
 ```bash
-python3 -m venv ~/Projects/Whisper/fw-env
-source ~/Projects/Whisper/fw-env/bin/activate
+python3 -m venv ~/whisper-env
+source ~/whisper-env/bin/activate
 pip install faster-whisper
 ```
 
@@ -101,9 +101,28 @@ The `large-v3` model downloads automatically on first use (~3 GB).
 
 ---
 
-## Tier 5: Optional — Firecrawl MCP (1 item)
+## Tier 5: MCP Servers
 
-Web scraping, search, and structured data extraction. OpenCode runs it via npx — no manual install.
+The config ships with **two browser/automation MCP servers enabled by default** — no keys needed, OpenCode runs them via `npx` on first use:
+
+| MCP | What it adds |
+|-----|--------------|
+| `playwright` | Drive a real browser — clicks, forms, login flows |
+| `chrome-devtools` | Inspect pages, console, and network for web debugging |
+
+It also includes **three optional MCP servers, disabled by default.** Each needs a key or an extra install, so you opt in only when you want it. To turn one on: set its `"enabled": true` in the `"mcp"` block **and** change its line in the `"permission"` block from `"deny"` to `"allow"`.
+
+| MCP | What it adds | Setup |
+|-----|--------------|-------|
+| `firecrawl` | Web scraping + search for JS-heavy pages | Free key from [firecrawl.dev](https://firecrawl.dev) → `YOUR_FIRECRAWL_KEY` |
+| `elevenlabs` | Text-to-speech / voice generation | Key from [elevenlabs.io](https://elevenlabs.io) → `YOUR_ELEVENLABS_KEY`; needs [`uv`](https://docs.astral.sh/uv/) installed |
+| `railway` | Deploy & manage apps on Railway | Install the [Railway CLI](https://docs.railway.com/guides/cli), then `railway login` |
+| `screenpipe` | Search 24/7 screen + audio history | Install & run the [screenpipe](https://screenpi.pe) app (records locally). Cross-platform. |
+| `macos-automator` | Control native **macOS** apps via AppleScript/JXA | macOS only. Node 24+, plus Automation + Accessibility permission. |
+
+**Windows desktop control:** `macos-automator` is macOS-only. On Windows, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) (follow its repo setup) and add it to `"mcp"` the same opt-in way. `screenpipe` runs on Windows already.
+
+Example — enabling Firecrawl:
 
 ```json
 "mcp": {
@@ -111,19 +130,17 @@ Web scraping, search, and structured data extraction. OpenCode runs it via npx �
     "type": "local",
     "command": ["npx", "-y", "firecrawl-mcp"],
     "enabled": true,
-    "env": {
-      "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY"
-    }
+    "environment": { "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY" }
   }
+},
+"permission": {
+  "firecrawl_*": "allow"
 }
 ```
-
-Requires a free API key from [firecrawl.dev](https://firecrawl.dev).
 
 ---
 
 ## What's Not Listed Here
 
-- **Claude, Grok, ElevenLabs API keys** — documented in `opencode.json.md` (optional providers) and `agents/tier-system-reference.md` (3-tier configuration).
+- **Anthropic and Gemini API keys** — documented in `opencode.json.md` (providers) and `agents/tier-system-reference.md` (3-tier configuration).
 - **Model files** (whisper models, ollama models) — auto-downloaded on first use or pulled via `ollama pull`.
-- **Anna's Archive / AudiobookBay CLIs** — personal workflow tools, not part of the supervisor system.

@@ -1,195 +1,39 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "agent": {
-    "supervisor": {
-      "permission": {
-        "chrome-devtools_*": "allow",
-        "elevenlabs_*": "allow",
-        "pentest-ai_*": "deny",
-        "pentest-ai_scan_headers_builtin": "allow",
-        "pentest-ai_scan_secrets_builtin": "allow",
-        "pentest-ai_scan_ssl_builtin": "allow",
-        "pentest-ai_browser_inspect": "allow",
-        "pentest-ai_http_request": "allow",
-        "nmap-mcp-server_*": "allow"
-      }
-    },
-    "media": {
-      "permission": {
-        "elevenlabs_*": "allow",
-        "open-design_*": "allow",
-        "pentest-ai_*": "allow",
-        "nmap-mcp-server_*": "allow"
-      }
-    }
-  },
-  "command": {
-    "anna": {
-      "description": "Search Anna's Archive for books and academic articles, get details, or download",
-      "template": "Search Anna's Archive for books (incl. audiobooks) and academic articles. Download them. Source repo: https://github.com/jacobhgruber-dev/anna-archive-cli. API key already configured in .env \u2014 no setup needed unless binary is missing.\n\n## Setup (run once if binary missing)\nIf /Users/jacobgruber/Projects/annas-mcp/annas-mcp does not exist:\n  git clone https://github.com/jacobhgruber-dev/anna-archive-cli.git /Users/jacobgruber/Projects/annas-mcp\n  cd /Users/jacobgruber/Projects/annas-mcp && go build -o annas-mcp ./cmd/annas-mcp\n  cp .env.example .env\n  mkdir -p /Users/jacobgruber/Projects/Anna\n  # Then: nano .env to set ANNAS_SECRET_KEY (user already has this)\n\n## Book Search\nRun: cd /Users/jacobgruber/Projects/annas-mcp && ./annas-mcp book-search \"<query>\"\n- For audiobooks, include \"audiobook mp3 m4b\" in the query\n- For exact titles, use quotes: \"Pride and Prejudice\" author name\n- Show results in a clean table with #, Title, Author, Format, Size, Hash\n\n## Book Download\nWhen user asks to download a book result, use the hash from the search:\n  cd /Users/jacobgruber/Projects/annas-mcp && ./annas-mcp book-download <md5_hash> \"Title.ext\"\n- Extension must match the format from search results (epub, pdf, mp3, m4b, etc.)\n- No need to ask for confirmation if the user said \"download #3\" \u2014 just do it\n- Downloads go to /Users/jacobgruber/Projects/Anna (set in .env)\n\n## Article / Paper Search\nRun: cd /Users/jacobgruber/Projects/annas-mcp && ./annas-mcp article-search \"<query>\"\n- Searches Anna's Archive journal content specifically (content=journal in the URL)\n- Auto-detects DOIs: if query starts with \"10.\" it does a direct DOI lookup (returns single paper)\n- For keyword searches (e.g., \"neural networks transformers\"), returns multiple results\n- Show results in a clean table with #, Title, Authors, Journal, Size, Hash\n- If user asks for a paper by DOI, use this command with the DOI\n\n## Article / Paper Download\nRun: cd /Users/jacobgruber/Projects/annas-mcp && ./annas-mcp article-download \"<doi>\"\n- Provide the DOI (starts with \"10.\") from search results or direct lookup\n- Tries fast download (API key) first, falls back to SciDB download (no auth needed)\n- Downloads go to /Users/jacobgruber/Projects/Anna (set in .env)\n- No need to ask for confirmation \u2014 just download\n\n## Output\nKeep results concise: numbered table, basic metadata. Only show download command on request."
-    },
-    "audio": {
-      "description": "Search and download audiobooks from AudiobookBay, optionally routed through Tor",
-      "template": "Search AudiobookBay for audiobooks and download them via Tor. Downloads go to /Users/jacobgruber/Projects/Audio.\nSource repo: https://github.com/jacobhgruber-dev/audiobookbay-cli\n\n## Setup (run once if tools are missing)\nIf python3 can't import requests or bs4: pip3 install --break-system-packages requests beautifulsoup4\nIf aria2c is not installed: brew install aria2\nIf torsocks is not installed: brew install torsocks\nIf /Users/jacobgruber/Projects/Audio does not exist: mkdir -p /Users/jacobgruber/Projects/Audio\n\n## Tor Check (REQUIRED before any torsocks download)\nFirst verify Tor is running:\n  python3 /Users/jacobgruber/.config/opencode/skills/open-tor/scripts/opentor.py check\nIf Tor is not active, run: brew services start tor\nThen verify again before attempting downloads.\n\n## Search\nRun: cd /Users/jacobgruber/Projects/audiobookbay-automated && python3 audiobookbay.py search \"<query>\"\n- Always search with max_pages=1 for a fast initial sweep; use max_pages=2 only if user wants more\n- Show results in a clean numbered table: #, Title, Format, Bitrate, Size, Posted, Seeds\n- Sort by seeds descending when presenting results (best quality first)\n\n## Browse Recent (newly added audiobooks)\nRun: cd /Users/jacobgruber/Projects/audiobookbay-automated && python3 -c \"\nimport requests, bs4\nr = requests.get('https://audiobookbay.lu/', headers={'User-Agent': 'Mozilla/5.0'})\nsoup = bs4.BeautifulSoup(r.text, 'html.parser')\nfor i, post in enumerate(soup.select('.post')[:15], 1):\n    title = post.select_one('.postTitle a')\n    if not title: continue\n    meta = post.select_one('.postInfo')\n    print(f'{i}. {title.text.strip()[:90]}')\n    if meta: print(f'   {meta.text.strip()[:100]}')\n    print()\n\"\n\n## Get Magnet Link\nRun: cd /Users/jacobgruber/Projects/audiobookbay-automated && python3 audiobookbay.py magnet \"<detail_url>\"\n\n## Download via Tor (recommended for privacy)\nVerify Tor is active (opentor.py check), then:\n  torsocks aria2c --seed-time=0 --bt-require-crypto=true --dir=\"/Users/jacobgruber/Projects/Audio\" \"<magnet_link>\"\n\n## Download without Tor (faster, less private)\n  aria2c --seed-time=0 --bt-require-crypto=true --dir=\"/Users/jacobgruber/Projects/Audio\" \"<magnet_link>\"\n\n## Notes\n- Tor torrent downloads are slower but private. Mention this.\n- Present results in a clean table. Sort by seed count highest first.\n- Only show magnet/detail links if user asks. Keep output concise."
-    },
-    "bay": {
-      "description": "Search and download torrents from The Pirate Bay, YTS (movies), and Nyaa.si (anime/content) \u2014 routed through Tor",
-      "template": "Search torrents across The Pirate Bay, YTS (movies), and Nyaa.si (anime/content). Download via Tor. Downloads go to /Users/jacobgruber/Projects/Media/Bay.\n\n## Tor Check (REQUIRED before any torsocks download)\nFirst verify Tor is running:\n  python3 /Users/jacobgruber/.config/opencode/skills/open-tor/scripts/opentor.py check\nIf Tor is not active, run: brew services start tor\nThen verify again before attempting downloads.\n\n## TPB API Server (start if not running)\nCheck: curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:5050/\nIf down, start: nohup /Users/jacobgruber/thepiratebay/venv/bin/python3 /Users/jacobgruber/thepiratebay/app.py > /tmp/tpb-api.log 2>&1 &\nWait 2s, then verify.\n\n## TPB Search\ncurl -s \"http://127.0.0.1:5050/search/TERM/PAGE/\" | python3 -m json.tool\n- Page 0 = first 30 results, page 1 = next 30, etc.\n- URL-encode spaces as %20\n- Sort: curl -s \"http://127.0.0.1:5050/search/TERM/0/?sort=seeds_desc\"\n\n## TPB Browse by Category\n- Top 100 all:              curl -s http://127.0.0.1:5050/top/0/\n- Top 100 Movies:           curl -s http://127.0.0.1:5050/top/200/\n- Top 100 TV:               curl -s http://127.0.0.1:5050/top/205/\n- Top 100 Music:            curl -s http://127.0.0.1:5050/top/100/\n- Top 100 Games:            curl -s http://127.0.0.1:5050/top/400/\n- Top 100 Apps:             curl -s http://127.0.0.1:5050/top/300/\n- Top 100 Audio Books:      curl -s http://127.0.0.1:5050/top/100/\n- Top 48h all:              curl -s http://127.0.0.1:5050/top48h/0/\n  Categories: 100=Audio 200=Video 300=Apps 400=Games 600=Other\n  Subcategories: 201=Movies 202=Movies DVDR 205=TV\n\n## YTS Movie Search (JSON API, no CF)\ncurl -s \"https://yts.mx/api/v2/list_movies.json?query_term=TERM&limit=10\" | python3 -c \"\nimport sys,json; d=json.load(sys.stdin)\nfor m in d.get('data',{}).get('movies',[]):\n    print(f'{m[\"title\"]} ({m[\"year\"]}) | {m.get(\"rating\",\"?\")}/10 | {m.get(\"runtime\",\"?\")}min')\n    for t in m.get('torrents',[]):\n        print(f'  {t[\"quality\"]} | {t[\"size\"]} | seeds:{t[\"seeds\"]} | peers:{t[\"peers\"]}')\n\"\n\n## Nyaa.si Search (anime, manga, software \u2014 JSON API, no CF)\ncurl -s \"https://nyaa.si/api/search?q=QUERY&limit=10\" | python3 -c \"\nimport sys,json; d=json.load(sys.stdin)\nfor r in d['data']:\n    size = r.get('size',0)\n    size_str = f'{size/1e9:.1f}GB' if size > 1e9 else f'{size/1e6:.0f}MB'\n    print(f'{r[\"name\"][:80]} | {size_str} | seeds:{r[\"seeders\"]} | leech:{r[\"leechers\"]}')\n\"\n\n## Download (Tor)\nUse the \"magnet\" field from search results.\nVerify Tor first, then:\n  torsocks aria2c --seed-time=0 --bt-require-crypto=true --dir=\"/Users/jacobgruber/Projects/Media/Bay\" \"<magnet>\"\nDirect (faster, less private):\n  aria2c --seed-time=0 --bt-require-crypto=true --dir=\"/Users/jacobgruber/Projects/Media/Bay\" \"<magnet>\"\n\n## Output\nPresent results as clean numbered tables: #, Title, Size, Seeds, Leeches, Source (TPB/YTS/Nyaa). If user asks for movies, prefer YTS. If anime, prefer Nyaa. For general searches, default to TPB. Format sizes readable (GB/MB). Don't explain API internals."
-    },
-    "blender": {
-      "description": "Open and control Blender via blender-mcp (addon must be running)",
-      "template": "Use the blender-mcp MCP tools to control Blender. Load the blender skill first for full context.\n\n## Prerequisites (verify before proceeding)\n- Blender is running and the BlenderMCP addon is enabled and connected\n- Check: use `get_scene_info` to verify the connection is live\n\n## Available via MCP tools\n- get_scene_info, get_object_info, get_viewport_screenshot\n- execute_blender_code (full bpy access \u2014 save .blend first!)\n- Poly Haven: get_polyhaven_categories, search_polyhaven_assets, download_polyhaven_asset, set_texture\n- Sketchfab: search_sketchfab_models, download_sketchfab_model\n- AI 3D generation: generate_hyper3d_model_via_text/images, generate_hunyuan3d_model, poll jobs, import generated assets\n\n## Headless / batch operations (no GUI needed)\n- Run script: /opt/homebrew/bin/blender --background --python script.py\n- One-liner: /opt/homebrew/bin/blender --background --python-expr \"import bpy; ...\"\n- Render: /opt/homebrew/bin/blender --background file.blend --render-output /path/ --render-frame 1\n\n## Quick scene creation workflow\n1. get_scene_info to see current state\n2. Get assets from Poly Haven or Sketchfab if applicable\n3. Fall back to execute_blender_code for custom scripting\n4. get_viewport_screenshot to verify\n5. Save: /opt/homebrew/bin/blender --background current.blend --python-expr \"import bpy; bpy.ops.wm.save_mainfile()\"\n\nAlways verify results visually. Z is up in Blender."
-    },
-    "transcribe": {
-      "description": "Transcribe audio with whisper (fast) or faster-whisper (high quality)",
-      "template": "Transcribe the audio file the user provides. Show the full transcript to the user. Save output to ~/Projects/Whisper/output/.\n\nDEFAULT (fast): Use whisper-cli with base.en model:\n  whisper-cli -m ~/Projects/Whisper/models/ggml-base.en.bin -f FILE --output-txt --output-srt -l auto -of ~/Projects/Whisper/output/FILENAME\n  whisper-cli only supports WAV. If input is M4A/other, convert with ffmpeg first: ffmpeg -i INPUT -ar 16000 -ac 1 -c:a pcm_s16le OUTPUT.wav -y -hide_banner -loglevel error\n\nHIGH QUALITY (when user asks for better accuracy, large-v3, or higher quality): Use faster-whisper via Python venv. Run this single Python script (activate venv inline):\n  source ~/Projects/Whisper/fw-env/bin/activate && python3 -c \"\n  from faster_whisper import WhisperModel\n  model = WhisperModel('large-v3', device='auto', compute_type='auto')\n  segments, info = model.transcribe('/path/to/file.m4a', beam_size=5, language='en', vad_filter=True)\n  txt = []; srt = []; idx = 1\n  for seg in segments:\n      txt.append(seg.text.strip())\n      s, e = int(seg.start), int(seg.end)\n      srt.append(f'{idx}\\n{s//3600:02d}:{(s%3600)//60:02d}:{s%60:02d},{int((seg.start%1)*1000):03d} --> {e//3600:02d}:{(e%3600)//60:02d}:{e%60:02d},{int((seg.end%1)*1000):03d}\\n{seg.text.strip()}\\n')\n      idx += 1\n  with open('/Users/jacobgruber/Projects/Whisper/output/FILENAME.txt','w') as f: f.write('\\n'.join(txt))\n  with open('/Users/jacobgruber/Projects/Whisper/output/FILENAME.srt','w') as f: f.write(''.join(srt))\n  print(f'Saved {len(txt)} segments.')\n  \"\n  Note: `vad_filter=True` prevents hallucination loops. faster-whisper handles M4A/MP3/WAV natively \u2014 no ffmpeg conversion needed."
-    },
-    "gallery": {
-      "description": "Download entire image galleries from any supported site using gallery-dl",
-      "template": "Use gallery-dl to download image galleries. gallery-dl is installed at /opt/homebrew/bin/gallery-dl.\n\n## Supported sites (500+)\nDeviantArt, Instagram, Twitter/X, Pixiv, Danbooru, Flickr, Imgur, Reddit, ArtStation, Behance, and hundreds more \u2014 full list: https://github.com/mikf/gallery-dl/blob/master/docs/supportedsites.md\n\n## Basic download\n/opt/homebrew/bin/gallery-dl \"<url>\"\n- Default: downloads to ./gallery-dl/ in current directory\n- Extract archive keeps track of already-downloaded files (no duplicates on re-run)\n- Show progress and final count\n\n## Custom output directory\n/opt/homebrew/bin/gallery-dl -d \"/Users/jacobgruber/Projects/Media/Galleries\" \"<url>\"\n\n## Download only specific file types\n/opt/homebrew/bin/gallery-dl --filter \"extension in ('jpg','png')\" \"<url>\"\n\n## Authentication (for private/protected content)\nIf user asks for authenticated download from a site:\n- Create config: mkdir -p ~/.config/gallery-dl\n- Run: /opt/homebrew/bin/gallery-dl --config-yaml \"extractor.<site>.username=<user>\" --config-yaml \"extractor.<site>.password=<pass>\" \"<url>\"\n- OR use cookies: /opt/homebrew/bin/gallery-dl --cookies ~/Downloads/cookies.txt \"<url>\"\n\n## Batch / bulk\n- Download all galleries from a user: /opt/homebrew/bin/gallery-dl \"<profile_url>\"\n- Download from a list of URLs (one per line): /opt/homebrew/bin/gallery-dl -i urls.txt\n\n## Metadata\n- Write metadata to JSON: /opt/homebrew/bin/gallery-dl --write-metadata \"<url>\"\n\n## Options user might want\n- --range 1-10 : download first 10 items only\n- --abort 3 : skip after 3 consecutive download errors\n- --no-part : don't use .part files (no resume support but cleaner)\n\nAlways show download progress and final count. Ask about output directory if user hasn't specified one. For large galleries, warn about disk space."
-    },
-    "sniff": {
-      "description": "Analyze passive network capture history",
-      "template": "CRITICAL: The user specified a number of minutes. Use THAT number. Do NOT use 60 or any other default unless the user gave no number.\n\nRun: bash ~/Library/Logs/opencode-capture/analyze.sh <MINUTES_THE_USER_SPECIFIED>\nExamples:\n  /sniff 5  → bash ~/Library/Logs/opencode-capture/analyze.sh 5\n  /sniff 10 → bash ~/Library/Logs/opencode-capture/analyze.sh 10\n  /sniff    → bash ~/Library/Logs/opencode-capture/analyze.sh 15\n\nThe script takes 20-60 seconds. Wait for the FULL output. Read it silently.\n\n=== OUTPUT RULES ===\n- Do NOT show the raw script output to the user. Read it, then produce ONLY the curated report below.\n- If the user wants raw output they'll explicitly ask.\n\n=== LANGUAGE RULES (ZERO TOLERANCE) ===\n- NEVER say \"is\" for device identity unless the data proves it. ALWAYS hedge: \"likely,\" \"probably,\" \"appears to be.\"\n- NEVER invent device types. If the script says \"Unknown,\" say \"Unknown.\" You may add \"possibly a [thing] based on [evidence]\" but keep the Unknown label.\n- NEVER say \"Your MacBook Pro\" unless mDNS or hostname literally says \"MacBook Pro.\" Otherwise say \"Apple laptop\" or \"Apple device.\"\n\n=== REPORT — YOU MUST INCLUDE ALL OF THESE SECTIONS ===\n\n## 📊 Summary\nOne line: [N] devices on [network], [X] MB transferred, [Y] TLS connections to [Z] unique destinations over [M] minutes.\n\n## 🆕 Surprises\n- New devices (from NEW DEVICES section) — what hostname, manufacturer, services do they advertise?\n- Domains or external servers you haven't seen before\n- Unusually high traffic to anything\n- If nothing unusual: \"Nothing out of the ordinary — routine traffic.\"\n\n## 🖥️ Devices\nTable: emoji + IP + identity + role + seen time\nExample: 💻 .161 — Apple laptop | AirPlay, companion-link | Active all session\nUse the raw data (manufacturer, mDNS services, NetBIOS hostnames, DHCP names). Present what the script found as ground truth. Add cautious interpretation: \"possibly a Windows laptop based on NetBIOS name\"\n\n## 🚦 Activity\nTop 5-8 destinations. For each: domain name → connection count → time range → what it probably is (a cautious guess based on the domain name)\nExample: calendar.google.com | 520 | 16:12-18:19 | likely Google Calendar syncing\n\n## 🌐 Network\n1-2 lines: which network, protocol mix, largest external talker.\n\n## 🟢 System\nOne line: daemon running/not running.\n\n=== EXAMPLE OF GOOD OUTPUT ===\n\n## 📊 Summary\n8 devices on Home network (192.168.1.x), 1306 MB transferred, 4021 TLS connections to 375 unique destinations over 132 minutes.\n\n## 🆕 Surprises\n- ⚠️ .153 appeared for the first time — NetBIOS hostname: KENINCLUSIVE, manufacturer: China Dragon Technology. Possibly a Windows laptop that briefly connected.\n- bolls.life: 225 connections — possibly a Bible reader or religious app based on the domain name\n- 18.165.2.163: 27,178 packets — CloudFront CDN, unusually heavy. Possibly Substack or article content loading.\n\n## 🖥️ Devices\n| 📡 .1 | Arcadyan router | Full session\n| 🖨️ .109 | Xerox WorkCentre 3335 | Print, scan, IPP, PDL | 16:45-18:41\n| 📡 .153 | Unknown — hostname KENINCLUSIVE (possibly Windows laptop) | Brief: 17:20\n| 💻 .161 | Apple laptop | AirPlay, companion-link | Full session\n| 🔊 .169 | Unknown — Google Cast + Nest Audio via mDNS (likely a speaker) | Full session\n| 🔊 .183 | Google device | ASQUIC protocol | Full session\n\n## 🚦 Activity\n| calendar.google.com | 604 | 16:12-18:35 | likely Google Calendar/CalDAV syncing\n| imap.gmail.com | 200 | 16:13-18:48 | likely email sync\n| api.deepseek.com | 187 | 16:12-18:49 | likely AI API calls (this session)\n| bolls.life | 163 | 17:32-18:46 | possibly a Bible reader app\n| elevenlabs.io | 161 | 16:12-18:49 | likely AI audio/music generation\n\n## 🌐 Network\nHome (192.168.1.x), 132 min. TLS 55%, QUIC 25%, DNS 2%. Top external: AWS (650 MB).\n\n## 🟢 System\nDaemon running (PID 65130).\n\n=== FINAL CHECKLIST BEFORE RESPONDING ===\n- [ ] Did I use the EXACT minutes the user specified?\n- [ ] Did I produce ALL 6 sections?\n- [ ] Did I hedge uncertainty? (\"likely\" / \"possibly\" / \"appears to be\")\n- [ ] Did I avoid inventing names or types the data doesn't support?\n- [ ] Did I NOT dump raw script output?"
-    }
-  },
-  "mcp": {
-    "blender": {
-      "command": [
-        "/opt/homebrew/bin/uvx",
-        "blender-mcp"
-      ],
-      "enabled": false,
-      "environment": {
-        "DISABLE_TELEMETRY": "true",
-        "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
-      },
-      "type": "local"
-    },
-    "elevenlabs": {
-      "command": [
-        "/opt/homebrew/bin/uvx",
-        "elevenlabs-mcp"
-      ],
-      "enabled": true,
-      "type": "local"
-    },
-    "firecrawl": {
-      "command": [
-        "npx",
-        "-y",
-        "firecrawl-mcp"
-      ],
-      "enabled": true,
-      "type": "local"
-    },
-    "open-design": {
-      "command": [
-        "node",
-        "/Users/jacobgruber/open-design/apps/daemon/dist/cli.js",
-        "mcp"
-      ],
-      "enabled": true,
-      "environment": {
-        "OD_DATA_DIR": "/Users/jacobgruber/open-design/.od",
-        "PATH": "/opt/homebrew/opt/node@24/bin:/usr/local/bin:/usr/bin:/bin"
-      },
-      "type": "local"
-    },
-    "railway": {
-      "command": [
-        "railway",
-        "mcp"
-      ],
-      "enabled": true,
-      "type": "local"
-    },
-    "chrome-devtools": {
-      "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"],
-      "enabled": true,
-      "type": "local"
-    },
-    "playwright": {
-      "command": ["npx", "-y", "@playwright/mcp@latest"],
-      "enabled": true,
-      "type": "local"
-    },
-    "yt-dlp": {
-      "command": ["npx", "-y", "@kevinwatt/yt-dlp-mcp@latest"],
-      "enabled": false,
-      "type": "local"
-    },
-    "nmap-mcp-server": {
-      "command": ["node", "/opt/homebrew/lib/node_modules/@ebowwa/mcp-nmap/dist/index.js"],
-      "enabled": true,
-      "type": "local"
-    },
-    "pentest-ai": {
-      "command": ["ptai", "mcp"],
-      "enabled": true,
-      "type": "local"
-    },
-    "pyghidra": {
-      "command": [
-        "/opt/homebrew/bin/uvx",
-        "pyghidra-mcp"
-      ],
-      "enabled": false,
-      "environment": {
-        "GHIDRA_INSTALL_DIR": "/Users/jacobgruber/ghidra_12.1_PUBLIC",
-        "PATH": "/opt/homebrew/opt/openjdk@21/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
-      },
-      "type": "local"
-    }
-  },
-  "permission": {
-    "chrome-devtools_*": "deny",
-    "elevenlabs_*": "deny",
-    "open-design_*": "deny",
-    "nmap-mcp-server_*": "deny",
-    "pentest-ai_*": "deny"
-  },
-  "model": "xai/grok-4.3",
+  "model": "deepseek/deepseek-v4-pro",
   "plugin": [
     "opencode-gemini-auth@latest",
     "opencode-xai-auth@latest"
   ],
   "provider": {
-    "ollama": {
+    "deepseek": {
+      "npm": "@ai-sdk/deepseek",
+      "name": "DeepSeek",
+      "options": {
+        "apiKey": "YOUR_DEEPSEEK_API_KEY"
+      },
       "models": {
-        "batiai/qwen3.6-27b:q3": {
-          "name": "Qwen 3.6 27B Q3",
-          "tools": true
-        },
-        "batiai/qwen3.6-27b:q4": {
-          "name": "Qwen 3.6 27B Q4",
-          "tools": true
-        },
-        "freehuntx/qwen3-coder:14b": {
-          "name": "Qwen3 Coder 14B",
-          "tools": true
-        },
-        "gemma4:e4b": {
-          "name": "Gemma 4 (e4b)",
-          "tools": true
-        },
-        "huihui_ai/gemma-4-abliterated:e4b": {
-          "name": "Gemma 4 Abliterated (e4b)",
-          "tools": true
-        },
-        "qwen3.6:27b": {
-          "name": "Qwen 3.6 27B",
-          "tools": true
-        },
-        "qwen3.6:27b-coding-nvfp4": {
-          "name": "Qwen 3.6 27B Coding (nvfp4)",
+        "deepseek-v4-pro": {
+          "name": "DeepSeek V4 Pro Max",
           "tools": true
         }
-      },
-      "name": "Ollama (local)",
-      "npm": "@ai-sdk/openai-compatible",
+      }
+    },
+    "anthropic": {
+      "npm": "@ai-sdk/anthropic",
+      "name": "Anthropic (Claude)",
       "options": {
-        "baseURL": "http://localhost:11434/v1"
+        "apiKey": "YOUR_ANTHROPIC_API_KEY"
+      },
+      "models": {
+        "claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6 Max",
+          "tools": true
+        },
+        "claude-opus-4-8": {
+          "name": "Claude Opus 4.8 Max",
+          "tools": true
+        }
       }
     },
     "gemini-api": {
@@ -218,6 +62,77 @@
           "name": "Gemini 2.5 Flash Lite"
         }
       }
+    },
+    "ollama": {
+      "name": "Ollama (local)",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "freehuntx/qwen3-coder:14b": {
+          "name": "Qwen3 Coder 14B",
+          "tools": true
+        },
+        "qwen3.6:27b": {
+          "name": "Qwen 3.6 27B",
+          "tools": true
+        },
+        "gemma4:e4b": {
+          "name": "Gemma 4 (e4b)",
+          "tools": true
+        }
+      }
     }
+  },
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "enabled": true
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"],
+      "enabled": true
+    },
+    "firecrawl": {
+      "type": "local",
+      "command": ["npx", "-y", "firecrawl-mcp"],
+      "enabled": false,
+      "environment": {
+        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY"
+      }
+    },
+    "elevenlabs": {
+      "type": "local",
+      "command": ["uvx", "elevenlabs-mcp"],
+      "enabled": false,
+      "environment": {
+        "ELEVENLABS_API_KEY": "YOUR_ELEVENLABS_KEY"
+      }
+    },
+    "railway": {
+      "type": "local",
+      "command": ["railway", "mcp"],
+      "enabled": false
+    },
+    "screenpipe": {
+      "type": "local",
+      "command": ["npx", "-y", "screenpipe-mcp"],
+      "enabled": false
+    },
+    "macos-automator": {
+      "type": "local",
+      "command": ["npx", "-y", "--package", "@steipete/macos-automator-mcp", "macos-automator-mcp"],
+      "enabled": false
+    }
+  },
+  "permission": {
+    "firecrawl_*": "deny",
+    "elevenlabs_*": "deny",
+    "railway_*": "deny",
+    "screenpipe_*": "deny",
+    "macos-automator_*": "deny"
   }
 }

@@ -142,17 +142,13 @@ Setup: copy `addons/open-code-modes/AGENTS.md` to `~/.config/opencode/AGENTS.md`
 
 ---
 
-## Custom Commands (Jacob's Setup)
+## Custom Commands (Optional)
 
-These are registered in `opencode.json` under the `"command"` key. They're workflow-specific and not included in the base repo, but you can create your own using the same pattern.
+OpenCode lets you register your own slash-commands under the `"command"` key in `opencode.json`. The base repo ships **without** any — they're personal to each user's workflow — but they're easy to add. A command is just a name plus a `template` (the instructions the agent follows when you invoke it).
 
-| Command | Purpose |
-|---------|---------|
-| `/transcribe` | Transcribe audio with whisper (fast) or faster-whisper (high quality) |
-| `/anna` | Search and download books from Anna's Archive |
-| `/audio` | Search and download audiobooks from AudiobookBay |
+Examples of what people build: `/transcribe` to run an audio-to-text pipeline, `/deploy` to push a release, `/changelog` to summarize recent commits. Whatever you do often, you can wrap in a command.
 
-To create a custom command, add an entry to your `opencode.json`:
+To create one, add an entry to your `opencode.json`:
 
 ```json
 "command": {
