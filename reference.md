@@ -33,7 +33,7 @@ The Supervisor ships with 27 agents across 3 tiers — 9 roles at each tier. The
 | `security` | Vulnerability scanning — secrets, injections, unsafe patterns | 30 | Read-only + bash + web + playwright |
 | `planner` | Task breakdown, sequencing, milestone planning | 25 | Read-only |
 | `editor` | Grammar, spelling, punctuation, readability | 25 | Read + edit |
-| `quote-auditor` | Quotation verification against sources | 25 | Read-only + bash |
+| `quote-auditor` | Quotation verification against sources | 25 | Read-only |
 
 ### When to Use
 

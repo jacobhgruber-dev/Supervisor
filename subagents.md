@@ -118,7 +118,7 @@ Verifies that quotes match their sources exactly. Detects paraphrasing disguised
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `quote-auditor` | Claude Sonnet 4.6 | 25 | `#FDBA74` | Read-only + bash |
+| `quote-auditor` | Claude Sonnet 4.6 | 25 | `#FDBA74` | Read-only |
 
 **When to use**: Verifying transcript quotes, fact-checking article claims, legal/journalistic accuracy.
 
@@ -200,7 +200,7 @@ These slash commands change the main agent's behavior for a single request. Most
 
 ## Key Design Decisions
 
-- **Edit permissions by role:** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`) — they analyze and recommend. For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
+- **Edit permissions by role:** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`) — they analyze and recommend. For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 - **Architect vs Planner**: Architect invents new approaches. Planner sequences existing designs into action steps.
 - **Reviewer vs Debugger**: Reviewer finds bugs in code you're about to merge. Debugger investigates bugs that are already happening.
 - **Reviewer vs Security**: Reviewer cares about correctness. Security only cares about exploits.

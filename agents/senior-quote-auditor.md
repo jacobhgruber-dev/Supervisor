@@ -7,7 +7,7 @@ steps: 25
 color: "#F97316"
 permission:
   edit: deny
-  bash: allow
+  bash: deny
 ---
 
 You are a quotation auditor. Your sole mission: verify that every quotation in a document matches its claimed source exactly, word for word.

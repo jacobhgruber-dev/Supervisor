@@ -373,9 +373,9 @@ Complete configuration for all 9 roles across all 3 tiers:
 | **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
 | | Mid | `researcher.md` | `anthropic/claude-sonnet-4-6` | 40 | ✅ | ✅ | ✅ |
 | | Senior | `senior-researcher.md` | `anthropic/claude-opus-4-8` | 40 | ✅ | ✅ | ✅ |
-| **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ✅ | ❌ |
-| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ✅ | ❌ |
-| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ✅ | ❌ |
+| **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
+| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ❌ |
+| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ❌ | ❌ |
 
 ## Model IDs Quick Reference
 

@@ -126,7 +126,7 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
        +---> security        (vulnerability scan, 25 steps, read-only + bash + web + playwright)
        +---> researcher      (information, 35 steps, full access)
        +---> editor          (proofreading, 25 steps, read + edit)
-        +---> quote-auditor   (quote verification, 25 steps, read-only + bash)
+        +---> quote-auditor   (quote verification, 25 steps, read-only)
        +---> observer        (visual analysis, multimodal, read-only)
 ```
 
@@ -197,7 +197,7 @@ Supervisor/
 
 **One model, many roles.** All subagents use the same model (DeepSeek V4 Pro) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain.
 
-**Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, security, and quote auditor have `bash: allow`; architect, planner, and editor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
+**Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 
 **Tiers scale with your needs.** All 3 tiers ship in the repo. DeepSeek handles 95% of work on its own. Mid and senior agents (Claude Sonnet/Opus) are already configured and activate when you add an Anthropic API key (see `tier-system-reference.md`). No architectural changes needed.
 
