@@ -1,3 +1,5 @@
+export const title = "Observer Bridge";
+
 import { randomUUID } from "node:crypto"
 import { mkdirSync, readdirSync, statSync, unlinkSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"

@@ -120,36 +120,50 @@ cd Supervisor
 
 Now copy the pieces into place. Paste these one block at a time:
 
+> ⚠️ **If you already configured providers in OpenCode Desktop**, do NOT copy the `opencode.json` file — you only need the agent files, plugin, and AGENTS.md. Copying the config won't break anything (it no longer has a provider block), but it will replace any custom settings you've added.
+
 ```bash
 # 1. Make sure the config folders exist
 mkdir -p ~/.config/opencode/agents
-mkdir -p ~/.config/opencode/plugin
 
 # 2. The main config file
 cp opencode.json ~/.config/opencode/opencode.json
 
 # 3. ALL agents go in the SAME folder — "agents" (plural).
 #    The Supervisor (a primary agent) and every subagent live together here.
-cp supervisor.md ~/.config/opencode/agents/supervisor.md
+cp agent/supervisor.md ~/.config/opencode/agents/supervisor.md
 cp agents/*.md   ~/.config/opencode/agents/
 
 # 4. The Observer plugin (lets you paste screenshots into chat)
-cp plugin/*.js ~/.config/opencode/plugin/
+cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
 
 # 5. Behavioral guidelines (coding conventions for the agents)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
+> 🪟 **On Windows?** Use these PowerShell equivalents instead:
+> ```powershell
+> # ~/.config/opencode/ → %USERPROFILE%\.config\opencode\
+> mkdir $env:USERPROFILE\.config\opencode\agents
+> 
+> copy opencode.json $env:USERPROFILE\.config\opencode\opencode.json
+> copy agent\supervisor.md $env:USERPROFILE\.config\opencode\agents\supervisor.md
+> copy agents\*.md $env:USERPROFILE\.config\opencode\agents\
+> copy plugin\observer-bridge.js $env:USERPROFILE\.config\opencode\observer-bridge.js
+> copy AGENTS.md $env:USERPROFILE\.config\opencode\AGENTS.md
+> ```
+> (`mkdir` in PowerShell creates parent directories automatically — no `-p` flag needed. `copy` replaces `cp`.)
+
 > 🪤 **The #1 beginner footgun — one folder, and it's plural.**
 > *Every* agent — the Supervisor **and** the 27 subagents — goes in `~/.config/opencode/agents/` (**plural**). What makes the Supervisor "primary" is the `mode: primary` line inside `supervisor.md`, **not** a separate folder. OpenCode does **not** read a singular `agent/` folder, so if you put `supervisor.md` there, it silently won't load and the Supervisor won't show up. Keep everything in `agents/`.
 
-> 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! Instead, open both files and copy just the `"provider"` block from this repo into yours. The `.md` agent files are safe to copy as-is — they won't clash with anything.
+> 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! The agents, plugin, and AGENTS.md are safe to add — they won't clash with anything. The `opencode.json` template is optional; it only adds MCP servers and permissions.
 
 ---
 
 ## 🟢 Step 4 — Connect your key (no editing files)
 
-You **don't** paste your key into any config file. Instead, let OpenCode store it securely using its built-in login. In your terminal, run:
+**For CLI users:** You **don't** paste your key into any config file. Instead, let OpenCode store it securely using its built-in login. In your terminal, run:
 
 ```bash
 opencode auth login
@@ -163,6 +177,19 @@ You'll get a menu of providers. Then:
 That's it. OpenCode saves the key in its own secure store (`~/.local/share/opencode/auth.json`) — **not** in this repo's `opencode.json`, so there's no risk of committing it to GitHub. The provider blocks in `opencode.json` just tell OpenCode which models exist; the key comes from your login.
 
 > 💡 **Prefer environment variables?** That works too — set `DEEPSEEK_API_KEY` (and later `ANTHROPIC_API_KEY`) in your shell and OpenCode will pick them up. Use whichever you like; you don't need both.
+
+> 🖥️ **Using OpenCode Desktop?** Skip the CLI commands above. In OpenCode Desktop, go to **Settings → Providers**, click **DeepSeek**, and paste your API key there. Same workflow for any other provider — Settings → Providers → click the provider → paste the key.
+
+**Where to get keys for all supported providers:**
+
+| Provider | Sign-up / key page | Models powered |
+|----------|-------------------|----------------|
+| **DeepSeek** | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) | All junior-tier agents (Supervisor, workers, architects, etc.) |
+| **Anthropic (Claude)** | [console.anthropic.com](https://console.anthropic.com) | Mid + senior tiers, Observer vision agent |
+| **xAI (Grok)** | [console.x.ai](https://console.x.ai) | Optional `grok-worker` addon |
+| **Google (Gemini)** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | Optional `gemini-worker` addon |
+
+> 💰 Only the DeepSeek key is required to start. Anthropic unlocks the full 3-tier system. The others are optional addons — ignore them until you want them.
 
 **Checkpoint:** Run `opencode auth list` — you should see `deepseek` listed. ✅
 
@@ -230,7 +257,7 @@ The Claude-powered agents (and Observer) sit ready but inactive until the key is
 
 Your Supervisor runs on a text-only model, so it can't see images. **Observer** fixes that: it's a Claude vision agent that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
 
-It activates automatically once your Anthropic key is in place (it runs on Claude Sonnet 4.6). No model names to wire up — the config already defines exactly the provider and model Observer expects. Pair it with `screenpipe` or `macos-automator` (Step 8) and the Supervisor can capture *and* understand on-screen state.
+It activates automatically once your Anthropic key is in place (it runs on Claude Sonnet 4.6). No model names to wire up — Observer activates automatically when an Anthropic key is present (added via Desktop Settings or CLI), no provider block needed. Pair it with `screenpipe` or `macos-automator` (Step 8) and the Supervisor can capture *and* understand on-screen state.
 
 ---
 
@@ -238,7 +265,7 @@ It activates automatically once your Anthropic key is in place (it runs on Claud
 
 These are extras you can ignore until you want them:
 
-- **Grok (xAI)** — an optional `grok-worker` addon adds an alternative-model worker on Grok 4.3. Add an xAI provider block + key and copy one file. See [`addons/grok-worker/`](addons/grok-worker/). No auth plugin needed.
+- **Grok (xAI)** — an optional `grok-worker` addon adds an alternative-model worker on Grok 4.3. Add an xAI key through Desktop Settings → Providers (or `opencode auth login`), then copy one file. No provider block needed — see PROVIDERS.md. See [`addons/grok-worker/`](addons/grok-worker/). No auth plugin needed.
 - **Addons** (`addons/` folder) — behavioral "modes," the Grok worker, and a full reference catalog. See [`addons/README.md`](addons/README.md).
 - **CLI quality tools** — the reviewer/debugger agents can use tools like `ruff`, `mypy`, and `trivy` when present. Optional but nice. See [`DEPENDENCIES.md`](DEPENDENCIES.md).
 
@@ -284,9 +311,13 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 | **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in the agents folder | Only real agent files belong in `~/.config/opencode/agents/`. Remove any docs: `rm ~/.config/opencode/agents/tier-system-reference.md`. |
 | **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~29 files. If empty, re-run the copy command in Step 3. |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
-| **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` |
+| **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` (OpenCode Desktop usually auto-installs provider packages; this is only needed if you get 'Model not found' errors) |
 | **"Invalid API key" / "not authenticated"** | Key not connected, or a typo | Re-run `opencode auth login` and re-enter the key (no extra spaces). Confirm with `opencode auth list` that the provider shows up. |
 | **MCP error on startup** (e.g. firecrawl/elevenlabs/railway) | An optional MCP got enabled without its key/install | Harmless to the Supervisor. Either set that server back to `"enabled": false` in `opencode.json`, or finish its setup (see Step 8). |
+| **DeepSeek/Claude stopped working after adding config** | A `provider` block in `opencode.json` overrides auth | Remove the `provider` block from your `opencode.json` entirely. The template no longer ships one — if you have one, it's leftover and interfering. |
+| **Too many agents in the agent selector** | Non-agent `.md` files or stray files being picked up | Only agent files should be in `agents/`. Remove any docs, notes, or reference files from that folder. The template no longer ships a `provider` block. |
+| **Max variant toggle disappeared** | A `provider.models` block stripped built-in model variants | Remove the `provider` block from `opencode.json` — `models.dev` handles variants. |
+| **Subagents appear in @ autocomplete** | Agent file missing `hidden: true` in frontmatter | Add `hidden: true` to subagent markdown files. All shipped subagents already have this set — if you created custom ones, add it manually. |
 
 ---
 

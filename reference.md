@@ -107,7 +107,7 @@ Include any slash command anywhere in your message. The agent shifts behavior fo
 /explain How does the auth middleware work in this Express app?
 ```
 
-Setup: copy `addons/open-code-modes/AGENTS.md` to `~/.config/opencode/AGENTS.md`.
+Mode switching is built into the root `AGENTS.md`. No separate copy needed.
 
 ---
 

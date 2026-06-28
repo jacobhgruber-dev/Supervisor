@@ -35,13 +35,28 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 
 Visit https://platform.deepseek.com/api_keys and create an API key. This is the only key you need to get started — all agents run on DeepSeek.
 
+> **Provider note:** This repo uses 4 providers (DeepSeek, Anthropic, Google, xAI). DeepSeek is the only one required to start — it powers the Supervisor + junior tier. Add the others through OpenCode Desktop (Settings → Providers) to unlock mid/senior tiers + Observer + alternative model workers. See [PROVIDERS.md](PROVIDERS.md) for direct links to get keys.
+
 For a full list of recommended CLI tools, Python packages, and optional services, see [DEPENDENCIES.md](DEPENDENCIES.md).
 
 ### 2. Configure OpenCode
 
-**If you already have an opencode config:** do NOT overwrite your `opencode.json`. Instead, merge just the `provider` block (DeepSeek) into your existing config. The agent `.md` files can be copied directly — they won't conflict with anything.
+**If you configured providers through OpenCode Desktop (Settings → Providers):** you don't need to touch `opencode.json` at all — your provider config is already set. Just copy the agent files, plugin, and AGENTS.md:
 
-**If this is your first opencode setup:** copy the full config:
+```bash
+# Copy ALL agents — supervisor + subagents — into the same folder (plural "agents")
+mkdir -p ~/.config/opencode/agents
+cp agent/supervisor.md ~/.config/opencode/agents/supervisor.md
+cp agents/*.md   ~/.config/opencode/agents/
+
+# Copy the Observer plugin (lets you paste screenshots into chat)
+cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
+
+# Copy behavioral guidelines (merge if you already have AGENTS.md)
+cp AGENTS.md ~/.config/opencode/AGENTS.md
+```
+
+**If this is your first opencode setup** (and you haven't configured providers yet)**:** copy the full config too — it gives you the MCP servers and `default_agent` settings:
 
 ```bash
 # Copy config (no API keys live in here — see step 3)
@@ -49,12 +64,11 @@ cp opencode.json ~/.config/opencode/opencode.json
 
 # Copy ALL agents — supervisor + subagents — into the same folder (plural "agents")
 mkdir -p ~/.config/opencode/agents
-cp supervisor.md ~/.config/opencode/agents/supervisor.md
+cp agent/supervisor.md ~/.config/opencode/agents/supervisor.md
 cp agents/*.md   ~/.config/opencode/agents/
 
 # Copy the Observer plugin (lets you paste screenshots into chat)
-mkdir -p ~/.config/opencode/plugin
-cp plugin/*.js ~/.config/opencode/plugin/
+cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
 
 # Copy behavioral guidelines (merge if you already have AGENTS.md)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
@@ -71,7 +85,7 @@ opencode auth login   # choose DeepSeek, paste your key
 opencode auth login   # run again, choose Anthropic, paste your key
 ```
 
-OpenCode stores the keys in its own secure file (`~/.local/share/opencode/auth.json`) — or read them from the `DEEPSEEK_API_KEY` / `ANTHROPIC_API_KEY` environment variables if you prefer. The provider blocks in `opencode.json` only declare which models exist; auth comes from your login. (If DeepSeek isn't in the menu, pick **Other** and enter `deepseek` as the id.)
+OpenCode stores the keys in its own secure file (`~/.local/share/opencode/auth.json`) — or read them from the `DEEPSEEK_API_KEY` / `ANTHROPIC_API_KEY` environment variables if you prefer. Provider discovery is handled natively by OpenCode through models.dev — no provider block needed in your config; auth comes from your login. (If DeepSeek isn't in the menu, pick **Other** and enter `deepseek` as the id.) (In OpenCode Desktop, just go to Settings → Providers → DeepSeek and paste your key.)
 
 ### 4. Restart OpenCode
 
@@ -105,7 +119,7 @@ ls ~/.config/opencode/agents/*.md
 You should see `worker.md`, `architect.md`, `planner.md`, etc.
 
 **Already have an opencode.json?**
-Don't overwrite it. Just merge the `"provider"` block from this repo's `opencode.json` into yours. The agent `.md` files don't conflict with anything.
+If you already configured providers through OpenCode Desktop (Settings → Providers), you don't need to touch `opencode.json` at all — just copy the agent files, plugin, and AGENTS.md. The agent files won't conflict with anything.
 
 **Supervisor not appearing as a primary agent?**
 Confirm `supervisor.md` is at `~/.config/opencode/agents/supervisor.md` (plural `agents/`) and that its frontmatter says `mode: primary`. OpenCode has no singular `agent/` folder — everything goes in `agents/`.
@@ -152,7 +166,7 @@ Key principle: **Always delegate.** The Supervisor self-executes only mechanical
 Supervisor/
 ├── README.md                      # This file
 ├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
-├── supervisor.md                  # Primary Supervisor agent (-> ~/.config/opencode/agents/)
+├── agent/supervisor.md                  # Primary Supervisor agent (-> ~/.config/opencode/agents/)
 ├── opencode.json                  # Template config with placeholder API keys
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
@@ -172,7 +186,7 @@ Supervisor/
 │   ├── junior-* / senior-*        # Same 9 roles at DeepSeek (junior) and Opus (senior) tiers
 │   └── observer.md                # Multimodal Observer subagent (Claude Sonnet 4.6)
 ├── plugin/
-│   └── observer-bridge.js         # Paste-a-screenshot interception (-> ~/.config/opencode/plugin/)
+│   └── observer-bridge.js         # Paste-a-screenshot interception (-> ~/.config/opencode/observer-bridge.js)
 ├── addons/
 │   ├── README.md                  # Addon overview
 │   ├── grok-worker/               # Optional xAI Grok worker (+ setup README)

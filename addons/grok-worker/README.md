@@ -8,23 +8,13 @@ A full-access generalist subagent that runs on **xAI's Grok 4.3** instead of Dee
 
 ## Setup (3 steps)
 
-### 1. Add an xAI provider to your `opencode.json`
+### 1. Add your xAI key
 
-No auth plugin and no pasted key — just a provider block that declares the model:
+In OpenCode Desktop: Settings → Providers → xAI → paste your API key.
 
-```json
-"provider": {
-  "xai": {
-    "npm": "@ai-sdk/xai",
-    "name": "xAI (Grok)",
-    "models": {
-      "grok-4.3": { "name": "Grok 4.3", "tools": true }
-    }
-  }
-}
-```
+Or CLI: `opencode auth login` → choose xAI → paste key.
 
-Then connect your key the native way: `opencode auth login` → choose **xAI** (or set `XAI_API_KEY`). Get a key at [console.x.ai](https://console.x.ai).
+Get a key at [console.x.ai](https://console.x.ai). No provider block needed in opencode.json — xAI is a built-in provider that OpenCode handles natively through models.dev.
 
 ### 2. Copy the agent into your agents folder
 

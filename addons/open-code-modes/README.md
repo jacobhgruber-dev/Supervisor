@@ -18,7 +18,9 @@
 
 ## Setup
 
-Copy the behavioral guidelines into your opencode config:
+⚠️ **Do NOT overwrite your existing AGENTS.md.** The repo's root `AGENTS.md` already includes all mode-switching rules PLUS additional sections (mule tier, multi-agent architecture, visual context awareness). The `AGENTS.md` in this addon is a stripped-down reference version. If you haven't installed the root `AGENTS.md` yet, copy the root one instead.
+
+If you still want the bare modes version:
 
 ```bash
 cp AGENTS.md ~/.config/opencode/

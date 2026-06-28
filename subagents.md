@@ -142,7 +142,7 @@ When you want a specific model's strengths, the optional `grok-worker` addon add
 
 | Agent | Model | Setup | Permissions |
 |-------|-------|-------|------------|
-| `grok-worker` | Grok 4.3 (xAI) | Add an xAI provider block + key, copy one file | Full |
+| `grok-worker` | Grok 4.3 (xAI) | Add an xAI key through Desktop Settings → Providers, then copy one file. | Full |
 
 See [`addons/grok-worker/README.md`](addons/grok-worker/README.md) for setup. No auth plugin required.
 
