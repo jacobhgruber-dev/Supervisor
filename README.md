@@ -21,11 +21,11 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **27 specialized subagents across 3 tiers** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 4.6), and senior (Claude Opus 4.8) tiers. All with built-in awareness of 14+ CLI code quality and security tools.
+- **42 agents across 4 tiers (junior, mid, senior, mule)** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 4.6), senior (Claude Opus 4.8), and mule (various models) tiers, plus alternative model workers. All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker (optional addon)** — an alternative-model worker on xAI's Grok 4.3, in `addons/grok-worker/`. Opt in when you want Grok's model; the core system doesn't depend on it.
-- **Full 3-tier system built in** — all 27 agents ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
+- **Full 4-tier system built in** — all 42 agents (including mule tier and alternative model workers) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
 - **Observer (built in)** — a multimodal Claude Sonnet 4.6 subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once an Anthropic key is configured.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
@@ -76,16 +76,24 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 
 > **Note:** OpenCode loads every markdown agent — the primary Supervisor *and* the subagents — from `~/.config/opencode/agents/` (plural). The `mode:` field inside each file (`primary` vs `subagent`) is what distinguishes them, not the folder. There is no singular `agent/` folder.
 
-### 3. Connect your keys with `opencode auth login`
+### 3. Connect your keys
 
-No keys go in `opencode.json`. Authenticate natively instead:
+No keys go in `opencode.json`. Authenticate natively instead.
+
+**Desktop (OpenCode app):** Go to Settings → Providers → DeepSeek and paste your API key. Repeat for Anthropic if you want mid/senior tiers and the Observer.
+
+**CLI:** Use `opencode auth login`:
 
 ```bash
 opencode auth login   # choose DeepSeek, paste your key
 opencode auth login   # run again, choose Anthropic, paste your key
 ```
 
-OpenCode stores the keys in its own secure file (`~/.local/share/opencode/auth.json`) — or read them from the `DEEPSEEK_API_KEY` / `ANTHROPIC_API_KEY` environment variables if you prefer. Provider discovery is handled natively by OpenCode through models.dev — no provider block needed in your config; auth comes from your login. (If DeepSeek isn't in the menu, pick **Other** and enter `deepseek` as the id.) (In OpenCode Desktop, just go to Settings → Providers → DeepSeek and paste your key.)
+Provider discovery is handled natively by OpenCode through models.dev — no provider block needed in your config; auth comes from your login.
+
+> **Note:** If DeepSeek isn't in the CLI menu, pick **Other** and enter `deepseek` as the id.
+
+Keys are stored in OpenCode's secure file (`~/.local/share/opencode/auth.json`). Alternatively, set the `DEEPSEEK_API_KEY` and `ANTHROPIC_API_KEY` environment variables.
 
 ### 4. Restart OpenCode
 
@@ -144,7 +152,7 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
        +---> observer        (visual analysis, multimodal, read-only)
 ```
 
-(Each role also has `junior-*` and `senior-*` tier variants. An optional `grok-worker` addon adds an xAI Grok worker — see [addons/grok-worker/](addons/grok-worker/).)
+(Each role also has `junior-*`, `*-mule`, and `senior-*` tier variants. Two alternative-model workers — `gemini-worker` and `grok-worker` — are also included.)
 
 ## How It Works
 
@@ -166,12 +174,12 @@ Key principle: **Always delegate.** The Supervisor self-executes only mechanical
 Supervisor/
 ├── README.md                      # This file
 ├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
-├── agent/supervisor.md                  # Primary Supervisor agent (-> ~/.config/opencode/agents/)
+├── agent/supervisor.md   # Primary Supervisor agent (-> ~/.config/opencode/agents/)
 ├── opencode.json                  # Template config with placeholder API keys
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── subagents.md                   # Quick reference for the 9 base subagents
-├── tier-system-reference.md       # Complete 3-tier agent specs and naming conventions
+├── tier-system-reference.md       # Complete 4-tier agent specs and naming conventions
 ├── AGENTS.md                      # Behavioral guidelines (-> ~/.config/opencode/)
 ├── agents/                        # All subagents (-> ~/.config/opencode/agents/, plural)
 │   ├── worker.md                  # General-purpose implementation agent
@@ -183,16 +191,16 @@ Supervisor/
 │   ├── researcher.md              # Information gathering and synthesis
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
-│   ├── junior-* / senior-*        # Same 9 roles at DeepSeek (junior) and Opus (senior) tiers
+│   ├── junior-* / *-mule / senior-*  # Same 9 roles at all 4 tiers (DeepSeek, Claude, Opus, mule)
 │   └── observer.md                # Multimodal Observer subagent (Claude Sonnet 4.6)
 ├── plugin/
-│   └── observer-bridge.js         # Paste-a-screenshot interception (-> ~/.config/opencode/observer-bridge.js)
+│   └── observer-bridge.js         # Paste-a-screenshot interception — deploys to config root: ~/.config/opencode/observer-bridge.js (not a plugin/ subdirectory)
 ├── addons/
 │   ├── README.md                  # Addon overview
 │   ├── grok-worker/               # Optional xAI Grok worker (+ setup README)
 │   └── open-code-modes/           # 9 behavioral modes (trigger words)
 │       ├── README.md
-│       ├── AGENTS.md              # Mode switching rules (-> ~/.config/opencode/)
+│       ├── AGENTS.md              # Mode switching rules — ⚠️ WARNING: merge with existing root AGENTS.md; do NOT overwrite (-> ~/.config/opencode/)
 │       └── modes/                 # Individual mode files
 └── skills/
     └── README.md                  # Skills system documentation
@@ -213,7 +221,7 @@ Supervisor/
 
 **Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 
-**Tiers scale with your needs.** All 3 tiers ship in the repo. DeepSeek handles 95% of work on its own. Mid and senior agents (Claude Sonnet/Opus) are already configured and activate when you add an Anthropic API key (see `tier-system-reference.md`). No architectural changes needed.
+**Tiers scale with your needs.** All 4 tiers (junior, mid, senior, mule) ship in the repo. DeepSeek handles 95% of work on its own. Mid and senior agents (Claude Sonnet/Opus) are already configured and activate when you add an Anthropic API key (see `tier-system-reference.md`). No architectural changes needed.
 
 ## Credits
 
