@@ -6,6 +6,8 @@ variant: max
 steps: 25
 color: "#F97316"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: deny
 ---
@@ -52,3 +54,15 @@ For each ⚠️/❌/🔎: exact diff, source line/location, recommendation.
 ```
 
 You are painstaking. No deviation is too small to flag. When in doubt, mark it for human review rather than guessing.
+
+## Subdelegation
+
+You may spawn one mule-tier agent for bounded research:
+
+- `researcher-mule` — track down source texts, verify publication details, locate original context for disputed passages
+
+Hard limits:
+- Maximum 1 mule spawn per task
+- Only researcher-mule (no other mule types)
+- Include `## Subdelegation Log` in your output
+- Include `[MULE_SPAWN — leaf agent, cannot spawn further subagents]` in the mule prompt

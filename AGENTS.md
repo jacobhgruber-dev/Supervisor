@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Loaded by every opencode agent (primary, supervisor, and subagents) and applies to all of them. Merge with project-specific instructions as needed. For supervisor-specific orchestration behavior, see `supervisor.md`.
+Behavioral guidelines to reduce common LLM coding mistakes. Loaded by every opencode agent (primary, supervisor, and subagents) and applies to all of them. Merge with project-specific instructions as needed. For supervisor-specific orchestration behavior, see `agent/supervisor.md`.
 
 ## Core Integrity Rules (Always Active — Highest Priority)
 
@@ -97,17 +97,129 @@ After the request, automatically return to normal careful Karpathy mode.
 
 ## Subagent Spawning Rules (Always Active)
 
-The Task tool can spawn specialized subagents (27 available across 9 roles at 3 tiers, plus `explore`. See `reference.md` for the full catalog. For the tier system specs, see `tier-system-reference.md`).
+The Task tool can spawn specialized subagents (42 available — 9 roles at 4 tiers (junior, mid, senior, mule), plus 2 local agents, grok-worker, gemini-worker, gemini-mule, and grok-mule. Note: debate-coordinator is a primary agent, not a subagent.
 
-**When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `supervisor.md` instead.
+**When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `agent/supervisor.md` instead.
 
 **Default tier policy:**
 
-- All subagents use the same model (DeepSeek V4 Pro). The specialization comes from the instructions, not the model.
+- **Supervisor model**: DeepSeek V4 Pro is the normal supervisor model.
+- **Always use the junior tier** (DeepSeek V4 Pro Max) for all automatic/unprompted subagent spawning. Never upgrade tiers on your own. (Mule tier is subagent-internal only — the supervisor never spawns mules directly. All non-mule agents may always spawn mules.)
+- **Mid or senior tier subagents require explicit authorization from the user.** Do not use `senior-*`, `architect`, `debugger`, `editor`, `planner`, `quote-auditor`, `researcher`, `reviewer`, `security`, or `worker` (non-junior-prefixed variants) unless the user has explicitly authorized it. Authorization comes in two forms:
+  1. **Exact subagent name** — Manager says "send this to senior-debugger," "use the architect," or invokes any subagent with `@agent-name` (e.g., `@architect`, `@senior-reviewer`). Use exactly that agent. Do NOT downgrade to a junior-prefixed variant. `@architect` means `architect` (mid-tier), not `junior-architect`.
+  2. **Session-level tier grant** — Manager says "you can use mid tier this session." You may freely choose subagents within that tier, but only that tier. Do not escalate further.
+- If you think a higher tier might help, ask — don't just do it.
 - For simple research/file-discovery tasks, the `explore` built-in subagent is always acceptable — it's already lightweight.
 - Mid and senior tier agents (`worker`, `senior-*`) are already present in the repo. They activate as soon as an Anthropic API key is configured. See `tier-system-reference.md`.
 
 **Rationale:** DeepSeek V4 Pro is a frontier model fully capable of professional work. One model, many roles — the subagent's prompt, not the model, makes it a security auditor or an editor.
+
+## Mule Tier (Always Active)
+
+Mule agents are safe-to-spawn leaf workers. Their defining invariant: **mules can never spawn further agents** (`task: {"*": "deny"}` in their permission block). This eliminates recursion risk — any agent that spawns a mule is guaranteed the work terminates there.
+
+### For the supervisor: mules are off-limits
+
+The supervisor does NOT spawn mules directly. Mules are subagent infrastructure — they exist for architects, workers, debuggers, and reviewers to spawn internally. The supervisor spawns junior/mid/senior tier agents, which may internally use mules.
+
+### For spawn-capable subagents (all non-mule agents)
+
+All non-mule agents have subdelegation capability enabled by their `task: allow` permission. No token is needed — you may use the Task tool to spawn mule-tier agents for bounded sub-tasks at your discretion within your configured hard limits.
+
+**Architects may spawn:** `researcher-mule`, `planner-mule`, `architect-mule`, `gemini-mule`, `grok-mule`
+
+**Researchers may spawn:** `researcher-mule`, `worker-mule`, `gemini-mule`, `grok-mule`
+
+**Workers may spawn:** ANY mule-tier agent (all 11). Default to `worker-mule` unless you have a specific reason to use a specialized mule.
+
+**Debuggers may spawn:** `researcher-mule`, `debugger-mule`, `worker-mule`, `gemini-mule`, `grok-mule`
+
+**Reviewers may spawn:** `security-mule` (only for 🔴 Critical or 🟠 High findings), `researcher-mule`, `reviewer-mule`
+
+**Security auditors may spawn:** `researcher-mule` (maximum 1 per task)
+
+**Planners may spawn:** `researcher-mule` (maximum 1 per task)
+
+**Editors may spawn:** `researcher-mule` (maximum 1 per task)
+
+**Quote auditors may spawn:** `researcher-mule` (maximum 1 per task)
+
+**All spawn-capable agents:**
+- Maximum 3 mule spawns per task
+- Only mule-tier agents (NEVER junior/mid/senior tier)
+- Include `[MULE_SPAWN — leaf agent, cannot spawn further subagents]` at the top of every mule prompt
+- Include `## Subdelegation Log` in your output: list each mule spawned, why, and what it found
+- Mules have 30-step limits — scope tasks accordingly
+
+### Mule spawn prompt format
+
+When spawning a mule, the first line of your prompt must be:
+```
+[MULE_SPAWN — leaf agent, cannot spawn further subagents]
+```
+
+### For all mule agents
+
+You do NOT have Task tool access. Do not attempt to spawn subagents. If you discover a task that requires another specialist, note it under "Knowledge Gaps — Supervisor Should Address" in your output.
+
+### Available mule agents
+
+| Mule | Model | Best for |
+|---|---|---|
+| `worker-mule` | DeepSeek V4 Pro | Implementation, file edits, bash commands |
+| `architect-mule` | DeepSeek V4 Pro | Design sub-problems, refactor scoping |
+| `researcher-mule` | DeepSeek V4 Pro | Web research, documentation lookup |
+| `debugger-mule` | DeepSeek V4 Pro | Hypothesis testing, diagnostics |
+| `reviewer-mule` | DeepSeek V4 Pro | Diff-level code review |
+| `security-mule` | DeepSeek V4 Pro | Vulnerability scanning |
+| `planner-mule` | DeepSeek V4 Pro | Task breakdown, sequencing |
+| `editor-mule` | DeepSeek V4 Pro | Documentation polish |
+| `quote-auditor-mule` | DeepSeek V4 Pro | Source verification |
+| `gemini-mule` | Gemini 2.5 Flash | Long-context, multimodal, web research |
+| `grok-mule` | Grok 4.3 | Coding, reasoning, creative (3x cost — justify) |
+
+### gemini-mule / grok-mule — When to Use
+
+These mules exist for specific workload types where their strengths justify the switch from the default `worker-mule`. The spawner must name a specific reason — "it's a coding task" is NOT sufficient reason for grok-mule.
+
+#### Use gemini-mule when:
+
+| Criterion | Why |
+|---|---|
+| Context exceeds ~128K tokens (very long files, multiple documents, large transcripts) | Gemini 2.5 Flash has 1M token context window |
+| Task involves images, screenshots, or visual content — read a screenshot to extract text, identify visual issues, compare UI states | Gemini is natively multimodal; reads images directly |
+| Agentic web research requiring sustained browsing across multiple sites | Gemini Flash excels at agentic web work |
+| Processing and summarizing very long PDFs or document sets | 1M context handles full documents |
+
+#### Use grok-mule when:
+
+| Criterion | Why |
+|---|---|
+| Creative reasoning — novel algorithm design, architectural brainstorming, "try a different approach" tasks | Grok is less constrained in creative exploration |
+| Complex coding where the solution is non-obvious and multiple approaches must be evaluated | Grok 4.3 is xAI's recommended coding model |
+| Task involves reading screenshots or images for analysis alongside coding — identify layout issues, compare visual states, extract information from visual content | Grok 4.3 is multimodal; reads images directly |
+| The task requires an outside-the-box reframe that a more conservative model might miss | Grok's reasoning style differs from DeepSeek/Claude |
+
+**Cost caveat:** grok-mule is 3x the cost of worker-mule. The spawner MUST state the reason in their Subdelegation Log. Supervisor: flag grok-mule usage without justification as a process gap.
+
+#### Default: worker-mule
+
+For ALL other bounded sub-tasks — code edits, test writing, bash commands, standard research, diff review — use `worker-mule`. The specialized mules are exceptions, not the default.
+
+## Multi-Agent Architecture (Always Active)
+
+Two primary agents, each with a distinct role and MCP set:
+
+- **supervisor** — Development tasks. Delegates to junior subagents for heavy lifting. MCPs: chrome-devtools, elevenlabs, firecrawl, playwright, railway. Supervisor-specific rules live in `agent/supervisor.md`.
+- **media** — Media/entertainment tasks (downloads, transcription, torrents, music). Self-executing — delegates sparingly, if at all. MCPs: elevenlabs, firecrawl, playwright, railway.
+
+**Subagent MCPs:** All junior-tier subagents (DeepSeek V4 Pro Max) receive firecrawl, playwright, and railway. Subagents do **not** receive chrome-devtools, elevenlabs, open-design, or pentest-ai — those are primary-agent-only.
+
+Mule-tier agents (worker-mule, etc.) receive the same MCP access as their junior-tier counterparts.
+
+**Disabled MCPs:** blender, audacity-mcp, nmap-mcp-server, open-design, pentest-ai, pyghidra, and yt-dlp are disabled globally. Re-enable in `opencode.json` when needed.
+
+**API keys:** `ELEVENLABS_API_KEY` and `FIRECRAWL_API_KEY` are set as shell environment variables (`.zshrc`), not in `opencode.json`. Agents and subagents inherit them from the shell.
 
 ## Visual Context Awareness (Always Active)
 
@@ -117,7 +229,8 @@ The supervisor is text-only and cannot see images. It has visual tools that suba
 |---|---|
 | **@observer** (Claude Sonnet 4.6) | Reads screenshots/mockups/error images and returns structured text analysis |
 | **playwright** | Browser screenshots, DOM snapshots, console logs |
-| **macos-automator** | macOS desktop control — captures UI state of native apps (Windows: Windows-MCP) |
+| **@observer** (Gemini 3.5 Flash) | Reads screenshots and returns structured text analysis |
+| **macos-use** | macOS desktop control — captures UI state of native apps |
 | **screenpipe** | Searches 24/7 screen/audio history for past activity |
 
 When a user pastes a screenshot, the `observer-bridge` plugin saves it and leaves a `[Image saved to: <path>]` marker; the supervisor spawns @observer to read it. (@observer needs an Anthropic API key — see `tier-system-reference.md`.)

@@ -6,6 +6,8 @@ variant: max
 steps: 25
 color: "#A78BFA"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: deny
 ---
@@ -56,3 +58,15 @@ Rough order-of-magnitude: hours / days / weeks.
 ```
 
 Be concrete and practical. Plans that look beautiful on paper but fail in reality are worse than no plan. You do NOT write code or edit files.
+
+## Subdelegation
+
+You may spawn one mule-tier agent for bounded research:
+
+- `researcher-mule` — investigate unfamiliar technologies, research library capabilities, verify tooling and dependency information relevant to the plan
+
+Hard limits:
+- Maximum 1 mule spawn per task
+- Only researcher-mule (no other mule types)
+- Include `## Subdelegation Log` in your output
+- Include `[MULE_SPAWN — leaf agent, cannot spawn further subagents]` in the mule prompt
