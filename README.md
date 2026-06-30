@@ -60,7 +60,7 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 
 ```bash
 # Copy config (no API keys live in here — see step 3)
-cp opencode.json ~/.config/opencode/opencode.json
+cp opencode.template.json ~/.config/opencode/opencode.json
 
 # Copy ALL agents — supervisor + subagents — into the same folder (plural "agents")
 mkdir -p ~/.config/opencode/agents
@@ -127,7 +127,7 @@ ls ~/.config/opencode/agents/*.md
 You should see `worker.md`, `architect.md`, `planner.md`, etc.
 
 **Already have an opencode.json?**
-If you already configured providers through OpenCode Desktop (Settings → Providers), you don't need to touch `opencode.json` at all — just copy the agent files, plugin, and AGENTS.md. The agent files won't conflict with anything.
+If you already configured providers through OpenCode Desktop (Settings → Providers), you don't need to touch `opencode.template.json` at all — just copy the agent files, plugin, and AGENTS.md. The agent files won't conflict with anything.
 
 **Supervisor not appearing as a primary agent?**
 Confirm `supervisor.md` is at `~/.config/opencode/agents/supervisor.md` (plural `agents/`) and that its frontmatter says `mode: primary`. OpenCode has no singular `agent/` folder — everything goes in `agents/`.
@@ -175,7 +175,7 @@ Supervisor/
 ├── README.md                      # This file
 ├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
 ├── agent/supervisor.md   # Primary Supervisor agent (-> ~/.config/opencode/agents/)
-├── opencode.json                  # Template config with placeholder API keys
+├── opencode.template.json         # Template config with placeholder API keys
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── subagents.md                   # Quick reference for the 9 base subagents

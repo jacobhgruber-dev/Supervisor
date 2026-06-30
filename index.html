@@ -261,8 +261,8 @@
           <div class="code"><button class="copy">Copy</button>git clone https://github.com/jacobhgruber-dev/Supervisor.git
 cd Supervisor
 mkdir -p ~/.config/opencode/agents
-# If you already configured providers in Desktop (Settings → Providers), skip the opencode.json copy — you only need the agents, plugin, and AGENTS.md.
-cp opencode.json ~/.config/opencode/opencode.json
+# If you already configured providers in Desktop (Settings → Providers), skip the opencode.template.json copy — you only need the agents, plugin, and AGENTS.md.
+cp opencode.template.json ~/.config/opencode/opencode.json
 cp agent/supervisor.md ~/.config/opencode/agents/supervisor.md  <span class="cmt"># same folder…</span>
 cp agents/*.md   ~/.config/opencode/agents/               <span class="cmt"># …as the subagents</span>
 cp plugin/*.js   ~/.config/opencode/
@@ -353,7 +353,7 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
     </details>
     <details>
       <summary>I already have an OpenCode config — will this overwrite it?</summary>
-      <p>Don't copy <code>opencode.json</code> over your existing one. The config only has MCP servers and permissions — merge what you need. The <code>.md</code> agent files are safe to add as-is.</p>
+      <p>Don't copy <code>opencode.template.json</code> over your existing one. The config only has MCP servers and permissions — merge what you need. The <code>.md</code> agent files are safe to add as-is.</p>
     </details>
   </div>
 </section>

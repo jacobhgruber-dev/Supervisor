@@ -127,7 +127,7 @@ Now copy the pieces into place. Paste these one block at a time:
 mkdir -p ~/.config/opencode/agents
 
 # 2. The main config file
-cp opencode.json ~/.config/opencode/opencode.json
+cp opencode.template.json ~/.config/opencode/opencode.json
 
 # 3. ALL agents go in the SAME folder — "agents" (plural).
 #    The Supervisor (a primary agent) and every subagent live together here.
@@ -174,7 +174,7 @@ You'll get a menu of providers. Then:
 1. Choose **DeepSeek**. (If DeepSeek isn't in the list, choose **Other**, and type `deepseek` as the provider id.)
 2. Paste the `sk-...` key from Step 2 and press Enter.
 
-That's it. OpenCode saves the key in its own secure store (`~/.local/share/opencode/auth.json`) — **not** in this repo's `opencode.json`, so there's no risk of committing it to GitHub. The provider blocks in `opencode.json` just tell OpenCode which models exist; the key comes from your login.
+That's it. OpenCode saves the key in its own secure store (`~/.local/share/opencode/auth.json`) — **not** in this repo's `opencode.template.json`, so there's no risk of committing it to GitHub. The provider blocks in `opencode.json` just tell OpenCode which models exist; the key comes from your login.
 
 > 💡 **Prefer environment variables?** That works too — set `DEEPSEEK_API_KEY` (and later `ANTHROPIC_API_KEY`) in your shell and OpenCode will pick them up. Use whichever you like; you don't need both.
 

@@ -1,15 +1,15 @@
-# opencode.json — Setup Instructions
+# opencode.template.json — Setup Instructions
 
-This file is the template for your opencode configuration. It is **provider-free** — no `provider` block — and designed to work with keys you add through OpenCode Desktop's UI or `opencode auth login`. Copy `opencode.json` to your opencode config directory:
+This file is the template for your opencode configuration. It is **provider-free** — no `provider` block — and designed to work with keys you add through OpenCode Desktop's UI or `opencode auth login`. Copy `opencode.template.json` to your opencode config directory:
 
 **macOS/Linux:**
 ```
-cp opencode.json ~/.config/opencode/opencode.json
+cp opencode.template.json ~/.config/opencode/opencode.json
 ```
 
 **Windows:**
 ```
-copy opencode.json %USERPROFILE%\.config\opencode\opencode.json
+copy opencode.template.json %USERPROFILE%\.config\opencode\opencode.json
 ```
 
 ## Connecting Your API Keys (Desktop — Recommended)
