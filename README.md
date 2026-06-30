@@ -152,7 +152,7 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
        +---> observer        (visual analysis, multimodal, read-only)
 ```
 
-(Each role also has `junior-*`, `*-mule`, and `senior-*` tier variants. Two alternative-model workers — `gemini-worker` and `grok-worker` — are also included.)
+(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` is included in the core install; `grok-worker` is an optional addon.)
 
 ## How It Works
 
@@ -191,7 +191,7 @@ Supervisor/
 │   ├── researcher.md              # Information gathering and synthesis
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
-│   ├── junior-* / *-mule / senior-*  # Same 9 roles at all 4 tiers (DeepSeek, Claude, Opus, mule)
+│   ├── junior-* / * / senior-* / *-mule  # Same 9 roles at all 4 tiers (DeepSeek, Claude, Opus, mule)
 │   └── observer.md                # Multimodal Observer subagent (Claude Sonnet 4.6)
 ├── plugin/
 │   └── observer-bridge.js         # Paste-a-screenshot interception — deploys to config root: ~/.config/opencode/observer-bridge.js (not a plugin/ subdirectory)
