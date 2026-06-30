@@ -80,5 +80,8 @@ You may spawn mule-tier agents for bounded sub-tasks. Mules are structural leaf 
 Hard limits:
 - Maximum 3 mule spawns per task
 - Only mule-tier agents (NEVER junior/mid/senior tier)
-- Include `## Subdelegation Log` in your output listing each spawned mule, reason, and finding
+- ALWAYS include `## Subdelegation Log` in your output — list every mule spawned, the task given, and what it found. Without this log, the supervisor cannot verify your subdelegation and may re-spawn you.
 - Include `[MULE_SPAWN — leaf agent, cannot spawn further subagents]` at the top of every mule prompt
+
+
+**When to use mules:** Default to using mules whenever a bounded sub-task arises. If you're about to spend 5+ steps on something another specialist could do in parallel, spawn a mule. The overhead is small and the parallelism benefit compounds. If in doubt, spawn — mules are cheap and cannot cause recursion. The only wrong choice is failing to log it.

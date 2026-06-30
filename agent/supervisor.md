@@ -279,7 +279,9 @@ Image-capable agents (`grok-worker`, `gemini-worker`, `grok-mule`, `gemini-mule`
 | `junior-quote-auditor` | Quote verification | `quote-auditor-mule` | Source verification leaf. | Junior-tier only |
 | — | — | `gemini-mule` | Long-context (>128K), reads images/screenshots directly, agentic web research. Gemini 2.5 Flash at budget price. | Subagent-internal only |
 | — | — | `grok-mule` | Creative reasoning, novel algorithms, reads images/screenshots for visual analysis. Grok 4.3 (3x cost — require justification in Subdelegation Log). | Subagent-internal only |
+| — | — | `claude-mule` | Nuanced reasoning, careful analysis, code review. Claude Sonnet 4.6. | Subagent-internal only |
 | `explore` | Codebase exploration | *(built-in)* | File discovery, pattern search. Built-in, not a mule. | Supervisor only |
+| `grok-worker` | High-powered max-capacity worker. Grok 4.3 with 1M context, strong coding, creative reasoning. Spawn at will. | — | — | Supervisor tool (always available) |
 
 **Mule tier — NEVER spawn directly:** Mule agents are subagent infrastructure. They exist for architects, workers, debuggers, and reviewers to spawn internally. The supervisor does NOT spawn mules directly. If you need cheap work, spawn a junior-tier agent (which may internally use mules). Mules are the cheapest tier and structurally cannot spawn further agents (`task: deny`).
 

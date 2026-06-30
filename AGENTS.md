@@ -177,34 +177,29 @@ You do NOT have Task tool access. Do not attempt to spawn subagents. If you disc
 | `quote-auditor-mule` | DeepSeek V4 Pro | Source verification |
 | `gemini-mule` | Gemini 2.5 Flash | Long-context, multimodal, web research |
 | `grok-mule` | Grok 4.3 | Coding, reasoning, creative (3x cost — justify) |
+| `claude-mule` | Claude Sonnet 4.6 | Nuanced reasoning, careful analysis, code review |
 
-### gemini-mule / grok-mule — When to Use
+### gemini-mule / grok-mule / claude-mule — When to Use
 
-These mules exist for specific workload types where their strengths justify the switch from the default `worker-mule`. The spawner must name a specific reason — "it's a coding task" is NOT sufficient reason for grok-mule.
+These cross-provider mules exist for specific workload types where their strengths justify the switch from the default `worker-mule`. The spawner must name a specific reason — "it's a coding task" is NOT sufficient reason for grok-mule or claude-mule.
 
 #### Use gemini-mule when:
-
-| Criterion | Why |
-|---|---|
-| Context exceeds ~128K tokens (very long files, multiple documents, large transcripts) | Gemini 2.5 Flash has 1M token context window |
-| Task involves images, screenshots, or visual content — read a screenshot to extract text, identify visual issues, compare UI states | Gemini is natively multimodal; reads images directly |
-| Agentic web research requiring sustained browsing across multiple sites | Gemini Flash excels at agentic web work |
-| Processing and summarizing very long PDFs or document sets | 1M context handles full documents |
+- Context exceeds ~128K tokens (very long files, multiple documents, large transcripts)
+- Task involves images, screenshots, or visual content
+- Agentic web research requiring sustained browsing across multiple sites
 
 #### Use grok-mule when:
+- Creative reasoning — novel algorithm design, architectural brainstorming
+- Complex coding where the solution is non-obvious
+- The task requires an outside-the-box reframe
 
-| Criterion | Why |
-|---|---|
-| Creative reasoning — novel algorithm design, architectural brainstorming, "try a different approach" tasks | Grok is less constrained in creative exploration |
-| Complex coding where the solution is non-obvious and multiple approaches must be evaluated | Grok 4.3 is xAI's recommended coding model |
-| Task involves reading screenshots or images for analysis alongside coding — identify layout issues, compare visual states, extract information from visual content | Grok 4.3 is multimodal; reads images directly |
-| The task requires an outside-the-box reframe that a more conservative model might miss | Grok's reasoning style differs from DeepSeek/Claude |
-
-**Cost caveat:** grok-mule is 3x the cost of worker-mule. The spawner MUST state the reason in their Subdelegation Log. Supervisor: flag grok-mule usage without justification as a process gap.
+#### Use claude-mule when:
+- Nuanced analysis requiring careful reasoning about tradeoffs
+- Code review or bug detection requiring safety-conscious thinking
+- Tasks where precision and accuracy matter more than speed
 
 #### Default: worker-mule
-
-For ALL other bounded sub-tasks — code edits, test writing, bash commands, standard research, diff review — use `worker-mule`. The specialized mules are exceptions, not the default.
+For ALL other bounded sub-tasks — code edits, test writing, bash commands, standard research, diff review — use `worker-mule`. The cross-provider mules are exceptions, not the default.
 
 ## Multi-Agent Architecture (Always Active)
 

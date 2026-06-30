@@ -453,9 +453,19 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 
 ## Starting Simple
 
-The repo ships with all 3 tiers already configured — 40 agent files across 9 roles. Scaling down is just about which API keys you configure:
+The repo ships with all 4 tiers already configured — 41 agent files across 9 roles. Scaling down is just about which API keys you configure:
 
 1. **DeepSeek only (junior tier)** — one key, one model, works for everything. The mid and senior agent files sit unused until you add their API keys.
 2. **Add Anthropic (mid tier)** — connect your Anthropic key with `opencode auth login` and the bare-name agents (`worker`, `architect`, etc.) become available with Sonnet.
 3. **Add Opus (senior tier)** — the `senior-*` agents become available once both Anthropic models are configured.
-4. **Full 3-tier** — all 40 agents active, automatic escalation from junior to mid/senior when warranted.
+4. **Full 4-tier** — all 41 agents active, automatic escalation from junior to mid/senior when warranted.
+
+---
+
+## Mule Tier (Built In)
+
+Beyond the 3 escalation tiers, the repo also ships with **12 mule-tier agents** — safe-to-spawn leaf workers whose defining invariant is that **mules can never spawn further agents** (`task: {"*": "deny"}`). This guarantees termination: any agent that spawns a mule knows the work ends there.
+
+Mules are subagent infrastructure. The supervisor never spawns mules directly — they exist for architects, workers, debuggers, and reviewers to spawn internally for bounded sub-tasks.
+
+All 12 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}` and 30-step limits. Nine are DeepSeek V4 Pro (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Three are cross-provider: `gemini-mule` (Gemini 2.5 Flash), `grok-mule` (Grok 4.3), and `claude-mule` (Claude Sonnet 4.6).

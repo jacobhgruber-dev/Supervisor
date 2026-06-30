@@ -83,10 +83,14 @@ Available mules:
 - `quote-auditor-mule` — source verification
 - `gemini-mule` — long-context, multimodal, or web-heavy tasks
 - `grok-mule` — coding or creative reasoning (3x costlier — justify)
+- `claude-mule` — nuanced reasoning, careful analysis, code review (Claude Sonnet 4.6)
 
 Hard limits:
 - Maximum 3 mule spawns per task
 - Only mule-tier agents (NEVER junior/mid/senior tier)
-- Include `## Subdelegation Log` in your output
+- ALWAYS include `## Subdelegation Log` in your output — list every mule spawned, the task given, and what it found. Without this log, the supervisor cannot verify your subdelegation and may re-spawn you.
 - Include `[MULE_SPAWN — leaf agent, cannot spawn further subagents]` in every mule prompt
 - Default to `worker-mule` unless you have a specific reason to use a specialized mule
+
+
+**When to use mules:** Default to using mules whenever a bounded sub-task arises. If you're about to spend 5+ steps on something another specialist could do in parallel, spawn a mule. The overhead is small and the parallelism benefit compounds. If in doubt, spawn — mules are cheap and cannot cause recursion. The only wrong choice is failing to log it.

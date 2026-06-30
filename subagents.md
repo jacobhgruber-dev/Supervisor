@@ -1,7 +1,7 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Subagents — Quick Reference
 
-40 agent files across 9 roles at 3 tiers  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 4.6  •  senior: Claude Opus 4.8 (see tier-system-reference.md)
+41 agent files across 9 roles at 4 tiers  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 4.6  •  senior: Claude Opus 4.8  •  mule: various models (see tier-system-reference.md)
 
 For full tier specifications, see [tier-system-reference.md](tier-system-reference.md).
 For the full system reference including modes, local agents, and commands, see [reference.md](reference.md).
@@ -20,7 +20,7 @@ Key principle: **Delegate everything.** The Supervisor reads docs for orientatio
 
 ### How tiers work
 
-This repo ships with all 3 tiers of agents already configured — 40 agent files across 9 roles. The junior tier (`junior-*`) runs on DeepSeek V4 Pro and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
+This repo ships with all 4 tiers of agents already configured — 41 agent files across 9 roles. The junior tier (`junior-*`) runs on DeepSeek V4 Pro and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
 
 ---
 
@@ -147,6 +147,31 @@ When you want a specific model's strengths, the optional `grok-worker` addon add
 | `grok-worker` | Grok 4.3 (xAI) | Add an xAI key through Desktop Settings → Providers, then copy one file. | Full |
 
 See [`addons/grok-worker/README.md`](addons/grok-worker/README.md) for setup. No auth plugin required.
+
+---
+
+## Mule Tier — Leaf Workers (Built In)
+
+The repo also ships with **12 mule-tier agents** — safe-to-spawn leaf workers that can never spawn further subagents. This eliminates recursion risk: any agent that spawns a mule is guaranteed the work terminates there.
+
+Mules are subagent infrastructure — architects, workers, debuggers, and reviewers spawn them internally for bounded sub-tasks. The supervisor never spawns mules directly.
+
+| Mule | Model | Best for |
+|---|---|---|
+| `worker-mule` | DeepSeek V4 Pro | Implementation, file edits, bash commands |
+| `architect-mule` | DeepSeek V4 Pro | Design sub-problems, refactor scoping |
+| `researcher-mule` | DeepSeek V4 Pro | Web research, documentation lookup |
+| `debugger-mule` | DeepSeek V4 Pro | Hypothesis testing, diagnostics |
+| `reviewer-mule` | DeepSeek V4 Pro | Diff-level code review |
+| `security-mule` | DeepSeek V4 Pro | Vulnerability scanning |
+| `planner-mule` | DeepSeek V4 Pro | Task breakdown, sequencing |
+| `editor-mule` | DeepSeek V4 Pro | Documentation polish |
+| `quote-auditor-mule` | DeepSeek V4 Pro | Source verification |
+| `gemini-mule` | Gemini 2.5 Flash | Long-context, multimodal, web research |
+| `grok-mule` | Grok 4.3 | Coding, reasoning, creative |
+| `claude-mule` | Claude Sonnet 4.6 | Nuanced reasoning, careful analysis, code review |
+
+See [tier-system-reference.md](tier-system-reference.md) for full mule tier specifications.
 
 ---
 
