@@ -97,7 +97,7 @@ After the request, automatically return to normal careful Karpathy mode.
 
 ## Subagent Spawning Rules (Always Active)
 
-The Task tool can spawn specialized subagents (42 available — 9 roles at 4 tiers (junior, mid, senior, mule), plus 2 local agents, grok-worker, gemini-worker, gemini-mule, and grok-mule. Note: debate-coordinator is a primary agent, not a subagent.
+The Task tool can spawn specialized subagents (40 available — 9 roles at 4 tiers (junior, mid, senior, mule), plus Observer and alternative-model workers). See `reference.md` for the full catalog. For the tier system specs, see `tier-system-reference.md`.
 
 **When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `agent/supervisor.md` instead.
 

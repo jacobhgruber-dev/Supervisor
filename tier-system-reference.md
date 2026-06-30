@@ -1,6 +1,10 @@
+<!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Tier System Reference
 
 The Supervisor ships with a complete 3-tier agent system. All 9 roles are available at every tier out of the box.
+
+For the quick-reference guide to the 9 base subagents, see [subagents.md](subagents.md).
+For the complete catalog including modes, commands, and local agents, see [reference.md](reference.md).
 
 | Tier | Model | Role | Naming Convention |
 |------|-------|------|-------------------|
@@ -143,7 +147,7 @@ variant: max
 steps: 25
 color: "#FBBF24"
 permission:
-  edit: deny
+  edit: allow
   bash: deny
 ---
 ```
@@ -179,7 +183,7 @@ steps: 25
 color: "#FB923C"
 permission:
   edit: deny
-  bash: allow
+  bash: deny
 ---
 ```
 
@@ -449,9 +453,9 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 
 ## Starting Simple
 
-The repo ships with all 3 tiers already configured — 27 agent files across 9 roles. Scaling down is just about which API keys you configure:
+The repo ships with all 3 tiers already configured — 40 agent files across 9 roles. Scaling down is just about which API keys you configure:
 
 1. **DeepSeek only (junior tier)** — one key, one model, works for everything. The mid and senior agent files sit unused until you add their API keys.
 2. **Add Anthropic (mid tier)** — connect your Anthropic key with `opencode auth login` and the bare-name agents (`worker`, `architect`, etc.) become available with Sonnet.
 3. **Add Opus (senior tier)** — the `senior-*` agents become available once both Anthropic models are configured.
-4. **Full 3-tier** — all 27 agents active, automatic escalation from junior to mid/senior when warranted.
+4. **Full 3-tier** — all 40 agents active, automatic escalation from junior to mid/senior when warranted.

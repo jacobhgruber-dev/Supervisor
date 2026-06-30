@@ -18,7 +18,7 @@ The bare minimum. Install these and you have a working supervisor.
 
 ## Tier 2: Plugins (optional, 4 items)
 
-The base config ships with **no plugins** (`"plugin": []`). These are optional quality-of-life additions — drop any you want into the `"plugin"` array and OpenCode auto-installs them, no manual install needed.
+The base config ships with the Observer plugin already configured: `"plugin": ["observer-bridge.js"]`. Copy `plugin/observer-bridge.js` to your config root (already done in the main setup). Additional optional plugins are available:
 
 ```json
 "plugin": [
@@ -108,7 +108,7 @@ The config ships with **two browser/automation MCP servers enabled by default** 
 | `playwright` | Drive a real browser — clicks, forms, login flows |
 | `chrome-devtools` | Inspect pages, console, and network for web debugging |
 
-It also includes **three optional MCP servers, disabled by default.** Each needs a key or an extra install, so you opt in only when you want it. To turn one on: set its `"enabled": true` in the `"mcp"` block **and** change its line in the `"permission"` block from `"deny"` to `"allow"`.
+It also includes **seven optional MCP servers, disabled by default.** Each needs a key or an extra install, so you opt in only when you want it. To turn one on: set its `"enabled": true` in the `"mcp"` block **and** change its line in the `"permission"` block from `"deny"` to `"allow"`.
 
 | MCP | What it adds | Setup |
 |-----|--------------|-------|

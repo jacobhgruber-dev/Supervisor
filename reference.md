@@ -1,6 +1,10 @@
+<!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Full Reference — Agents, Subagents, Modes & Commands
 
 A comprehensive catalog of everything available across the base setup, 3-tier upgrade, and all addons. Not everything here applies to every setup — skim the headings and read what's relevant to what you've installed. As you add more pieces (modes, Claude tiers), more sections become relevant.
+
+For the quick-reference guide to the 9 base subagents, see [subagents.md](subagents.md).
+For complete tier specifications and agent configs, see [tier-system-reference.md](tier-system-reference.md).
 
 **Tip:** Keep this somewhere handy: `cp reference.md ~/Desktop/opencode-reference.md`
 

@@ -63,7 +63,7 @@ The shipped `opencode.json` contains **no provider block**. It defines:
 | Field | Value | What it does |
 |-------|-------|--------------|
 | `model` | `deepseek/deepseek-v4-pro` | Primary model for the supervisor and subagents |
-| `small_model` | `deepseek/deepseek-v4-pro` | Fallback for lightweight tasks |
+| `small_model` | `deepseek/deepseek-v4-pro` | Fallback for lightweight tasks — set to DeepSeek so background tasks stay cheap even after you add an Anthropic key |
 | `default_agent` | `supervisor` | Makes Supervisor the default agent on startup |
 | `mcp` | *(see below)* | MCP server definitions (tools available to agents) |
 | `permission` | *(see below)* | Tool permission rules for each MCP |

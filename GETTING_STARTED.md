@@ -120,7 +120,7 @@ cd Supervisor
 
 Now copy the pieces into place. Paste these one block at a time:
 
-> ⚠️ **If you already configured providers in OpenCode Desktop**, do NOT copy the `opencode.json` file — you only need the agent files, plugin, and AGENTS.md. Copying the config won't break anything (it no longer has a provider block), but it will replace any custom settings you've added.
+> ⚠️ **Already configured providers in Desktop or have custom settings in your opencode.json?** Skip the template copy — just copy the agent files, plugin, and AGENTS.md. The template WILL overwrite your existing config, including any real API keys you've stored in MCP server fields.
 
 ```bash
 # 1. Make sure the config folders exist
@@ -146,7 +146,7 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 > # ~/.config/opencode/ → %USERPROFILE%\.config\opencode\
 > mkdir $env:USERPROFILE\.config\opencode\agents
 > 
-> copy opencode.json $env:USERPROFILE\.config\opencode\opencode.json
+> copy opencode.template.json $env:USERPROFILE\.config\opencode\opencode.json
 > copy agent\supervisor.md $env:USERPROFILE\.config\opencode\agents\supervisor.md
 > copy agents\*.md $env:USERPROFILE\.config\opencode\agents\
 > copy plugin\observer-bridge.js $env:USERPROFILE\.config\opencode\observer-bridge.js
@@ -155,7 +155,7 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 > (`mkdir` in PowerShell creates parent directories automatically — no `-p` flag needed. `copy` replaces `cp`.)
 
 > 🪤 **The #1 beginner footgun — one folder, and it's plural.**
-> *Every* agent — the Supervisor **and** the 27 subagents — goes in `~/.config/opencode/agents/` (**plural**). What makes the Supervisor "primary" is the `mode: primary` line inside `supervisor.md`, **not** a separate folder. OpenCode does **not** read a singular `agent/` folder, so if you put `supervisor.md` there, it silently won't load and the Supervisor won't show up. Keep everything in `agents/`.
+> *Every* agent — the Supervisor **and** the 40 subagents — goes in `~/.config/opencode/agents/` (**plural**). What makes the Supervisor "primary" is the `mode: primary` line inside `supervisor.md`, **not** a separate folder. OpenCode does **not** read a singular `agent/` folder, so if you put `supervisor.md` there, it silently won't load and the Supervisor won't show up. Keep everything in `agents/`.
 
 > 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! The agents, plugin, and AGENTS.md are safe to add — they won't clash with anything. The `opencode.json` template is optional; it only adds MCP servers and permissions.
 
@@ -227,7 +227,7 @@ What you'll see: the Supervisor states a plan, spawns one or more specialists, r
 
 ## 🧱 Step 7 — Add Claude to complete the system (mid + senior tiers + Observer)
 
-This is part of the core setup, not a bolt-on. The **full 3-tier system ships in the repo** — all 27 agent files are already on your machine. DeepSeek powers the junior tier (and handles ~80% of work on its own), and an **Anthropic (Claude)** key switches on the other two tiers **plus Observer's screenshot vision**. You *can* run DeepSeek-only as a budget minimum, but the system is designed to run on both keys.
+This is part of the core setup, not a bolt-on. The **full 3-tier system ships in the repo** — all 40 agent files are already on your machine. DeepSeek powers the junior tier (and handles ~80% of work on its own), and an **Anthropic (Claude)** key switches on the other two tiers **plus Observer's screenshot vision**. You *can* run DeepSeek-only as a budget minimum, but the system is designed to run on both keys.
 
 **How the three tiers work — it's just naming:**
 
@@ -324,7 +324,7 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 ## 🗺️ Where to go next
 
 - **[README.md](README.md)** — the full architecture and design philosophy.
-- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 27 agents.
+- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 40 agents.
 - **[DEPENDENCIES.md](DEPENDENCIES.md)** — every optional tool, organized by tier.
 - **[addons/README.md](addons/README.md)** — modes, local models, and the visual Observer.
 
