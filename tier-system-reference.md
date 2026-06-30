@@ -1,7 +1,7 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Tier System Reference
 
-The Supervisor ships with a complete 3-tier agent system. All 9 roles are available at every tier out of the box.
+The Supervisor ships with a complete 3-tier escalation system (plus a built-in mule tier — see [Mule Tier](#mule-tier-built-in) below). All 9 roles are available at every escalation tier out of the box.
 
 For the quick-reference guide to the 9 base subagents, see [subagents.md](subagents.md).
 For the complete catalog including modes, commands, and local agents, see [reference.md](reference.md).
@@ -349,7 +349,7 @@ permission:
 
 ## Full Spec Reference Table
 
-Complete configuration for all 9 roles across all 3 tiers:
+Complete configuration for all 9 roles across all 3 escalation tiers:
 
 | Role | Tier | File Name | Model | Steps | Edit | Bash | Web/Playwright |
 |------|------|-----------|-------|-------|------|------|-----|
@@ -428,7 +428,22 @@ Complete configuration for all 9 roles across all 3 tiers:
 ├── senior-researcher.md
 ├── senior-quote-auditor.md
 │
-└── observer.md               # Multimodal Observer (Claude Sonnet)
+├── worker-mule.md            # Mule tier
+├── architect-mule.md
+├── researcher-mule.md
+├── debugger-mule.md
+├── reviewer-mule.md
+├── security-mule.md
+├── planner-mule.md
+├── editor-mule.md
+├── quote-auditor-mule.md
+├── gemini-mule.md
+├── grok-mule.md
+├── claude-mule.md
+│
+├── observer.md               # Multimodal Observer (Claude Sonnet)
+│
+└── gemini-worker.md          # Addon worker (Gemini 3 Pro)
 ```
 
 (The optional `grok-worker` addon installs one more file here when you opt in — see `addons/grok-worker/`.)

@@ -175,7 +175,7 @@ Supervisor/
 ├── README.md                      # This file
 ├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
 ├── agent/supervisor.md   # Primary Supervisor agent (source only — copy FROM here; OpenCode reads from ~/.config/opencode/agents/ not here)
-├── opencode.template.json         # Template config with placeholder API keys
+├── opencode.template.json         # Template config with MCP server placeholders — no provider API keys
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── subagents.md                   # Quick reference for the 9 base subagents

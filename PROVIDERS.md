@@ -6,7 +6,7 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 
 ## Tier 1: DeepSeek (Required)
 
-**What it powers:** The Supervisor agent + the entire junior tier (9 subagents).
+**What it powers:** The Supervisor agent, the entire junior tier (9 subagents), and 9 DeepSeek mule-tier agents.
 
 **Cost:** Extremely cheap. A $2–$5 credit top-up lasts weeks of regular use.
 
@@ -146,6 +146,6 @@ When configuring providers manually or writing agent frontmatter:
 | DeepSeek | `deepseek/deepseek-v4-pro` | `supervisor.md`, all `junior-*.md` |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-4-6` | `worker.md`, `architect.md`, etc. + `observer.md` |
 | Anthropic (Opus) | `anthropic/claude-opus-4-8` | all `senior-*.md` |
-| Google (Pro) | `google/gemini-2.5-pro` | `gemini-worker.md` |
+| Google (Pro) | `google/gemini-3.1-pro-preview` | `gemini-worker.md` |
 | Google (Flash) | `google/gemini-2.5-flash` | `gemini-mule.md` |
 | xAI (Grok) | `xai/grok-4.3` | `grok-worker.md` (addon), `grok-mule.md` |

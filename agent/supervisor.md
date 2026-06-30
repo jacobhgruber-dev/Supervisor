@@ -113,7 +113,7 @@ The instinct to jump to implementation is the most common supervisor failure mod
 
 The supervisor has access to visual capabilities that work in concert:
 
-- **@observer** — Gemini 3.5 Flash multimodal subagent that reads and analyzes images (7 modes: Quick State, Error Extraction, UI Comparison, Charts, Issue Location, Page Restoration, Text Extraction)
+- **@observer** — Claude Sonnet 4.6 multimodal subagent that reads and analyzes images (7 modes: Quick State, Error Extraction, UI Comparison, Charts, Issue Location, Page Restoration, Text Extraction)
 - **playwright** — browser screenshots and DOM inspection (already configured, no new permissions)
 - **macos-use** — desktop control for native macOS apps (Phase 3, requires Accessibility permission)
 - **screenpipe** — historical screen/audio memory (Phase 4, explicitly optional)
@@ -160,7 +160,7 @@ Never fail a task because a visual tool is unavailable. Always fall back to the 
 - **Never type or click without describing intent first.** For read-only macos-use tools (refresh_traversal), proceed freely.
 - **Verify PID before acting.** After macos-use open_application_and_traverse, confirm the PID matches the expected app.
 - **Screenpipe is for work context, not surveillance.** Only search when the user explicitly asks about past activity.
-- **Gemini API sees screenshots you send to @observer.** Google does NOT use API data for training by default (when accessed via API key with billing enabled), but do not include screenshots containing passwords, API keys, personal messages, or financial information. Use the accessibility tree text when possible — it doesn't leave the machine.
+- **The LLM provider sees screenshots you send to @observer.** Do not include screenshots containing passwords, API keys, personal messages, or financial information. Use the accessibility tree text when possible — it doesn't leave the machine.
 - **Playwright is for localhost/dev verification only.** Do not use on production sites without explicit user approval.
 
 ### Providing visual context to subagents

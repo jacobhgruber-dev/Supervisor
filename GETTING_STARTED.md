@@ -309,7 +309,7 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 |---------|------------------|-----|
 | **Supervisor doesn't appear** | `supervisor.md` in the wrong folder, or missing `mode: primary` | Confirm it's in `~/.config/opencode/agents/` (**plural**) with `ls ~/.config/opencode/agents/supervisor.md`, and that its frontmatter says `mode: primary`. There is no singular `agent/` folder. |
 | **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in the agents folder | Only real agent files belong in `~/.config/opencode/agents/`. Remove any docs: `rm ~/.config/opencode/agents/tier-system-reference.md`. |
-| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~29 files. If empty, re-run the copy command in Step 3. |
+| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~41 files. If empty, re-run the copy command in Step 3. |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
 | **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` (OpenCode Desktop usually auto-installs provider packages; this is only needed if you get 'Model not found' errors) |
 | **"Invalid API key" / "not authenticated"** | Key not connected, or a typo | Re-run `opencode auth login` and re-enter the key (no extra spaces). Confirm with `opencode auth list` that the provider shows up. |

@@ -1,7 +1,7 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Full Reference — Agents, Subagents, Modes & Commands
 
-A comprehensive catalog of everything available across the base setup, 3-tier upgrade, and all addons. Not everything here applies to every setup — skim the headings and read what's relevant to what you've installed. As you add more pieces (modes, Claude tiers), more sections become relevant.
+A comprehensive catalog of everything available across the base setup, 4-tier upgrade, and all addons. Not everything here applies to every setup — skim the headings and read what's relevant to what you've installed. As you add more pieces (modes, Claude tiers), more sections become relevant.
 
 For the quick-reference guide to the 9 base subagents, see [subagents.md](subagents.md).
 For complete tier specifications and agent configs, see [tier-system-reference.md](tier-system-reference.md).
@@ -17,7 +17,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek V4 Pro | Orchestration — plans, delegates, reviews, commits |
-| **27 subagents** (3 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 4.8 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at each tier |
+| **41 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 4.8 / Gemini 2.5 Flash / Grok 4.3 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers |
 | **Observer** (built in) | Claude Sonnet 4.6 | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
@@ -25,7 +25,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 
 ## Subagent Tiers
 
-The Supervisor ships with 27 agents across 3 tiers — 9 roles at each tier. The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet) and senior (Claude Opus) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
+The Supervisor ships with 41 agents across 4 tiers — 9 roles at each tier. The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet) and senior (Claude Opus) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
 | Subagent | Use For | Steps | Permissions |
 |----------|---------|-------|-------------|
@@ -57,15 +57,16 @@ The Supervisor ships with 27 agents across 3 tiers — 9 roles at each tier. The
 
 ## Tier Breakdown
 
-The 3-tier system is fully configured in the repo. The naming convention:
+The 4-tier system is fully configured in the repo. The naming convention:
 
 | Tier | Model | Naming | Default Behavior |
 |------|-------|--------|-----------------|
 | Junior | DeepSeek V4 Pro | `junior-worker`, etc. | Default — automatic spawning |
 | Mid | Claude Sonnet 4.6 | `worker`, etc. (bare name) | Explicitly invoked |
 | Senior | Claude Opus 4.8 | `senior-worker`, etc. | Highest stakes only |
+| Mule | DeepSeek V4 Pro (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
 
-This gives you 27 subagent files across 9 roles × 3 tiers. See `tier-system-reference.md` for the complete spec table and agent specifications.
+This gives you 41 agent files across 9 roles at 4 tiers. See `tier-system-reference.md` for the complete spec table and agent specifications.
 
 ### Quick Cost Guide
 
@@ -74,6 +75,19 @@ This gives you 27 subagent files across 9 roles × 3 tiers. See `tier-system-ref
 | Junior | DeepSeek V4 Pro | $ | 80% of all tasks |
 | Mid | Claude Sonnet 4.6 | $$ | Complex reasoning, deeper reviews |
 | Senior | Claude Opus 4.8 | $$$$ | Production-critical, highest stakes |
+
+---
+
+## Mule Tier
+
+12 mule-tier leaf agents that cannot spawn further subagents (`task: deny` in their permission block). This eliminates recursion risk — any agent that spawns a mule is guaranteed the work terminates there.
+
+Mules are subagent infrastructure. The supervisor never spawns mules directly; junior, mid, and senior agents spawn them internally for bounded work.
+
+- **9 DeepSeek mules** mirror the 9 roles (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`)
+- **3 cross-provider mules** for specialized workloads (`gemini-mule` for long-context/multimodal, `grok-mule` for creative reasoning, `claude-mule` for nuanced analysis)
+
+See [subagents.md](subagents.md) and [tier-system-reference.md](tier-system-reference.md) for full specifications, spawn rules, and individual agent details.
 
 ---
 
@@ -152,9 +166,11 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
       +---> editor / junior-editor / senior-editor  (proofreading, read + edit)
       +---> quote-auditor / junior-quote-auditor / senior-quote-auditor  (quotes)
       |
+      +---> mule-tier (12 leaf workers — subagent infrastructure, spawned internally)
+      |
       +---> observer           (visual analysis, Claude Sonnet 4.6)
 
-(Optional addon: grok-worker — alternative model, Grok 4.3 via xAI.)
+(Optional addons: gemini-worker (Gemini 3 Pro), grok-worker (Grok 4.3).)
 
 Behavioral Modes (overlay on any agent):
   /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes
@@ -176,4 +192,5 @@ Behavioral Modes (overlay on any agent):
 | "Proofread this blog post" | `editor` |
 | "Check that all quotes in this article are verbatim" | `quote-auditor` |
 | "Read the screenshot I just pasted" | `observer` |
+| "Any task — I want Gemini's model" | `gemini-worker` *(optional addon)* |
 | "Any task — I want Grok's model" | `grok-worker` *(optional addon)* |

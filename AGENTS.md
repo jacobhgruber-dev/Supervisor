@@ -97,7 +97,7 @@ After the request, automatically return to normal careful Karpathy mode.
 
 ## Subagent Spawning Rules (Always Active)
 
-The Task tool can spawn specialized subagents (40 available — 9 roles at 4 tiers (junior, mid, senior, mule), plus Observer and alternative-model workers). See `reference.md` for the full catalog. For the tier system specs, see `tier-system-reference.md`.
+The Task tool can spawn specialized subagents (41 available — 9 roles at 3 escalation tiers + 12 mule-tier agents, plus Observer and gemini-worker). See `reference.md` for the full catalog. For the tier system specs, see `tier-system-reference.md`.
 
 **When to delegate (for primary agents working without the supervisor):** Spawn a subagent when the work benefits from a fresh context window — heavy file exploration, research that would clutter your reasoning, focused tasks like quote auditing or security review, or work that maps cleanly to a specialized role. Self-execute trivial tasks and tightly-scoped edits where delegation would add more overhead than benefit. When the supervisor is active, follow the supervisor's delegation rules in `agent/supervisor.md` instead.
 
@@ -224,7 +224,6 @@ The supervisor is text-only and cannot see images. It has visual tools that suba
 |---|---|
 | **@observer** (Claude Sonnet 4.6) | Reads screenshots/mockups/error images and returns structured text analysis |
 | **playwright** | Browser screenshots, DOM snapshots, console logs |
-| **@observer** (Gemini 3.5 Flash) | Reads screenshots and returns structured text analysis |
 | **macos-use** | macOS desktop control — captures UI state of native apps |
 | **screenpipe** | Searches 24/7 screen/audio history for past activity |
 
