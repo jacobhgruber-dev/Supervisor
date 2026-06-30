@@ -113,7 +113,7 @@ The instinct to jump to implementation is the most common supervisor failure mod
 
 The supervisor has access to visual capabilities that work in concert:
 
-- **@observer** — Claude Sonnet 4.6 multimodal subagent that reads and analyzes images (7 modes: Quick State, Error Extraction, UI Comparison, Charts, Issue Location, Page Restoration, Text Extraction)
+- **@observer** — Gemini 3.5 Flash multimodal subagent that reads and analyzes images (7 modes: Quick State, Error Extraction, UI Comparison, Charts, Issue Location, Page Restoration, Text Extraction)
 - **playwright** — browser screenshots and DOM inspection (already configured, no new permissions)
 - **macos-use** — desktop control for native macOS apps (Phase 3, requires Accessibility permission)
 - **screenpipe** — historical screen/audio memory (Phase 4, explicitly optional)
@@ -147,7 +147,7 @@ For any UI-affecting change:
 
 | Component unavailable | Fallback behavior |
 |---|---|
-| @observer (Anthropic API error) | User gets raw screenshot path. Use accessibility tree text if available. |
+| @observer (Google API error) | User gets raw screenshot path. Use accessibility tree text if available. |
 | playwright error | Try chrome-devtools for browser state. Fall back to macos-use if native app. |
 | macos-use (no Accessibility permission) | Skip desktop automation. User must manually open/capture. @observer still works for pasted images. |
 | screenpipe not running | Historical search unavailable. Current-state tools still work. |

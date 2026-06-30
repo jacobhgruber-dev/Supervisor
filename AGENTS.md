@@ -222,12 +222,12 @@ The supervisor is text-only and cannot see images. It has visual tools that suba
 
 | Tool | What it does |
 |---|---|
-| **@observer** (Claude Sonnet 4.6) | Reads screenshots/mockups/error images and returns structured text analysis |
+| **@observer** (Gemini 3.5 Flash) | Reads screenshots/mockups/error images and returns structured text analysis |
 | **playwright** | Browser screenshots, DOM snapshots, console logs |
 | **macos-use** | macOS desktop control — captures UI state of native apps |
 | **screenpipe** | Searches 24/7 screen/audio history for past activity |
 
-When a user pastes a screenshot, the `observer-bridge` plugin saves it and leaves a `[Image saved to: <path>]` marker; the supervisor spawns @observer to read it. (@observer needs an Anthropic API key — see `tier-system-reference.md`.)
+When a user pastes a screenshot, the `observer-bridge` plugin saves it and leaves a `[Image saved to: <path>]` marker; the supervisor spawns @observer to read it. (@observer needs a Google (Gemini) API key — see `tier-system-reference.md`.)
 
 As a subagent, flag when visual verification would help instead of silently working around it:
 - "I need to know what this UI looks like right now" → ask the supervisor to capture via playwright/macos-automator

@@ -9,7 +9,7 @@ The Supervisor repo ships with everything you need out of the box: one API key, 
 | [OpenCode Modes](open-code-modes/) | 9 behavioral modes for the main agent — trigger words that change how it thinks (architect, debug, review, etc.) | 1 minute — copy one file |
 | [Grok Worker](grok-worker/) | An alternative-model subagent running on xAI's Grok 4.3, for when you want Grok's strengths on a task | 2 minutes — add an xAI key + copy one file |
 
-> **Observer is no longer an addon — it's built into the base setup.** The multimodal screenshot-reading subagent (`agents/observer.md`) and its paste-interception plugin (`plugin/observer-bridge.js`) ship with the core repo and activate once an Anthropic key is configured. See [GETTING_STARTED.md](../GETTING_STARTED.md).
+> **Observer is no longer an addon — it's built into the base setup.** The multimodal screenshot-reading subagent (`agents/observer.md`) and its paste-interception plugin (`plugin/observer-bridge.js`) ship with the core repo and activate once a Google (Gemini) key is configured. See [GETTING_STARTED.md](../GETTING_STARTED.md).
 
 ## See Also
 

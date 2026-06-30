@@ -26,7 +26,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker (optional addon)** — an alternative-model worker on xAI's Grok 4.3, in `addons/grok-worker/`. Opt in when you want Grok's model; the core system doesn't depend on it.
 - **Full 4-tier system built in** — all 41 agents (including mule tier and alternative model workers) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
-- **Observer (built in)** — a multimodal Claude Sonnet 4.6 subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once an Anthropic key is configured.
+- **Observer (built in)** — a multimodal Gemini 3.5 Flash subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once a Google (Gemini) key is configured.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
@@ -192,7 +192,7 @@ Supervisor/
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── junior-* / * / senior-* / *-mule  # Same 9 roles at all 4 tiers (DeepSeek, Claude, Opus, mule)
-│   └── observer.md                # Multimodal Observer subagent (Claude Sonnet 4.6)
+│   └── observer.md                # Multimodal Observer subagent (Gemini 3.5 Flash)
 ├── plugin/
 │   └── observer-bridge.js         # Paste-a-screenshot interception — deploys to config root: ~/.config/opencode/observer-bridge.js (not a plugin/ subdirectory)
 ├── addons/

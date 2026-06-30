@@ -18,7 +18,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek V4 Pro | Orchestration — plans, delegates, reviews, commits |
 | **41 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 4.8 / Gemini 2.5 Flash / Grok 4.3 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers |
-| **Observer** (built in) | Claude Sonnet 4.6 | Reads pasted screenshots / UI states / error images and returns structured text |
+| **Observer** (built in) | Gemini 3.5 Flash | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
 ---
@@ -168,7 +168,7 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
       |
       +---> mule-tier (12 leaf workers — subagent infrastructure, spawned internally)
       |
-      +---> observer           (visual analysis, Claude Sonnet 4.6)
+      +---> observer           (visual analysis, Gemini 3.5 Flash)
 
 (Optional addons: gemini-worker (Gemini 3 Pro), grok-worker (Grok 4.3).)
 

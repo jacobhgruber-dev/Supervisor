@@ -441,7 +441,7 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 ├── grok-mule.md
 ├── claude-mule.md
 │
-├── observer.md               # Multimodal Observer (Claude Sonnet)
+├── observer.md               # Multimodal Observer (Gemini 3.5 Flash)
 │
 └── gemini-worker.md          # Addon worker (Gemini 3 Pro)
 ```

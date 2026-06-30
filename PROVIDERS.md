@@ -144,8 +144,8 @@ When configuring providers manually or writing agent frontmatter:
 | Provider | Model ID | Agent Files |
 |----------|----------|-------------|
 | DeepSeek | `deepseek/deepseek-v4-pro` | `supervisor.md`, all `junior-*.md` |
-| Anthropic (Sonnet) | `anthropic/claude-sonnet-4-6` | `worker.md`, `architect.md`, etc. + `observer.md` |
+| Anthropic (Sonnet) | `anthropic/claude-sonnet-4-6` | `worker.md`, `architect.md`, etc. |
 | Anthropic (Opus) | `anthropic/claude-opus-4-8` | all `senior-*.md` |
 | Google (Pro) | `google/gemini-3.1-pro-preview` | `gemini-worker.md` |
-| Google (Flash) | `google/gemini-2.5-flash` | `gemini-mule.md` |
+| Google (Flash) | `google/gemini-2.5-flash` | `gemini-mule.md`, `observer.md` |
 | xAI (Grok) | `xai/grok-4.3` | `grok-worker.md` (addon), `grok-mule.md` |
