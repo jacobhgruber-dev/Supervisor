@@ -62,7 +62,7 @@ The 4-tier system is fully configured in the repo. The naming convention:
 | Tier | Model | Naming | Default Behavior |
 |------|-------|--------|-----------------|
 | Junior | DeepSeek V4 Pro | `junior-worker`, etc. | Default — automatic spawning |
-| Mid | Claude Sonnet 4.6 | `worker`, etc. (bare name) | Explicitly invoked |
+| Mid | Claude Sonnet 5 | `worker`, etc. (bare name) | Explicitly invoked |
 | Senior | Claude Opus 4.8 | `senior-worker`, etc. | Highest stakes only |
 | Mule | DeepSeek V4 Pro (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
 
@@ -73,7 +73,7 @@ This gives you 41 agent files across 9 roles at 4 tiers. See `tier-system-refere
 | Tier | Model | Relative Cost | Best For |
 |------|-------|--------------|----------|
 | Junior | DeepSeek V4 Pro | $ | 80% of all tasks |
-| Mid | Claude Sonnet 4.6 | $$ | Complex reasoning, deeper reviews |
+| Mid | Claude Sonnet 5 | $$ | Complex reasoning, deeper reviews |
 | Senior | Claude Opus 4.8 | $$$$ | Production-critical, highest stakes |
 
 ---

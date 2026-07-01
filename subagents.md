@@ -30,7 +30,7 @@ Designs new ways to do things. Greenfield thinking, tradeoff analysis.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `architect` | Claude Sonnet 4.6 | 25 | `#3B82F6` | Edit + web + playwright (no bash) |
+| `architect` | Claude Sonnet 5 | 25 | `#3B82F6` | Edit + web + playwright (no bash) |
 
 **When to use**: Designing new systems, choosing between approaches, refactoring strategy, pattern selection.
 
@@ -42,7 +42,7 @@ Takes a design and sequences the work. Complements architect (what → how → w
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `planner` | Claude Sonnet 4.6 | 25 | `#C4B5FD` | Read-only |
+| `planner` | Claude Sonnet 5 | 25 | `#C4B5FD` | Read-only |
 
 **When to use**: Task breakdown, dependency mapping, milestone planning, effort estimation.
 
@@ -56,7 +56,7 @@ Finds bugs, logic errors, style issues, and security concerns in code. Runs auto
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `reviewer` | Claude Sonnet 4.6 | 30 | `#FCA5A5` | Read-only + bash |
+| `reviewer` | Claude Sonnet 5 | 30 | `#FCA5A5` | Read-only + bash |
 
 **When to use**: Pre-merge review, PR feedback, catching edge cases and logic flaws.
 
@@ -68,7 +68,7 @@ Chases bugs that are happening right now — error messages, stack traces, produ
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `debugger` | Claude Sonnet 4.6 | 35 | `#FB7185` | Full (edit, bash, web, playwright) |
+| `debugger` | Claude Sonnet 5 | 35 | `#FB7185` | Full (edit, bash, web, playwright) |
 
 **When to use**: Something broke. Error logs, crash reports, mysterious behavior.
 
@@ -82,7 +82,7 @@ Finds security holes — injections, exposed secrets, unsafe configs, supply cha
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `security` | Claude Sonnet 4.6 | 30 | `#DC2626` | Read-only + bash + web + playwright |
+| `security` | Claude Sonnet 5 | 30 | `#DC2626` | Read-only + bash + web + playwright |
 
 **When to use**: Security review before deployment, scanning for exposed secrets, hardening.
 
@@ -96,7 +96,7 @@ Improves writing — structure, clarity, tone, grammar.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `editor` | Claude Sonnet 4.6 | 25 | `#FDE68A` | Read + edit |
+| `editor` | Claude Sonnet 5 | 25 | `#FDE68A` | Read + edit |
 
 **When to use**: Blog posts, documentation, transcripts, any written content that needs polish.
 
@@ -108,7 +108,7 @@ Finds, verifies, and synthesizes information from multiple sources.
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `researcher` | Claude Sonnet 4.6 | 40 | `#6EE7B7` | Full |
+| `researcher` | Claude Sonnet 5 | 40 | `#6EE7B7` | Full |
 
 **When to use**: "Research how X works," "compare Y and Z," "find best practices for W."
 
@@ -120,7 +120,7 @@ Verifies that quotes match their sources exactly. Detects paraphrasing disguised
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `quote-auditor` | Claude Sonnet 4.6 | 25 | `#FDBA74` | Read-only |
+| `quote-auditor` | Claude Sonnet 5 | 25 | `#FDBA74` | Read-only |
 
 **When to use**: Verifying transcript quotes, fact-checking article claims, legal/journalistic accuracy.
 
@@ -132,7 +132,7 @@ The go-to for any task that doesn't fit a specialized role. Full access to edit 
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `worker` | Claude Sonnet 4.6 | 40 | `#A5B4FC` | Full |
+| `worker` | Claude Sonnet 5 | 40 | `#A5B4FC` | Full |
 
 **When to use**: Implementation, feature building, test writing, migrations, any general task.
 

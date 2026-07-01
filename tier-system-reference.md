@@ -9,7 +9,7 @@ For the complete catalog including modes, commands, and local agents, see [refer
 | Tier | Model | Role | Naming Convention |
 |------|-------|------|-------------------|
 | **Junior** | DeepSeek V4 Pro | Default workhorse, most tasks | `junior-worker`, `junior-architect`, etc. |
-| **Mid** | Claude Sonnet 4.6 | Complex reasoning, deeper reviews | `worker`, `architect`, etc. (no prefix) |
+| **Mid** | Claude Sonnet 5 | Complex reasoning, deeper reviews | `worker`, `architect`, etc. (no prefix) |
 | **Senior** | Claude Opus 4.8 | Highest stakes, production-critical | `senior-worker`, `senior-architect`, etc. |
 
 ## Why 3 Tiers?
@@ -32,9 +32,9 @@ These are the frontmatter specs for each agent. The prompt content (the body of 
 
 ```
 ---
-description: General-purpose subagent powered by Claude Sonnet 4.6. Mid-tier worker for tasks needing deeper reasoning than DeepSeek. Full edit and bash access.
+description: General-purpose subagent powered by Claude Sonnet 5. Mid-tier worker for tasks needing deeper reasoning than DeepSeek. Full edit and bash access.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 40
 color: "#818CF8"
@@ -51,9 +51,9 @@ permission:
 
 ```
 ---
-description: Software architect for design decisions, refactoring plans, and system structure. Powered by Claude Sonnet 4.6.
+description: Software architect for design decisions, refactoring plans, and system structure. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 25
 color: "#7B61FF"
@@ -70,9 +70,9 @@ permission:
 
 ```
 ---
-description: Planner for breaking down tasks into ordered steps, identifying dependencies, and estimating effort. Powered by Claude Sonnet 4.6.
+description: Planner for breaking down tasks into ordered steps, identifying dependencies, and estimating effort. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 25
 color: "#A78BFA"
@@ -86,9 +86,9 @@ permission:
 
 ```
 ---
-description: Code reviewer for bugs, logic errors, and code quality. Powered by Claude Sonnet 4.6.
+description: Code reviewer for bugs, logic errors, and code quality. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 30
 color: "#F87171"
@@ -102,9 +102,9 @@ permission:
 
 ```
 ---
-description: Debugger for runtime errors, stack traces, and unexpected behavior. Powered by Claude Sonnet 4.6.
+description: Debugger for runtime errors, stack traces, and unexpected behavior. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 35
 color: "#EF4444"
@@ -121,9 +121,9 @@ permission:
 
 ```
 ---
-description: Security auditor for vulnerability scanning — secrets, injections, unsafe dependencies, and common attack vectors. Powered by Claude Sonnet 4.6.
+description: Security auditor for vulnerability scanning — secrets, injections, unsafe dependencies, and common attack vectors. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 30
 color: "#B91C1C"
@@ -140,9 +140,9 @@ permission:
 
 ```
 ---
-description: Content editor for clarity, flow, and readability. Powered by Claude Sonnet 4.6.
+description: Content editor for clarity, flow, and readability. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 25
 color: "#FBBF24"
@@ -156,9 +156,9 @@ permission:
 
 ```
 ---
-description: Researcher for topic exploration, source gathering, and structured answers. Powered by Claude Sonnet 4.6.
+description: Researcher for topic exploration, source gathering, and structured answers. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 40
 color: "#34D399"
@@ -175,9 +175,9 @@ permission:
 
 ```
 ---
-description: Quote auditor for verifying quotations against their sources. Powered by Claude Sonnet 4.6.
+description: Quote auditor for verifying quotations against their sources. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 25
 color: "#FB923C"
@@ -354,31 +354,31 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 | Role | Tier | File Name | Model | Steps | Edit | Bash | Web/Playwright |
 |------|------|-----------|-------|-------|------|------|-----|
 | **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
-| | Mid | `worker.md` | `anthropic/claude-sonnet-4-6` | 40 | ✅ | ✅ | ✅ |
+| | Mid | `worker.md` | `anthropic/claude-sonnet-5` | 40 | ✅ | ✅ | ✅ |
 | | Senior | `senior-worker.md` | `anthropic/claude-opus-4-8` | 40 | ✅ | ✅ | ✅ |
 | **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-v4-pro` | 25 | ✅ | ❌ | ✅ |
-| | Mid | `architect.md` | `anthropic/claude-sonnet-4-6` | 25 | ✅ | ❌ | ✅ |
+| | Mid | `architect.md` | `anthropic/claude-sonnet-5` | 25 | ✅ | ❌ | ✅ |
 | | Senior | `senior-architect.md` | `anthropic/claude-opus-4-8` | 25 | ✅ | ❌ | ✅ |
 | **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
-| | Mid | `planner.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ❌ |
+| | Mid | `planner.md` | `anthropic/claude-sonnet-5` | 25 | ❌ | ❌ | ❌ |
 | | Senior | `senior-planner.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ❌ | ❌ |
 | **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-v4-pro` | 30 | ❌ | ✅ | ❌ |
-| | Mid | `reviewer.md` | `anthropic/claude-sonnet-4-6` | 30 | ❌ | ✅ | ❌ |
+| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5` | 30 | ❌ | ✅ | ❌ |
 | | Senior | `senior-reviewer.md` | `anthropic/claude-opus-4-8` | 30 | ❌ | ✅ | ❌ |
 | **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-v4-pro` | 35 | ✅ | ✅ | ✅ |
-| | Mid | `debugger.md` | `anthropic/claude-sonnet-4-6` | 35 | ✅ | ✅ | ✅ |
+| | Mid | `debugger.md` | `anthropic/claude-sonnet-5` | 35 | ✅ | ✅ | ✅ |
 | | Senior | `senior-debugger.md` | `anthropic/claude-opus-4-8` | 35 | ✅ | ✅ | ✅ |
 | **Security** | Junior | `junior-security.md` | `deepseek/deepseek-v4-pro` | 30 | ❌ | ✅ | ✅ |
-| | Mid | `security.md` | `anthropic/claude-sonnet-4-6` | 30 | ❌ | ✅ | ✅ |
+| | Mid | `security.md` | `anthropic/claude-sonnet-5` | 30 | ❌ | ✅ | ✅ |
 | | Senior | `senior-security.md` | `anthropic/claude-opus-4-8` | 30 | ❌ | ✅ | ✅ |
 | **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-v4-pro` | 25 | ✅ | ❌ | ❌ |
-| | Mid | `editor.md` | `anthropic/claude-sonnet-4-6` | 25 | ✅ | ❌ | ❌ |
+| | Mid | `editor.md` | `anthropic/claude-sonnet-5` | 25 | ✅ | ❌ | ❌ |
 | | Senior | `senior-editor.md` | `anthropic/claude-opus-4-8` | 25 | ✅ | ❌ | ❌ |
 | **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
-| | Mid | `researcher.md` | `anthropic/claude-sonnet-4-6` | 40 | ✅ | ✅ | ✅ |
+| | Mid | `researcher.md` | `anthropic/claude-sonnet-5` | 40 | ✅ | ✅ | ✅ |
 | | Senior | `senior-researcher.md` | `anthropic/claude-opus-4-8` | 40 | ✅ | ✅ | ✅ |
 | **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
-| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-4-6` | 25 | ❌ | ❌ | ❌ |
+| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5` | 25 | ❌ | ❌ | ❌ |
 | | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-4-8` | 25 | ❌ | ❌ | ❌ |
 
 ## Model IDs Quick Reference
@@ -386,7 +386,7 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 | Provider | Model ID in frontmatter | npm Package |
 |----------|------------------------|-------------|
 | DeepSeek | `deepseek/deepseek-v4-pro` | `@ai-sdk/deepseek` |
-| Anthropic (Sonnet) | `anthropic/claude-sonnet-4-6` | `@ai-sdk/anthropic` |
+| Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `@ai-sdk/anthropic` |
 | Anthropic (Opus) | `anthropic/claude-opus-4-8` | `@ai-sdk/anthropic` |
 | xAI (Grok) | `xai/grok-4.3` | `@ai-sdk/xai` |
 
@@ -463,7 +463,7 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 | Tier | Model | Approx. Relative Cost | Best For |
 |------|-------|----------------------|----------|
 | Junior | DeepSeek V4 Pro | $ | 80% of all tasks |
-| Mid | Claude Sonnet 4.6 | $$ | Complex reasoning, deeper reviews |
+| Mid | Claude Sonnet 5 | $$ | Complex reasoning, deeper reviews |
 | Senior | Claude Opus 4.8 | $$$$ | Production-critical, highest stakes |
 
 ## Starting Simple

@@ -234,10 +234,10 @@ This is part of the core setup, not a bolt-on. The **full 4-tier system ships in
 | You ask for… | Agent used | Model | Powered by |
 |--------------|-----------|-------|------------|
 | (automatic / "the junior worker") | `junior-worker` | DeepSeek V4 Pro | Your DeepSeek key |
-| "send this to the worker / architect" | `worker`, `architect` | Claude Sonnet 4.6 | Anthropic key |
+| "send this to the worker / architect" | `worker`, `architect` | Claude Sonnet 5 | Anthropic key |
 | "use the **senior** reviewer" | `senior-reviewer` | Claude Opus 4.8 | Anthropic key |
 
-The Claude-powered agents (and Observer) sit ready but inactive until the key is present — nothing else to configure.
+The Claude-powered agents sit ready but inactive until the key is present — nothing else to configure.
 
 **To switch them on:**
 
@@ -255,7 +255,7 @@ The Claude-powered agents (and Observer) sit ready but inactive until the key is
 
 ### 👁️ Observer — paste screenshots into chat (built in)
 
-Your Supervisor runs on a text-only model, so it can't see images. **Observer** fixes that: it's a Claude vision agent that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
+Your Supervisor runs on a text-only model, so it can't see images. **Observer** fixes that: it's a Gemini vision agent that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
 
 It activates automatically once your Anthropic key is in place (it runs on Claude Sonnet 4.6). No model names to wire up — Observer activates automatically when an Anthropic key is present (added via Desktop Settings or CLI), no provider block needed. Pair it with `screenpipe` or `macos-automator` (Step 8) and the Supervisor can capture *and* understand on-screen state.
 
@@ -290,7 +290,7 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 
 > 🪟 **On Windows?** `macos-automator` is macOS-only. For equivalent native desktop control on Windows, use **[CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP)** — follow that repo's setup, then add it to your `"mcp"` block the same way (disabled until you opt in). `screenpipe` already works on Windows.
 
-> 🧠 **Pairs well with Observer.** `screenpipe` and `macos-automator` capture what's on screen; the built-in **Observer** agent (a Claude vision agent — see Step 7) then *reads* those screenshots and explains them to your text-only Supervisor.
+> 🧠 **Pairs well with Observer.** `screenpipe` and `macos-automator` capture what's on screen; the built-in **Observer** agent (a Gemini vision agent — see Step 7) then *reads* those screenshots and explains them to your text-only Supervisor.
 
 **How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`, then in the `"permission"` block change that server's line from `"deny"` to `"allow"`. For example, to enable Firecrawl:
 

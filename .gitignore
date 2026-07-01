@@ -14,3 +14,4 @@ secrets/
 
 # Node (in case anyone adds MCP plugins locally)
 node_modules/
+opencode.json

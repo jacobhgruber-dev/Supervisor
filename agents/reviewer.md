@@ -1,7 +1,7 @@
 ---
-description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Sonnet 4.6.
+description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Sonnet 5.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: anthropic/claude-sonnet-5
 variant: max
 steps: 30
 color: "#F87171"
@@ -82,17 +82,16 @@ Be direct but constructive. Don't bikeshed. Focus on correctness and maintainabi
 
 ## Subdelegation
 
-You may spawn mule-tier agents for bounded review sub-tasks. Mules are structural leaf nodes — they cannot spawn further agents, so spawning them is always safe:
+You may spawn ANY mule-tier agent for bounded sub-tasks, up to 4 per task. Mules are structural leaf nodes — they cannot spawn further agents, so spawning them is always safe.
 
-- `reviewer-mule` — diff-level code review for individual files. Default choice for parallel reviews.
-- `researcher-mule` — verify library behavior, check documentation for correctness of API usage, research security CVEs in dependencies
-- `security-mule` — ONLY when findings are 🔴 Critical or 🟠 High severity. Scoped to the specific vulnerability, not a broad audit. Do NOT spawn for 🟡 Medium or 🟢 Low findings.
+**Default posture: decompose into parallel mules.** When a task decomposes into independent sub-tasks (separate files, parallel research, independent test files), spawn mules for each piece. Stay at the orchestration layer — your value is coordinating mules, not doing every edit yourself. When spawning mules that touch files, be mindful of file overlap: if two mules would need the same file, consolidate or sequence them.
 
-**Default posture: parallel review.** For multi-file diffs, spawn reviewer-mules for parallel file-level review. Synthesize their findings into your final report.
+Default to `worker-mule`. Reach for specialized mules when their strengths match the task: `gemini-mule` for long-context/multimodal/web-heavy tasks, `grok-mule` for creative reasoning (costlier — justify), `claude-mule` for nuanced analysis and code review.
 
 Hard limits:
-- Maximum 3 mule spawns per task
+- Maximum 4 mule spawns per task
 - Only mule-tier agents (NEVER junior/mid/senior tier)
-- Include `## Subdelegation Log` in your output: list each mule spawned, why, and what it found
-- Include `[MULE_SPAWN — leaf agent, cannot spawn further subagents]` at the top of every mule prompt
-- Mules have 30-step limits — scope tasks accordingly
+- ALWAYS include `## Subdelegation Log` in your output — list every mule spawned, the task given, and what it found. Without this log, the supervisor cannot verify your subdelegation and may re-spawn you.
+- Include `[MULE_SPAWN — leaf agent, cannot spawn further subagents]` in every mule prompt
+
+**When to use mules:** Default to using mules whenever a bounded sub-task arises. If you're about to spend 5+ steps on something another specialist could do in parallel, spawn a mule. The overhead is small and the parallelism benefit compounds. If in doubt, spawn — mules are cheap and cannot cause recursion. The only wrong choice is failing to log it.
