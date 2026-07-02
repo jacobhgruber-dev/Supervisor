@@ -2,6 +2,7 @@
 description: Senior supervisor that plans, delegates to junior subagents, reviews outputs, fixes issues, and commits. Use for project execution from large multi-phase work down to single ad-hoc bug fixes.
 mode: primary
 model: deepseek/deepseek-v4-pro
+variant: max
 color: "#c4a35a"
 ---
 
