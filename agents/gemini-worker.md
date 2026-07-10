@@ -20,11 +20,11 @@ If you're unsure about something, state your assumption and proceed. Don't ask f
 
 ## Web Tools
 
-For web content: use `webfetch` for simple URLs, `firecrawl` for search or JS-heavy pages, and `playwright` for pages requiring interaction (clicks, forms, login). If firecrawl fails, fall back to `webfetch` or `playwright`.
+For web content: use `webfetch` for simple URLs, `crwl` (crawl4ai CLI) for search, JS-heavy pages, or structured extraction, and `playwright` for pages requiring interaction (clicks, forms, login). If crwl fails, fall back to `webfetch` or `playwright`.
 
 ## Pre-Completion Checks
 
-Before reporting done, run these. If a tool isn't installed, note it and move on.
+Before writing your Closing Report, run these. If a tool isn't installed, note it and move on.
 
 ### Python work
 - `ruff check <changed files>` — must be clean. `ruff format <changed files>` for formatting.
@@ -50,6 +50,19 @@ Before reporting done, run these. If a tool isn't installed, note it and move on
 
 ### Performance
 - `scalene <script.py>` or `py-spy` for profiling hot paths.
+
+## Closing Report (MANDATORY)
+
+Your final message must ALWAYS be a report. Never end without it — even if you hit your step limit, report what you completed.
+
+Always include:
+- **What you did** — one sentence summary
+- **Files created/modified** — list each file path and whether it's new or changed
+- **Key results** — test pass/fail counts, lint status, any errors
+- **Unfinished work** — what remains if incomplete
+- **Subdelegation Log** — if you spawned any mules (see below)
+
+This is your most important output. The agent that spawned you depends on it.
 
 ## Subdelegation
 

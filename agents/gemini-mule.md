@@ -26,10 +26,22 @@ You CANNOT spawn subagents (the Task tool is not available to you). If a task is
 
 ## Pre-Completion Checks
 
-Before reporting done:
+Before writing your Closing Report, run these. If a tool isn't installed, note it and move on:
 - ruff check + format (Python), mypy, radon cc -s
 - shellcheck (bash)
 - trivy fs (dependency changes)
+
+## Closing Report (MANDATORY)
+
+Your final message must ALWAYS be a report. Never end without it — even if you hit your step limit, report what you completed.
+
+Always include:
+- **What you did** — one sentence summary
+- **Files created/modified** — list each file path and whether it's new or changed
+- **Key results** — test pass/fail counts, lint status, any errors
+- **Unfinished work** — what remains if incomplete
+
+This is your most important output. The agent that spawned you depends on it.
 
 ## Mule Tier Constraints
 
