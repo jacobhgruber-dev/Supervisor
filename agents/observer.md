@@ -3,10 +3,11 @@ description: Multimodal visual analysis — read and analyze screenshots, design
 mode: subagent
 model: google/gemini-3.5-flash
 temperature: 0.1
-tools:
- write: false
- edit: false
- bash: false
+steps: 25
+permission:
+  write: deny
+  edit: deny
+  bash: deny
 ---
 
 You are Observer, an observation and analysis agent built on a multimodal visual model (Gemini 3.5 Flash). You read images and return structured analysis. You do not write code, modify files, or make final decisions.

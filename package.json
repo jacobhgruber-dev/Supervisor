@@ -1,6 +1,10 @@
 {
   "type": "module",
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.1",
+    "@ai-sdk/deepseek": "^3.0.1",
+    "@ai-sdk/google": "^4.0.2",
+    "@ai-sdk/xai": "^4.0.2",
     "@opencode-ai/plugin": "1.14.39"
   }
 }

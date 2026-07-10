@@ -18,15 +18,7 @@
 
 ## Setup
 
-⚠️ **Do NOT overwrite your existing AGENTS.md.** The repo's root `AGENTS.md` already includes all mode-switching rules PLUS additional sections (mule tier, multi-agent architecture, visual context awareness). The `AGENTS.md` in this addon is a stripped-down reference version. If you haven't installed the root `AGENTS.md` yet, copy the root one instead.
-
-If you still want the bare modes version:
-
-```bash
-cp AGENTS.md ~/.config/opencode/
-```
-
-Or merge into an existing `AGENTS.md`. The modes are always active once the file is present.
+**Nothing to copy.** Mode switching is built into the Supervisor system. The slash commands are defined in `agent/supervisor.md`, which the Supervisor agent loads automatically. The root `AGENTS.md` provides behavioral guidelines for all agents. This folder is reference documentation only — the individual mode descriptions in `modes/` explain what each slash command does.
 
 ## How It Works
 

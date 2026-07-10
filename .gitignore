@@ -14,4 +14,11 @@ secrets/
 
 # Node (in case anyone adds MCP plugins locally)
 node_modules/
+# Compiled Python
+*.pyc
+__pycache__/
+
+# Databases
+*.db
+
 opencode.json
