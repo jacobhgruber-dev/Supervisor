@@ -1,6 +1,6 @@
 # opencode.template.json — Setup Instructions
 
-This file is the template for your opencode configuration. It is **provider-free** — no `provider` block — and designed to work with keys you add through OpenCode Desktop's UI or `opencode auth login`. Copy `opencode.template.json` to your opencode config directory:
+This file is the template for your opencode configuration. It ships with an Ollama provider for local models — no cloud provider keys are needed in the config. Add DeepSeek, Anthropic, Google, and xAI through OpenCode Desktop's UI or `opencode auth login` instead. Copy `opencode.template.json` to your opencode config directory:
 
 **macOS/Linux:**
 ```
@@ -54,23 +54,23 @@ Keys are stored in `~/.local/share/opencode/auth.json`, not in this config file.
 
 2. **`provider.models` replaces, not merges.** Any model you list in `provider.models` replaces the models.dev definition for that model ID. This strips built-in variants — for example, the DeepSeek "Max" toggle disappears if you define `deepseek/deepseek-v4-pro` in a custom `provider.models` block.
 
-**The `provider` block is only for custom providers** — local models (Ollama, LM Studio), proxies, or custom endpoints that OpenCode doesn't know about natively. If you are using one of the four built-in providers, leave `provider` out of your config.
+**The `provider` block is only for custom providers** — local models (Ollama, LM Studio), proxies, or custom endpoints that OpenCode doesn't know about natively. The template already includes Ollama. Do not add cloud providers (DeepSeek, Anthropic, Google, xAI) here — use Desktop auth or env vars instead.
 
 ## What's in This Config File
 
-The shipped `opencode.json` contains **no provider block**. It defines:
+The shipped `opencode.template.json` contains only an Ollama provider for local models. It defines:
 
 | Field | Value | What it does |
 |-------|-------|--------------|
 | `model` | `deepseek/deepseek-v4-pro` | Primary model for the supervisor and subagents |
-| `small_model` | `deepseek/deepseek-v4-pro` | Fallback for lightweight tasks — set to DeepSeek so background tasks stay cheap even after you add an Anthropic key |
 | `default_agent` | `supervisor` | Makes Supervisor the default agent on startup |
+| `subagent_depth` | `3` | How many levels deep subagents can spawn subagents. 1 = only supervisor can spawn. 3 = supervisor → subagent → mule chains work. |
 | `mcp` | *(see below)* | MCP server definitions (tools available to agents) |
 | `permission` | *(see below)* | Tool permission rules for each MCP |
 
 ## MCP Servers
 
-The `mcp` block gives agents extra capabilities. Two are enabled by default; seven are disabled.
+The `mcp` block gives agents extra capabilities. One is enabled by default; the rest are disabled.
 
 ### Enabled by default
 
@@ -85,7 +85,6 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 
 | MCP | Adds | Setup |
 |-----|------|-------|
-| `firecrawl` | Web scraping + search | Key from https://firecrawl.dev |
 | `elevenlabs` | Text-to-speech / voice | Key from https://elevenlabs.io; needs `uv` (`uvx`) |
 | `railway` | Deploy & manage apps | Railway CLI + `railway login` |
 | `screenpipe` | Search 24/7 screen + audio history | Run the screenpipe app (https://screenpi.pe); cross-platform |
@@ -95,25 +94,7 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 
 > **Windows note:** `macos-automator` is macOS-only. For native Windows control, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) and add it to `"mcp"` the same opt-in way. `screenpipe` works on Windows.
 
-### Example — enabling Firecrawl
 
-In `opencode.json`, make these two changes:
-
-```json
-"mcp": {
-  "firecrawl": {
-    "type": "local",
-    "command": ["npx", "-y", "firecrawl-mcp"],
-    "enabled": true,
-    "environment": { "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY" }
-  }
-},
-"permission": {
-  "firecrawl_*": "allow"
-}
-```
-
-(Replace `YOUR_FIRECRAWL_KEY` with your actual key from https://firecrawl.dev.)
 
 ## Permission Block
 
