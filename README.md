@@ -114,10 +114,7 @@ The Supervisor handles the rest — planning, spawning subagents, reviewing, fix
 ### Troubleshooting
 
 **"Model not found" or API errors on restart:**
-```
-npm install @ai-sdk/deepseek
-```
-Run this in `~/.config/opencode/`. OpenCode should auto-install provider packages, but if it doesn't, this one-liner fixes it.
+Make sure you've added your DeepSeek API key through OpenCode Desktop (Settings → Providers) or `opencode auth login`. If you modified `opencode.json` to add a custom `provider` block, remove it — built-in providers (DeepSeek, Anthropic, Google, xAI) are handled natively and don't belong in the config.
 
 **"Agent not found" when the Supervisor tries to spawn a subagent:**
 Make sure the agent `.md` files are in `~/.config/opencode/agents/` — not in a subdirectory. Run:
@@ -145,8 +142,8 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
        +---> planner         (sequencing, 25 steps, read-only)
        +---> reviewer        (code review, 30 steps, read-only)
        +---> debugger        (runtime errors, 35 steps, edit + web + playwright)
-       +---> security        (vulnerability scan, 25 steps, read-only + bash + web + playwright)
-       +---> researcher      (information, 35 steps, full access)
+       +---> security        (vulnerability scan, 30 steps, read-only + bash + web + playwright)
+       +---> researcher      (information, 40 steps, full access)
        +---> editor          (proofreading, 25 steps, read + edit)
         +---> quote-auditor   (quote verification, 25 steps, read-only)
        +---> observer        (visual analysis, multimodal, read-only)
@@ -175,7 +172,7 @@ Supervisor/
 ├── README.md                      # This file
 ├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
 ├── agent/supervisor.md   # Primary Supervisor agent (source only — copy FROM here; OpenCode reads from ~/.config/opencode/agents/ not here)
-├── opencode.template.json         # Template config with MCP server placeholders — no provider API keys
+├── opencode.template.json         # Template config with MCP servers, Ollama provider, subagent_depth: 3
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── subagents.md                   # Quick reference for the 9 base subagents
