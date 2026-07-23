@@ -27,11 +27,11 @@ Once a provider is configured this way, OpenCode handles everything internally �
 | Provider | Key URL | Notes |
 |----------|---------|-------|
 | DeepSeek | https://platform.deepseek.com/api_keys | $2 new-user credit; extremely cheap |
-| Anthropic | https://console.anthropic.com | $5 credit recommended; lights up mid/senior tiers + Observer |
-| Google (Gemini) | https://aistudio.google.com/apikey | Free tier available |
+| Anthropic | https://console.anthropic.com | $5 credit recommended; lights up mid/senior tiers |
+| Google (Gemini) | https://aistudio.google.com/apikey | Free tier available; lights up Observer + Gemini workers |
 | xAI (Grok) | https://console.x.ai | Powers optional grok-worker addon |
 
-DeepSeek alone runs the supervisor + junior tier. Adding Anthropic enables the mid/senior tiers and Observer. Google and xAI are optional add-ons.
+DeepSeek alone runs the supervisor + junior tier. Adding Anthropic enables the mid/senior tiers. Google enables Observer. xAI is an optional add-on.
 
 ## Connecting Your API Keys (CLI)
 
@@ -74,23 +74,27 @@ The `mcp` block gives agents extra capabilities. One is enabled by default; the 
 
 ### Enabled by default
 
-Browser/automation tools, run via `npx` on first use:
+Browser/automation tool, run via `npx` on first use:
 
 - **`playwright`** — drive a real browser (clicks, forms, login, screenshots)
-- **`chrome-devtools`** — inspect pages, console messages, network requests, performance traces
 
 ### Disabled by default
 
-Each needs a key or extra install. To enable one, set `"enabled": true` in the `mcp` block **and** flip its line in the `permission` block from `"deny"` to `"allow"`:
+Each needs a key or extra install. To enable one, set `"enabled": true` in the `mcp` block. For servers not already in the `permission` block, add a corresponding `"<name>_*": "allow"` entry:
 
 | MCP | Adds | Setup |
 |-----|------|-------|
+| `chrome-devtools` | Inspect pages, console, network, performance traces | Just flip `"enabled": true` — already pre-allowed in the `permission` block |
 | `elevenlabs` | Text-to-speech / voice | Key from https://elevenlabs.io; needs `uv` (`uvx`) |
 | `railway` | Deploy & manage apps | Railway CLI + `railway login` |
 | `screenpipe` | Search 24/7 screen + audio history | Run the screenpipe app (https://screenpi.pe); cross-platform |
 | `macos-automator` | Control native macOS apps (AppleScript/JXA) | macOS only; Node 24+, Automation + Accessibility permission |
+| `yt-dlp` | Download audio/video for transcription | `brew install yt-dlp` or `pip install yt-dlp` |
+| `vercel` | Deploy & manage apps on Vercel | Vercel token — already pre-allowed in the `permission` block |
+| `gemini-api-docs` | Live Gemini API docs lookup | Needs `uv`; works keyless |
 | `context7` | Live, version-accurate library/API docs | Works keyless; optional key from https://context7.com |
 | `github` | Manage GitHub issues, PRs, repos | Docker + GitHub token in `GITHUB_PERSONAL_ACCESS_TOKEN` |
+| `macos-use` | Native macOS GUI control | macOS only; binary at `/usr/local/bin` — already pre-allowed in `permission` block |
 
 > **Windows note:** `macos-automator` is macOS-only. For native Windows control, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) and add it to `"mcp"` the same opt-in way. `screenpipe` works on Windows.
 
@@ -98,12 +102,12 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 
 ## Permission Block
 
-The `permission` block controls which MCP tools agents are allowed to call. Each disabled MCP has a corresponding `"deny"` entry. To enable a disabled MCP, you need **both** changes:
+The `permission` block controls which MCP tools agents are allowed to call. The template pre-approves three servers (`chrome-devtools`, `macos-use`, `vercel`) with `"allow"` entries. All other disabled MCPs have no entry in the `permission` block — to enable one, you need **both** changes:
 
 1. Set `"enabled": true` inside that MCP's entry in the `mcp` block
-2. Change its permission from `"deny"` to `"allow"` in the `permission` block
+2. Add a corresponding `"<name>_*": "allow"` entry to the `permission` block
 
-Skipping either step leaves the MCP unavailable. Reverse the steps to disable a built-in MCP (set `enabled: false` + `deny`).
+Skipping either step leaves the MCP unavailable. Reverse the steps to disable a built-in MCP (set `enabled: false` and remove its permission entry).
 
 ## Adding Agent Files
 
@@ -133,7 +137,8 @@ Restart opencode. Check that everything is wired up correctly:
 
 1. **Supervisor is the default agent** — when opencode starts, the agent selector should show "supervisor" as the active primary agent (not "general" or any other agent).
 2. **Clean agent selector** — you should see your configured agents in the dropdown. No missing providers, no broken model listings.
-3. **Provider check (Desktop)** — open Settings → Providers. Providers you configured through the UI should show as connected. If you added a `provider` block by mistake and providers are broken, remove it and restart.
-4. **Model variants (Desktop)** — if you added DeepSeek through Settings, the "Max" toggle should appear in the model selector. If it's missing, you may have a `provider.models` block overriding the built-in definition — remove it.
+3. **Provider check (Desktop)** — open Settings → Providers. Providers you configured through the UI should show as connected. If you added a **cloud** `provider` block (DeepSeek/Anthropic/Google/xAI) by mistake and providers are broken, remove that cloud block and restart. The template's Ollama-only `provider` entry is fine to keep for local models.
+4. **Model variants (Desktop)** — if you added DeepSeek through Settings, the "Max" toggle should appear in the model selector. If it's missing, you may have a cloud `provider.models` block overriding the built-in definition — remove that override.
+5. **`subagent_depth`** — confirm `"subagent_depth": 3` is present so supervisor → subagent → mule chains work.
 
-If something is wrong, double-check that your `opencode.json` has **no `provider` block** and that you added keys through Settings or `opencode auth login`, not by editing the config file directly.
+If something is wrong, double-check that your `opencode.json` has **no cloud `provider` blocks** (DeepSeek/Anthropic/Google/xAI) and that you added those keys through Settings or `opencode auth login`, not by editing the config file directly.

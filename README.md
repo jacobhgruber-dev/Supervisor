@@ -24,7 +24,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **44 agents across 4 tiers (junior, mid, senior, mule)** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 5), senior (Claude Opus 4.8), and mule (various models) tiers, plus alternative model workers. All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
-- **Grok worker (optional addon)** — an alternative-model worker on xAI's Grok 4.3, in `addons/grok-worker/`. Opt in when you want Grok's model; the core system doesn't depend on it.
+- **Grok worker** — an alternative-model worker on xAI's Grok 4.3. Ships in `agents/grok-worker.md` with a mirror copy and setup README in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
 - **Full 4-tier system built in** — all 44 agents (including mule tier and alternative model workers) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
 - **Observer (built in)** — a multimodal Gemini 3.5 Flash subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once a Google (Gemini) key is configured.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
@@ -33,9 +33,9 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 
 ### 1. Get a DeepSeek API Key
 
-Visit https://platform.deepseek.com/api_keys and create an API key. This is the only key you need to get started — all agents run on DeepSeek.
+Visit https://platform.deepseek.com/api_keys and create an API key. This is the only key you need to get started — all junior-tier agents and most mules run on DeepSeek.
 
-> **Provider note:** This repo uses 4 providers (DeepSeek, Anthropic, Google, xAI). DeepSeek is the only one required to start — it powers the Supervisor + junior tier. Add the others through OpenCode Desktop (Settings → Providers) to unlock mid/senior tiers + Observer + alternative model workers. See [PROVIDERS.md](PROVIDERS.md) for direct links to get keys.
+> **Provider note:** This repo uses 4 providers (DeepSeek, Anthropic, Google, xAI). DeepSeek is the only one required to start — it powers the Supervisor + junior tier. Add Anthropic to unlock mid/senior tiers, Google to activate Observer + Gemini workers, and xAI for Grok workers. See [PROVIDERS.md](PROVIDERS.md) for direct links to get keys.
 
 For a full list of recommended CLI tools, Python packages, and optional services, see [DEPENDENCIES.md](DEPENDENCIES.md).
 
@@ -56,7 +56,7 @@ cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
 cp AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
-**If this is your first opencode setup** (and you haven't configured providers yet)**:** copy the full config too — it gives you the MCP servers and `default_agent` settings:
+**If this is your first opencode setup** (and you haven't configured providers yet)**:** copy the full config too — it gives you MCP servers, `default_agent`, and `"subagent_depth": 3` (required for mule chains):
 
 ```bash
 # Copy config (no API keys live in here — see step 3)
@@ -80,7 +80,7 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 
 No keys go in `opencode.json`. Authenticate natively instead.
 
-**Desktop (OpenCode app):** Go to Settings → Providers → DeepSeek and paste your API key. Repeat for Anthropic if you want mid/senior tiers and the Observer.
+**Desktop (OpenCode app):** Go to Settings → Providers → DeepSeek and paste your API key. Repeat for Anthropic if you want mid/senior tiers, Google if you want Observer + Gemini workers, or xAI if you want Grok workers.
 
 **CLI:** Use `opencode auth login`:
 
@@ -144,12 +144,12 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
        +---> debugger        (runtime errors, 35 steps, edit + web + playwright)
        +---> security        (vulnerability scan, 30 steps, read-only + bash + web + playwright)
        +---> researcher      (information, 40 steps, full access)
-       +---> editor          (proofreading, 25 steps, read + edit)
+        +---> editor          (proofreading, 25 steps, read + edit)
         +---> quote-auditor   (quote verification, 25 steps, read-only)
-       +---> observer        (visual analysis, multimodal, read-only)
+        +---> observer        (visual analysis, multimodal, read-only)
 ```
 
-(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` is included in the core install; `grok-worker` is an optional addon.)
+(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. Local Ollama placeholders: `local-coder`, `local-reasoner`.)
 
 ## How It Works
 
@@ -189,7 +189,11 @@ Supervisor/
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── junior-* / * / senior-* / *-mule  # Same 9 roles at all 4 tiers (DeepSeek, Claude, Opus, mule)
-│   └── observer.md                # Multimodal Observer subagent (Gemini 3.5 Flash)
+│   ├── observer.md                # Multimodal Observer subagent (Gemini 3.5 Flash)
+│   ├── gemini-worker.md           # High-powered worker (Gemini 3.1 Pro)
+│   ├── grok-worker.md             # High-powered worker (Grok 4.3)
+│   ├── local-coder.md             # Ollama placeholder (configure before use)
+│   └── local-reasoner.md          # Ollama placeholder (configure before use)
 ├── plugin/
 │   └── observer-bridge.js         # Paste-a-screenshot interception — deploys to config root: ~/.config/opencode/observer-bridge.js (not a plugin/ subdirectory)
 ├── addons/
@@ -214,7 +218,7 @@ Supervisor/
 
 **Delegate everything.** The Supervisor's job is orchestration, not implementation. Subagents do the work. The Supervisor's value is synthesis — seeing the combined output of multiple subagents and making decisions.
 
-**One model, many roles.** All subagents use the same model (DeepSeek V4 Pro) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain.
+**One model, many roles (junior tier default).** All junior-tier subagents use the same model (DeepSeek V4 Pro) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain. Mid and senior tiers use different models (Claude Sonnet 5, Claude Opus 4.8) for tasks needing deeper reasoning.
 
 **Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 

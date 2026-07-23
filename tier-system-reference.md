@@ -145,7 +145,7 @@ mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
 steps: 25
-color: "#FBBF24"
+color: "#FDE68A"
 permission:
   edit: allow
   bash: deny
@@ -307,7 +307,7 @@ variant: max
 steps: 25
 color: "#EAB308"
 permission:
-  edit: deny
+  edit: allow
   bash: deny
 ---
 ```
@@ -343,7 +343,7 @@ steps: 25
 color: "#F97316"
 permission:
   edit: deny
-  bash: allow
+  bash: deny
 ---
 ```
 
@@ -388,6 +388,9 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 | DeepSeek | `deepseek/deepseek-v4-pro` | `@ai-sdk/deepseek` |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `@ai-sdk/anthropic` |
 | Anthropic (Opus) | `anthropic/claude-opus-4-8` | `@ai-sdk/anthropic` |
+| Google (gemini-mule) | `google/gemini-2.5-flash` | `@ai-sdk/google` |
+| Google (Observer) | `google/gemini-3.5-flash` | `@ai-sdk/google` |
+| Google (gemini-worker) | `google/gemini-3.1-pro-preview` | `@ai-sdk/google` |
 | xAI (Grok) | `xai/grok-4.3` | `@ai-sdk/xai` |
 
 ## Agent Directory Layout
@@ -443,10 +446,17 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 │
 ├── observer.md               # Multimodal Observer (Gemini 3.5 Flash)
 │
-└── gemini-worker.md          # Addon worker (Gemini 3 Pro)
+├── gemini-worker.md          # Addon worker (Gemini 3.1 Pro)
+├── grok-worker.md            # Addon worker (Grok 4.3)
+├── local-coder.md            # Ollama placeholder (configure before use)
+├── local-reasoner.md         # Ollama placeholder (configure before use)
 ```
 
-(The optional `grok-worker` addon installs one more file here when you opt in — see `addons/grok-worker/`.)
+(The optional `grok-worker` addon under `addons/` has a mirror copy of `grok-worker.md` plus a setup README — the copy in `agents/` is the one OpenCode loads. `local-coder` and `local-reasoner` are Ollama placeholders, not production-ready.)
+
+## Config Requirement: `subagent_depth: 3`
+
+For the mule tier to work, your `opencode.json` must set `"subagent_depth": 3`. This allows chains like Supervisor → subagent → mule (depth 3). The shipped `opencode.template.json` already includes this field. If you write your own config from scratch, make sure to add it — the default depth of `1` blocks nested agent spawns and prevents subagents from spawning mules.
 
 ## How the Naming Convention Works
 
@@ -468,12 +478,13 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 
 ## Starting Simple
 
-The repo ships with all 4 tiers already configured — 41 agent files across 9 roles. Scaling down is just about which API keys you configure:
+The repo ships with all 4 tiers already configured — 44 agent files in `agents/` (plus the Supervisor primary agent) across 9 roles. Scaling down is just about which API keys you configure:
 
-1. **DeepSeek only (junior tier)** — one key, one model, works for everything. The mid and senior agent files sit unused until you add their API keys.
-2. **Add Anthropic (mid tier)** — connect your Anthropic key with `opencode auth login` and the bare-name agents (`worker`, `architect`, etc.) become available with Sonnet.
-3. **Add Opus (senior tier)** — the `senior-*` agents become available once both Anthropic models are configured.
-4. **Full 4-tier** — all 41 agents active, automatic escalation from junior to mid/senior when warranted.
+1. **DeepSeek only (junior tier + most mules)** — one key, one model, works for everything. The mid and senior agent files sit unused until you add their API keys.
+2. **Add Anthropic (mid + senior tiers + claude-mule)** — connect your Anthropic key with `opencode auth login` and the bare-name agents (`worker`, `architect`, etc.) + all `senior-*` agents + `claude-mule` become available.
+3. **Add Google (Observer + Gemini)** — connect your Google key and `observer` + `gemini-mule` + `gemini-worker` activate.
+4. **Add xAI (Grok)** — connect your xAI key and `grok-mule` + `grok-worker` activate.
+5. **Full 4-tier, all providers** — all 44 agents active, automatic escalation from junior to mid/senior when warranted.
 
 ---
 
@@ -483,4 +494,6 @@ Beyond the 3 escalation tiers, the repo also ships with **12 mule-tier agents** 
 
 Mules are subagent infrastructure. The supervisor never spawns mules directly — they exist for architects, workers, debuggers, and reviewers to spawn internally for bounded sub-tasks.
 
-All 12 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}` and 30-step limits. Nine are DeepSeek V4 Pro (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Three are cross-provider: `gemini-mule` (Gemini 2.5 Flash), `grok-mule` (Grok 4.3), and `claude-mule` (Claude Sonnet 4.6).
+All 12 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}` and 30-step limits. Nine are DeepSeek V4 Pro (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Three are cross-provider: `gemini-mule` (Gemini 2.5 Flash), `grok-mule` (Grok 4.3), and `claude-mule` (Claude Sonnet 5).
+
+> ⚠️ **Mules require `subagent_depth >= 3`.** The Supervisor spawns a subagent (depth 2), which spawns a mule (depth 3). Without `"subagent_depth": 3` in `opencode.json`, the mule spawn will be silently blocked.

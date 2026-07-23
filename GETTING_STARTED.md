@@ -155,9 +155,9 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 > (`mkdir` in PowerShell creates parent directories automatically — no `-p` flag needed. `copy` replaces `cp`.)
 
 > 🪤 **The #1 beginner footgun — one folder, and it's plural.**
-> *Every* agent — the Supervisor **and** the 41 subagents — goes in `~/.config/opencode/agents/` (**plural**). What makes the Supervisor "primary" is the `mode: primary` line inside `supervisor.md`, **not** a separate folder. OpenCode does **not** read a singular `agent/` folder, so if you put `supervisor.md` there, it silently won't load and the Supervisor won't show up. Keep everything in `agents/`.
+> *Every* agent — the Supervisor **and** the 44 subagents from `agents/*.md` — goes in `~/.config/opencode/agents/` (**plural**). What makes the Supervisor "primary" is the `mode: primary` line inside `supervisor.md`, **not** a separate folder. OpenCode does **not** read a singular `agent/` folder, so if you put `supervisor.md` there, it silently won't load and the Supervisor won't show up. Keep everything in `agents/`.
 
-> 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! The agents, plugin, and AGENTS.md are safe to add — they won't clash with anything. The `opencode.json` template is optional; it only adds MCP servers and permissions.
+> 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! The agents, plugin, and AGENTS.md are safe to add — they won't clash with anything. The template is optional if you already have a config; if you skip it, merge in at least `"default_agent": "supervisor"` and `"subagent_depth": 3` (required for mule chains).
 
 ---
 
@@ -174,7 +174,7 @@ You'll get a menu of providers. Then:
 1. Choose **DeepSeek**. (If DeepSeek isn't in the list, choose **Other**, and type `deepseek` as the provider id.)
 2. Paste the `sk-...` key from Step 2 and press Enter.
 
-That's it. OpenCode saves the key in its own secure store (`~/.local/share/opencode/auth.json`) — **not** in this repo's `opencode.template.json`, so there's no risk of committing it to GitHub. The provider blocks in `opencode.json` just tell OpenCode which models exist; the key comes from your login.
+That's it. OpenCode saves the key in its own secure store (`~/.local/share/opencode/auth.json`) — **not** in this repo's `opencode.template.json`, so there's no risk of committing it to GitHub. Cloud providers (DeepSeek, Anthropic, Google, xAI) are authenticated this way — do not add them as a `provider` block in `opencode.json`. The template's only `provider` entry is optional Ollama for local models.
 
 > 💡 **Prefer environment variables?** That works too — set `DEEPSEEK_API_KEY` (and later `ANTHROPIC_API_KEY`) in your shell and OpenCode will pick them up. Use whichever you like; you don't need both.
 
@@ -184,12 +184,12 @@ That's it. OpenCode saves the key in its own secure store (`~/.local/share/openc
 
 | Provider | Sign-up / key page | Models powered |
 |----------|-------------------|----------------|
-| **DeepSeek** | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) | All junior-tier agents (Supervisor, workers, architects, etc.) |
-| **Anthropic (Claude)** | [console.anthropic.com](https://console.anthropic.com) | Mid + senior tiers, Observer vision agent |
-| **xAI (Grok)** | [console.x.ai](https://console.x.ai) | Optional `grok-worker` addon |
-| **Google (Gemini)** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | Optional `gemini-worker` addon |
+| **DeepSeek** | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) | Supervisor + all junior-tier agents + most mules (worker-mule, architect-mule, etc.) |
+| **Anthropic (Claude)** | [console.anthropic.com](https://console.anthropic.com) | Mid + senior tiers + claude-mule |
+| **Google (Gemini)** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | Observer vision agent + gemini-worker + gemini-mule |
+| **xAI (Grok)** | [console.x.ai](https://console.x.ai) | grok-worker + grok-mule |
 
-> 💰 Only the DeepSeek key is required to start. Anthropic unlocks the full 3-tier system. The others are optional addons — ignore them until you want them.
+> 💰 Only the DeepSeek key is required to start. Anthropic unlocks the full mid + senior tiers. Google activates the Observer so you can paste screenshots into chat. xAI is optional — ignore it until you want it.
 
 **Checkpoint:** Run `opencode auth list` — you should see `deepseek` listed. ✅
 
@@ -225,9 +225,9 @@ What you'll see: the Supervisor states a plan, spawns one or more specialists, r
 
 ---
 
-## 🧱 Step 7 — Add Claude to complete the system (mid + senior tiers + Observer)
+## 🧱 Step 7 — Add Claude to unlock mid + senior tiers
 
-This is part of the core setup, not a bolt-on. The **full 4-tier system ships in the repo** — all 41 agent files are already on your machine. DeepSeek powers the junior tier (and handles ~80% of work on its own), and an **Anthropic (Claude)** key switches on the other two tiers **plus Observer's screenshot vision**. You *can* run DeepSeek-only as a budget minimum, but the system is designed to run on both keys.
+This is part of the core setup, not a bolt-on. The **full 4-tier system ships in the repo** — all 44 agent files in `agents/` are already on your machine. DeepSeek powers the junior tier (and handles ~80% of work on its own), and an **Anthropic (Claude)** key switches on the mid and senior tiers. You *can* run DeepSeek-only as a budget minimum, but the system is designed to run on both keys.
 
 **How the three tiers work — it's just naming:**
 
@@ -247,17 +247,17 @@ The Claude-powered agents sit ready but inactive until the key is present — no
    opencode auth login
    ```
    Choose **Anthropic** and paste your `sk-ant-...` key. (Or set `ANTHROPIC_API_KEY` in your environment.)
-3. Restart OpenCode. Now you can say *"use the senior architect for this,"* and you can **paste a screenshot** straight into chat — Observer reads it (see below).
+3. Restart OpenCode. Now you can say *"use the senior architect for this."* (Screenshot paste / Observer is separate — it needs a **Google** key; see below.)
 
 > 💰 **Heads up on cost.** Claude (especially Opus/"senior") is **much** pricier than DeepSeek. Use junior agents by default; call in the seniors only when it really matters. The Supervisor already follows this policy automatically.
 
-> 💸 **Built-in saver.** The config sets a `small_model` (DeepSeek) so cheap background chores — naming conversations, short summaries — never run on an expensive model.
+> 🪝 **Important config detail: `subagent_depth: 3`.** The template file you copied in Step 3 includes `"subagent_depth": 3`. This is what lets subagents spawn mules — supervisor → subagent → mule chains of depth 3. If you skip the template and write your own `opencode.json`, make sure this field is set to `3` (not the default of `1`, which blocks nested agent spawns).
 
 ### 👁️ Observer — paste screenshots into chat (built in)
 
-Your Supervisor runs on a text-only model, so it can't see images. **Observer** fixes that: it's a Gemini vision agent that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
+Your Supervisor runs on a text-only model, so it can't see images. **Observer** fixes that: it's a vision agent (Gemini 3.5 Flash) that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
 
-It activates automatically once your Anthropic key is in place (it runs on Claude Sonnet 4.6). No model names to wire up — Observer activates automatically when an Anthropic key is present (added via Desktop Settings or CLI), no provider block needed. Pair it with `screenpipe` or `macos-automator` (Step 8) and the Supervisor can capture *and* understand on-screen state.
+Observer activates automatically once your **Google (Gemini)** key is in place — add it through Desktop Settings → Providers or `opencode auth login` (choose Google/Other). No model names or provider blocks to wire up. Pair it with `screenpipe` or `macos-automator` (Step 8) and the Supervisor can capture *and* understand on-screen state.
 
 ---
 
@@ -265,41 +265,44 @@ It activates automatically once your Anthropic key is in place (it runs on Claud
 
 These are extras you can ignore until you want them:
 
-- **Grok (xAI)** — an optional `grok-worker` addon adds an alternative-model worker on Grok 4.3. Add an xAI key through Desktop Settings → Providers (or `opencode auth login`), then copy one file. No provider block needed — see PROVIDERS.md. See [`addons/grok-worker/`](addons/grok-worker/). No auth plugin needed.
-- **Addons** (`addons/` folder) — behavioral "modes," the Grok worker, and a full reference catalog. See [`addons/README.md`](addons/README.md).
+- **Grok (xAI)** — `grok-worker` already ships in `agents/grok-worker.md` (Step 3 copied it). Add an xAI key through Desktop Settings → Providers (or `opencode auth login`) to activate it. A mirror copy and setup notes live in [`addons/grok-worker/`](addons/grok-worker/). See [PROVIDERS.md](PROVIDERS.md).
+- **Addons** (`addons/` folder) — behavioral "modes," Grok setup notes, and a full reference catalog. See [`addons/README.md`](addons/README.md).
 - **CLI quality tools** — the reviewer/debugger agents can use tools like `ruff`, `mypy`, and `trivy` when present. Optional but nice. See [`DEPENDENCIES.md`](DEPENDENCIES.md).
 
 ### Optional MCP servers (nice-to-haves)
 
-The config ships with two browser/automation tools **already enabled** and ready — no setup, no keys:
+The config ships with one browser/automation tool **already enabled** and ready — no setup, no keys:
 
 - **`playwright`** — lets agents drive a real browser (clicks, forms, login flows).
-- **`chrome-devtools`** — inspect pages, console, and network for debugging web apps.
 
-It also includes seven **optional** MCP servers that are **disabled by default**. Most need a key, an app, or an extra install, so you turn them on only if you want them:
+It also includes eleven **optional** MCP servers that are **disabled by default**. Most need a key, an app, or an extra install, so you turn them on only if you want them:
 
 | MCP | What it adds | To enable |
 |-----|--------------|-----------|
-| **`firecrawl`** | Web scraping + search for JS-heavy pages | Get a free key at [firecrawl.dev](https://firecrawl.dev), paste it into `YOUR_FIRECRAWL_KEY` |
+| **`chrome-devtools`** | Inspect pages, console, and network for debugging web apps | Just flip `"enabled": true` — no key needed, already pre-allowed in the permission block |
 | **`elevenlabs`** | Text-to-speech / voice generation | Get a key at [elevenlabs.io](https://elevenlabs.io), paste it into `YOUR_ELEVENLABS_KEY`; needs [`uv`](https://docs.astral.sh/uv/) installed |
 | **`railway`** | Deploy & manage apps on Railway | Install the [Railway CLI](https://docs.railway.com/guides/cli) and run `railway login` |
 | **`screenpipe`** | Searches your 24/7 screen + audio history ("what was on screen at 2pm?") | Install & run the [screenpipe](https://screenpi.pe) app (records locally, stays on your machine). Works on macOS, Windows, and Linux. |
 | **`macos-automator`** | Lets agents control native **macOS** apps via AppleScript/JXA — open apps, click buttons, read Mail/Safari, toggle settings | macOS only. Needs Node 24+ and Automation/Accessibility permission (System Settings → Privacy & Security). |
+| **`yt-dlp`** | Download audio/video from YouTube and other sites for transcription/analysis | Needs [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) installed (`brew install yt-dlp` or `pip install yt-dlp`). |
+| **`vercel`** | Deploy & manage apps on Vercel | Get a [Vercel token](https://vercel.com/account/tokens), paste it into `YOUR_VERCEL_TOKEN`. Already pre-allowed in the permission block. |
+| **`gemini-api-docs`** | Live Gemini API documentation lookup for coding agents | Needs [`uv`](https://docs.astral.sh/uv/) installed. Works keyless. |
 | **`context7`** | Live, version-accurate library/API docs so coding agents aren't guessing from old memory | Just flip it on — works keyless. (Optional free key at [context7.com](https://context7.com) for higher rate limits.) |
 | **`github`** | Manage GitHub issues, PRs, and repos directly | Needs [Docker](https://www.docker.com) installed and a [GitHub token](https://github.com/settings/tokens) in `YOUR_GITHUB_TOKEN`. |
+| **`macos-use`** | Native macOS GUI control — mouse, keyboard, accessibility automation | macOS only. Needs the `mcp-server-macos-use` binary at `/usr/local/bin`. Already pre-allowed in the permission block. |
 
 > 🪟 **On Windows?** `macos-automator` is macOS-only. For equivalent native desktop control on Windows, use **[CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP)** — follow that repo's setup, then add it to your `"mcp"` block the same way (disabled until you opt in). `screenpipe` already works on Windows.
 
 > 🧠 **Pairs well with Observer.** `screenpipe` and `macos-automator` capture what's on screen; the built-in **Observer** agent (a Gemini vision agent — see Step 7) then *reads* those screenshots and explains them to your text-only Supervisor.
 
-**How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`, then in the `"permission"` block change that server's line from `"deny"` to `"allow"`. For example, to enable Firecrawl:
+**How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`. For a few servers (`chrome-devtools`, `macos-use`, `vercel`), the template already has a matching `"allow"` entry in the `"permission"` block — just flip `enabled`. For the others (elevenlabs, railway, screenpipe, macos-automator, yt-dlp, gemini-api-docs, context7, github), you'll also need to add a corresponding `"<name>_*": "allow"` line to the `"permission"` block. For example, to enable railway:
 
 ```json
-"mcp": { "firecrawl": { "enabled": true, ... } },
-"permission": { "firecrawl_*": "allow" }
+"mcp": { "railway": { "enabled": true, ... } },
+"permission": { "railway_*": "allow" }
 ```
 
-> 💡 **Why disabled + denied by default?** It's the safe starting point — nothing runs or spends money until you opt in. The Supervisor works perfectly without any of these.
+> 💡 **Why disabled by default?** It's the safe starting point — nothing runs or spends money until you opt in. The Supervisor works perfectly without any of these.
 
 ---
 
@@ -309,14 +312,15 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 |---------|------------------|-----|
 | **Supervisor doesn't appear** | `supervisor.md` in the wrong folder, or missing `mode: primary` | Confirm it's in `~/.config/opencode/agents/` (**plural**) with `ls ~/.config/opencode/agents/supervisor.md`, and that its frontmatter says `mode: primary`. There is no singular `agent/` folder. |
 | **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in the agents folder | Only real agent files belong in `~/.config/opencode/agents/`. Remove any docs: `rm ~/.config/opencode/agents/tier-system-reference.md`. |
-| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~41 files. If empty, re-run the copy command in Step 3. |
+| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~44 files (plus `supervisor.md`). If empty, re-run the copy command in Step 3. |
+| **Subagent can't spawn a mule / "Task tool not available"** | `subagent_depth` too low | The template sets `"subagent_depth": 3`. If you skipped the template or wrote your own config, make sure this field is set to `3` — the default of `1` blocks nested agent spawns (supervisor → subagent → mule). |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
 | **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` (OpenCode Desktop usually auto-installs provider packages; this is only needed if you get 'Model not found' errors) |
 | **"Invalid API key" / "not authenticated"** | Key not connected, or a typo | Re-run `opencode auth login` and re-enter the key (no extra spaces). Confirm with `opencode auth list` that the provider shows up. |
-| **MCP error on startup** (e.g. firecrawl/elevenlabs/railway) | An optional MCP got enabled without its key/install | Harmless to the Supervisor. Either set that server back to `"enabled": false` in `opencode.json`, or finish its setup (see Step 8). |
-| **DeepSeek/Claude stopped working after adding config** | A `provider` block in `opencode.json` overrides auth | Remove the `provider` block from your `opencode.json` entirely. The template no longer ships one — if you have one, it's leftover and interfering. |
-| **Too many agents in the agent selector** | Non-agent `.md` files or stray files being picked up | Only agent files should be in `agents/`. Remove any docs, notes, or reference files from that folder. The template no longer ships a `provider` block. |
-| **Max variant toggle disappeared** | A `provider.models` block stripped built-in model variants | Remove the `provider` block from `opencode.json` — `models.dev` handles variants. |
+| **MCP error on startup** (e.g. elevenlabs/railway/screenpipe) | An optional MCP got enabled without its key/install | Harmless to the Supervisor. Either set that server back to `"enabled": false` in `opencode.json`, or finish its setup (see Step 8). |
+| **DeepSeek/Claude stopped working after adding config** | A cloud `provider` block in `opencode.json` overrides auth | Remove any `provider` block for DeepSeek, Anthropic, Google, or xAI from your `opencode.json`. The template ships an Ollama-only provider block (for local models only) — cloud provider blocks interfere with auth. |
+| **Too many agents in the agent selector** | Non-agent `.md` files or stray files being picked up | Only agent files should be in `agents/`. Remove any docs, notes, or reference files from that folder. |
+| **Max variant toggle disappeared** | A cloud `provider.models` block stripped built-in model variants | Remove any DeepSeek/Anthropic/Google/xAI `provider` (or `provider.models`) override from `opencode.json`. Keep the template's Ollama block if you use local models — `models.dev` handles cloud variants. |
 | **Subagents appear in @ autocomplete** | Agent file missing `hidden: true` in frontmatter | Add `hidden: true` to subagent markdown files. All shipped subagents already have this set — if you created custom ones, add it manually. |
 
 ---
@@ -324,9 +328,9 @@ It also includes seven **optional** MCP servers that are **disabled by default**
 ## 🗺️ Where to go next
 
 - **[README.md](README.md)** — the full architecture and design philosophy.
-- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 41 agents.
+- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 44 agents in `agents/` (plus Supervisor).
 - **[DEPENDENCIES.md](DEPENDENCIES.md)** — every optional tool, organized by tier.
-- **[addons/README.md](addons/README.md)** — modes, local models, and the visual Observer.
+- **[addons/README.md](addons/README.md)** — optional modes and Grok setup notes (Observer is built-in — see Step 7).
 
 <div align="center">
 
