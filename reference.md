@@ -17,7 +17,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek V4 Pro | Orchestration — plans, delegates, reviews, commits |
-| **41 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 4.8 / Gemini 2.5 Flash / Grok 4.3 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers |
+| **41 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 5 / Gemini 2.5 Flash / Grok 4.3 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers |
 | **Observer** (built in) | Gemini 3.5 Flash | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
@@ -63,7 +63,7 @@ The 4-tier system is fully configured in the repo. The naming convention:
 |------|-------|--------|-----------------|
 | Junior | DeepSeek V4 Pro | `junior-worker`, etc. | Default — automatic spawning |
 | Mid | Claude Sonnet 5 | `worker`, etc. (bare name) | Explicitly invoked |
-| Senior | Claude Opus 4.8 | `senior-worker`, etc. | Highest stakes only |
+| Senior | Claude Opus 5 | `senior-worker`, etc. | Highest stakes only |
 | Mule | DeepSeek V4 Pro (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
 
 This gives you 41 agent files across 9 roles at 4 tiers. See `tier-system-reference.md` for the complete spec table and agent specifications.
@@ -74,7 +74,7 @@ This gives you 41 agent files across 9 roles at 4 tiers. See `tier-system-refere
 |------|-------|--------------|----------|
 | Junior | DeepSeek V4 Pro | $ | 80% of all tasks |
 | Mid | Claude Sonnet 5 | $$ | Complex reasoning, deeper reviews |
-| Senior | Claude Opus 4.8 | $$$$ | Production-critical, highest stakes |
+| Senior | Claude Opus 5 | $$$$ | Production-critical, highest stakes |
 
 ---
 

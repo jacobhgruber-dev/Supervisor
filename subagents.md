@@ -1,7 +1,7 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Subagents — Quick Reference
 
-41 agent files across 9 roles at 4 tiers  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 4.6  •  senior: Claude Opus 4.8  •  mule: various models (see tier-system-reference.md)
+41 agent files across 9 roles at 4 tiers  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 4.6  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)
 
 For full tier specifications, see [tier-system-reference.md](tier-system-reference.md).
 For the full system reference including modes, local agents, and commands, see [reference.md](reference.md).

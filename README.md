@@ -21,7 +21,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **44 agents across 4 tiers (junior, mid, senior, mule)** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 5), senior (Claude Opus 4.8), and mule (various models) tiers, plus alternative model workers. All with built-in awareness of 14+ CLI code quality and security tools.
+- **44 agents across 4 tiers (junior, mid, senior, mule)** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers. All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker** — an alternative-model worker on xAI's Grok 4.3. Ships in `agents/grok-worker.md` with a mirror copy and setup README in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
@@ -218,7 +218,7 @@ Supervisor/
 
 **Delegate everything.** The Supervisor's job is orchestration, not implementation. Subagents do the work. The Supervisor's value is synthesis — seeing the combined output of multiple subagents and making decisions.
 
-**One model, many roles (junior tier default).** All junior-tier subagents use the same model (DeepSeek V4 Pro) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain. Mid and senior tiers use different models (Claude Sonnet 5, Claude Opus 4.8) for tasks needing deeper reasoning.
+**One model, many roles (junior tier default).** All junior-tier subagents use the same model (DeepSeek V4 Pro) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain. Mid and senior tiers use different models (Claude Sonnet 5, Claude Opus 5) for tasks needing deeper reasoning.
 
 **Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
 

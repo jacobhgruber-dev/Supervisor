@@ -1,7 +1,7 @@
 ---
-description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Opus 4.8.
+description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Opus 5.
 mode: subagent
-model: anthropic/claude-opus-4-8
+model: anthropic/claude-opus-5
 variant: max
 steps: 35
 color: "#DC2626"

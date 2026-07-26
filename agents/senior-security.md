@@ -1,7 +1,7 @@
 ---
-description: Security auditor subagent — comprehensive vulnerability assessment across injection, auth, secrets, dependencies, crypto, configuration, and business logic. Powered by Claude Opus 4.8.
+description: Security auditor subagent — comprehensive vulnerability assessment across injection, auth, secrets, dependencies, crypto, configuration, and business logic. Powered by Claude Opus 5.
 mode: subagent
-model: anthropic/claude-opus-4-8
+model: anthropic/claude-opus-5
 variant: max
 steps: 30
 color: "#991B1B"

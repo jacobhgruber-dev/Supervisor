@@ -235,7 +235,7 @@ This is part of the core setup, not a bolt-on. The **full 4-tier system ships in
 |--------------|-----------|-------|------------|
 | (automatic / "the junior worker") | `junior-worker` | DeepSeek V4 Pro | Your DeepSeek key |
 | "send this to the worker / architect" | `worker`, `architect` | Claude Sonnet 5 | Anthropic key |
-| "use the **senior** reviewer" | `senior-reviewer` | Claude Opus 4.8 | Anthropic key |
+| "use the **senior** reviewer" | `senior-reviewer` | Claude Opus 5 | Anthropic key |
 
 The Claude-powered agents sit ready but inactive until the key is present — nothing else to configure.
 

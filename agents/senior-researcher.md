@@ -1,7 +1,7 @@
 ---
-description: Researcher subagent — multi-source investigation, synthesis, contradiction-mapping, gap identification, and actionable recommendations. Powered by Claude Opus 4.8.
+description: Researcher subagent — multi-source investigation, synthesis, contradiction-mapping, gap identification, and actionable recommendations. Powered by Claude Opus 5.
 mode: subagent
-model: anthropic/claude-opus-4-8
+model: anthropic/claude-opus-5
 variant: max
 steps: 40
 color: "#10B981"

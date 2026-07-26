@@ -1,7 +1,7 @@
 ---
-description: Editor subagent — structural revision, clarity, flow, voice, audience awareness, and mechanical proofreading (grammar/spelling/punctuation/formatting). Powered by Claude Opus 4.8.
+description: Editor subagent — structural revision, clarity, flow, voice, audience awareness, and mechanical proofreading (grammar/spelling/punctuation/formatting). Powered by Claude Opus 5.
 mode: subagent
-model: anthropic/claude-opus-4-8
+model: anthropic/claude-opus-5
 variant: max
 steps: 25
 color: "#EAB308"

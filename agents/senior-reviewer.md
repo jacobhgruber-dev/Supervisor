@@ -1,7 +1,7 @@
 ---
-description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Opus 4.8.
+description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Opus 5.
 mode: subagent
-model: anthropic/claude-opus-4-8
+model: anthropic/claude-opus-5
 variant: max
 steps: 30
 color: "#FF4444"
