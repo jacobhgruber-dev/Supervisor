@@ -395,61 +395,63 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 
 ## Agent Directory Layout
 
-**Every** markdown agent — the primary Supervisor and all subagents — installs into the same folder, `~/.config/opencode/agents/` (plural). That's the only location OpenCode loads markdown agents from. This reference doc is **not** an agent and lives at the repo root, not in that folder.
+OpenCode loads agent markdown from both `~/.config/opencode/agent/` and `~/.config/opencode/agents/` (glob `{agent,agents}/**/*.md`). The standard install puts the Supervisor in `agent/` and all subagents in `agents/`. What makes the Supervisor primary is `mode: primary` in frontmatter. This reference doc is **not** an agent and lives at the repo root — do not copy it into either agent folder.
 
 ```
-~/.config/opencode/agents/
-├── supervisor.md             # Primary agent (mode: primary)
+~/.config/opencode/
+├── agent/
+│   └── supervisor.md         # Primary agent (mode: primary)
 │
-├── junior-worker.md          # DeepSeek (junior)
-├── junior-architect.md
-├── junior-planner.md
-├── junior-reviewer.md
-├── junior-debugger.md
-├── junior-security.md
-├── junior-editor.md
-├── junior-researcher.md
-├── junior-quote-auditor.md
-│
-├── worker.md                 # Claude Sonnet (mid)
-├── architect.md
-├── planner.md
-├── reviewer.md
-├── debugger.md
-├── security.md
-├── editor.md
-├── researcher.md
-├── quote-auditor.md
-│
-├── senior-worker.md          # Claude Opus (senior)
-├── senior-architect.md
-├── senior-planner.md
-├── senior-reviewer.md
-├── senior-debugger.md
-├── senior-security.md
-├── senior-editor.md
-├── senior-researcher.md
-├── senior-quote-auditor.md
-│
-├── worker-mule.md            # Mule tier
-├── architect-mule.md
-├── researcher-mule.md
-├── debugger-mule.md
-├── reviewer-mule.md
-├── security-mule.md
-├── planner-mule.md
-├── editor-mule.md
-├── quote-auditor-mule.md
-├── gemini-mule.md
-├── grok-mule.md
-├── claude-mule.md
-│
-├── observer.md               # Multimodal Observer (Gemini 3.5 Flash)
-│
-├── gemini-worker.md          # Addon worker (Gemini 3.1 Pro)
-├── grok-worker.md            # Addon worker (Grok 4.3)
-├── local-coder.md            # Ollama placeholder (configure before use)
-├── local-reasoner.md         # Ollama placeholder (configure before use)
+└── agents/
+    ├── junior-worker.md      # DeepSeek (junior)
+    ├── junior-architect.md
+    ├── junior-planner.md
+    ├── junior-reviewer.md
+    ├── junior-debugger.md
+    ├── junior-security.md
+    ├── junior-editor.md
+    ├── junior-researcher.md
+    ├── junior-quote-auditor.md
+    │
+    ├── worker.md             # Claude Sonnet (mid)
+    ├── architect.md
+    ├── planner.md
+    ├── reviewer.md
+    ├── debugger.md
+    ├── security.md
+    ├── editor.md
+    ├── researcher.md
+    ├── quote-auditor.md
+    │
+    ├── senior-worker.md      # Claude Opus (senior)
+    ├── senior-architect.md
+    ├── senior-planner.md
+    ├── senior-reviewer.md
+    ├── senior-debugger.md
+    ├── senior-security.md
+    ├── senior-editor.md
+    ├── senior-researcher.md
+    ├── senior-quote-auditor.md
+    │
+    ├── worker-mule.md        # Mule tier
+    ├── architect-mule.md
+    ├── researcher-mule.md
+    ├── debugger-mule.md
+    ├── reviewer-mule.md
+    ├── security-mule.md
+    ├── planner-mule.md
+    ├── editor-mule.md
+    ├── quote-auditor-mule.md
+    ├── gemini-mule.md
+    ├── grok-mule.md
+    ├── claude-mule.md
+    │
+    ├── observer.md           # Multimodal Observer (Gemini 3.5 Flash)
+    │
+    ├── gemini-worker.md      # Addon worker (Gemini 3.1 Pro)
+    ├── grok-worker.md        # Addon worker (Grok 4.3)
+    ├── local-coder.md        # Ollama placeholder (configure before use)
+    └── local-reasoner.md     # Ollama placeholder (configure before use)
 ```
 
 (The optional `grok-worker` addon under `addons/` has a mirror copy of `grok-worker.md` plus a setup README — the copy in `agents/` is the one OpenCode loads. `local-coder` and `local-reasoner` are Ollama placeholders, not production-ready.)

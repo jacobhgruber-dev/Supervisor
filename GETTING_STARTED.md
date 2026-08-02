@@ -124,15 +124,14 @@ Now copy the pieces into place. Paste these one block at a time:
 
 ```bash
 # 1. Make sure the config folders exist
-mkdir -p ~/.config/opencode/agents
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
 
 # 2. The main config file
 cp opencode.template.json ~/.config/opencode/opencode.json
 
-# 3. ALL agents go in the SAME folder — "agents" (plural).
-#    The Supervisor (a primary agent) and every subagent live together here.
-cp agent/supervisor.md ~/.config/opencode/agents/supervisor.md
-cp agents/*.md   ~/.config/opencode/agents/
+# 3. Supervisor → agent/ ; subagents → agents/
+cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
+cp agents/*.md         ~/.config/opencode/agents/
 
 # 4. The Observer plugin (lets you paste screenshots into chat)
 cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
@@ -144,18 +143,18 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 > 🪟 **On Windows?** Use these PowerShell equivalents instead:
 > ```powershell
 > # ~/.config/opencode/ → %USERPROFILE%\.config\opencode\
+> mkdir $env:USERPROFILE\.config\opencode\agent
 > mkdir $env:USERPROFILE\.config\opencode\agents
-> 
+>
 > copy opencode.template.json $env:USERPROFILE\.config\opencode\opencode.json
-> copy agent\supervisor.md $env:USERPROFILE\.config\opencode\agents\supervisor.md
+> copy agent\supervisor.md $env:USERPROFILE\.config\opencode\agent\supervisor.md
 > copy agents\*.md $env:USERPROFILE\.config\opencode\agents\
 > copy plugin\observer-bridge.js $env:USERPROFILE\.config\opencode\observer-bridge.js
 > copy AGENTS.md $env:USERPROFILE\.config\opencode\AGENTS.md
 > ```
 > (`mkdir` in PowerShell creates parent directories automatically — no `-p` flag needed. `copy` replaces `cp`.)
 
-> 🪤 **The #1 beginner footgun — one folder, and it's plural.**
-> *Every* agent — the Supervisor **and** the 44 subagents from `agents/*.md` — goes in `~/.config/opencode/agents/` (**plural**). What makes the Supervisor "primary" is the `mode: primary` line inside `supervisor.md`, **not** a separate folder. OpenCode does **not** read a singular `agent/` folder, so if you put `supervisor.md` there, it silently won't load and the Supervisor won't show up. Keep everything in `agents/`.
+> 📌 **Where agents go.** OpenCode loads agent markdown from both `agent/` and `agents/` (`{agent,agents}/**/*.md`). This install puts the Supervisor in `agent/` and the subagents in `agents/`. What makes the Supervisor primary is `mode: primary` in its frontmatter — not the folder name. Don't drop non-agent docs into either folder (they'll show up as phantom agents).
 
 > 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! The agents, plugin, and AGENTS.md are safe to add — they won't clash with anything. The template is optional if you already have a config; if you skip it, merge in at least `"default_agent": "supervisor"` and `"subagent_depth": 3` (required for mule chains).
 
@@ -310,9 +309,9 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 
 | Symptom | Most likely cause | Fix |
 |---------|------------------|-----|
-| **Supervisor doesn't appear** | `supervisor.md` in the wrong folder, or missing `mode: primary` | Confirm it's in `~/.config/opencode/agents/` (**plural**) with `ls ~/.config/opencode/agents/supervisor.md`, and that its frontmatter says `mode: primary`. There is no singular `agent/` folder. |
-| **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in the agents folder | Only real agent files belong in `~/.config/opencode/agents/`. Remove any docs: `rm ~/.config/opencode/agents/tier-system-reference.md`. |
-| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~44 files (plus `supervisor.md`). If empty, re-run the copy command in Step 3. |
+| **Supervisor doesn't appear** | `supervisor.md` missing, or missing `mode: primary` | Confirm `ls ~/.config/opencode/agent/supervisor.md` and that its frontmatter says `mode: primary`. Re-run the Step 3 copy commands if the file is missing. |
+| **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in an agent folder | Only real agent files belong in `~/.config/opencode/agent/` or `agents/`. Remove any docs that got copied there by mistake. |
+| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~44 files. If empty, re-run the copy command in Step 3. |
 | **Subagent can't spawn a mule / "Task tool not available"** | `subagent_depth` too low | The template sets `"subagent_depth": 3`. If you skipped the template or wrote your own config, make sure this field is set to `3` — the default of `1` blocks nested agent spawns (supervisor → subagent → mule). |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
 | **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` (OpenCode Desktop usually auto-installs provider packages; this is only needed if you get 'Model not found' errors) |

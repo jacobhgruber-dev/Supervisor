@@ -111,21 +111,22 @@ Skipping either step leaves the MCP unavailable. Reverse the steps to disable a 
 
 ## Adding Agent Files
 
-Once your `opencode.json` is in place, copy the agent files to your opencode config. **All markdown agents — the primary supervisor and every subagent — go in the same `agents/` (plural) folder.** OpenCode does not read a singular `agent/` folder; `mode: primary` inside `supervisor.md` is what makes it the primary agent.
+Once your `opencode.json` is in place, copy the agent files to your opencode config. OpenCode loads agent markdown from both `agent/` and `agents/` (`{agent,agents}/**/*.md`). This install puts the Supervisor in `agent/` and subagents in `agents/`. `mode: primary` inside `supervisor.md` is what makes it the primary agent.
 
 **macOS/Linux:**
 ```
-mkdir -p ~/.config/opencode/agents
-cp agent/supervisor.md ~/.config/opencode/agents/supervisor.md
-cp agents/*.md   ~/.config/opencode/agents/
-cp plugin/*.js   ~/.config/opencode/
-cp AGENTS.md     ~/.config/opencode/AGENTS.md
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
+cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
+cp agents/*.md         ~/.config/opencode/agents/
+cp plugin/*.js         ~/.config/opencode/
+cp AGENTS.md           ~/.config/opencode/AGENTS.md
 ```
 
 **Windows (PowerShell):**
 ```
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\agent"
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\agents"
-Copy-Item agent\supervisor.md -Destination "$env:USERPROFILE\.config\opencode\agents\supervisor.md"
+Copy-Item agent\supervisor.md -Destination "$env:USERPROFILE\.config\opencode\agent\supervisor.md"
 Copy-Item agents\*.md    -Destination "$env:USERPROFILE\.config\opencode\agents\"
 Copy-Item plugin\*.js    -Destination "$env:USERPROFILE\.config\opencode\"
 Copy-Item AGENTS.md      -Destination "$env:USERPROFILE\.config\opencode\AGENTS.md"

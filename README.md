@@ -44,10 +44,10 @@ For a full list of recommended CLI tools, Python packages, and optional services
 **If you configured providers through OpenCode Desktop (Settings → Providers):** you don't need to touch `opencode.json` at all — your provider config is already set. Just copy the agent files, plugin, and AGENTS.md:
 
 ```bash
-# Copy ALL agents — supervisor + subagents — into the same folder (plural "agents")
-mkdir -p ~/.config/opencode/agents
-cp agent/supervisor.md ~/.config/opencode/agents/supervisor.md
-cp agents/*.md   ~/.config/opencode/agents/
+# Supervisor → agent/ ; subagents → agents/
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
+cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
+cp agents/*.md         ~/.config/opencode/agents/
 
 # Copy the Observer plugin (lets you paste screenshots into chat)
 cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
@@ -62,10 +62,10 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 # Copy config (no API keys live in here — see step 3)
 cp opencode.template.json ~/.config/opencode/opencode.json
 
-# Copy ALL agents — supervisor + subagents — into the same folder (plural "agents")
-mkdir -p ~/.config/opencode/agents
-cp agent/supervisor.md ~/.config/opencode/agents/supervisor.md
-cp agents/*.md   ~/.config/opencode/agents/
+# Supervisor → agent/ ; subagents → agents/
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
+cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
+cp agents/*.md         ~/.config/opencode/agents/
 
 # Copy the Observer plugin (lets you paste screenshots into chat)
 cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
@@ -74,7 +74,7 @@ cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
 cp AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
-> **Note:** OpenCode loads every markdown agent — the primary Supervisor *and* the subagents — from `~/.config/opencode/agents/` (plural). The `mode:` field inside each file (`primary` vs `subagent`) is what distinguishes them, not the folder. There is no singular `agent/` folder.
+> **Note:** OpenCode loads agent markdown from both `agent/` and `agents/` (`{agent,agents}/**/*.md`). This install puts the Supervisor in `agent/` and subagents in `agents/`. What makes the Supervisor primary is `mode: primary` in its frontmatter.
 
 ### 3. Connect your keys
 
@@ -127,7 +127,7 @@ You should see `worker.md`, `architect.md`, `planner.md`, etc.
 If you already configured providers through OpenCode Desktop (Settings → Providers), you don't need to touch `opencode.template.json` at all — just copy the agent files, plugin, and AGENTS.md. The agent files won't conflict with anything.
 
 **Supervisor not appearing as a primary agent?**
-Confirm `supervisor.md` is at `~/.config/opencode/agents/supervisor.md` (plural `agents/`) and that its frontmatter says `mode: primary`. OpenCode has no singular `agent/` folder — everything goes in `agents/`.
+Confirm `supervisor.md` is at `~/.config/opencode/agent/supervisor.md` and that its frontmatter says `mode: primary`. Re-run the copy commands above if the file is missing.
 
 ## Architecture
 
@@ -171,14 +171,14 @@ Key principle: **Always delegate.** The Supervisor self-executes only mechanical
 Supervisor/
 ├── README.md                      # This file
 ├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
-├── agent/supervisor.md   # Primary Supervisor agent (source only — copy FROM here; OpenCode reads from ~/.config/opencode/agents/ not here)
+├── agent/supervisor.md   # Primary Supervisor agent (source — install to ~/.config/opencode/agent/)
 ├── opencode.template.json         # Template config with MCP servers, Ollama provider, subagent_depth: 3
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── subagents.md                   # Quick reference for the 9 base subagents
 ├── tier-system-reference.md       # Complete 4-tier agent specs and naming conventions
 ├── AGENTS.md                      # Behavioral guidelines (-> ~/.config/opencode/)
-├── agents/                        # All subagents (-> ~/.config/opencode/agents/, plural)
+├── agents/                        # All subagents (-> ~/.config/opencode/agents/)
 │   ├── worker.md                  # General-purpose implementation agent
 │   ├── architect.md               # System design and tradeoff analysis
 │   ├── planner.md                 # Task breakdown and sequencing
