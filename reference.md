@@ -29,7 +29,7 @@ The Supervisor ships with 41 agents across 4 tiers — 9 roles at each tier. The
 
 | Subagent | Use For | Steps | Permissions |
 |----------|---------|-------|-------------|
-| `worker` | Implementation — features, tests, migrations, frontend | 40 | Full (edit, bash, web, playwright) |
+| `worker` | Implementation — features, tests, migrations, frontend | 50 | Full (edit, bash, web, playwright) |
 | `researcher` | Web research, multi-source synthesis, API/library docs | 40 | Full |
 | `debugger` | Runtime errors, test failures, root cause analysis | 35 | Full (edit, bash, web, playwright) |
 | `architect` | Design questions, refactoring plans, tradeoff analysis | 25 | Edit + web + playwright (no bash) |
