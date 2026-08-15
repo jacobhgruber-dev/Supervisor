@@ -137,7 +137,7 @@ You (the User)
       v
 Supervisor Agent (primary, DeepSeek V4 Pro)
       |
-       +---> worker          (implementation, 40 steps, full access)
+       +---> worker          (implementation, 50 steps, full access)
        +---> architect       (design, 25 steps, edit + web + playwright)
        +---> planner         (sequencing, 25 steps, read-only)
        +---> reviewer        (code review, 30 steps, read-only)

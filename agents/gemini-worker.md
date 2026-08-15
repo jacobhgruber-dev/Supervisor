@@ -2,7 +2,7 @@
 description: High-powered, max-capacity worker for any purpose. Fully empowered — writes code, runs commands, edits files, commits. Use for complex investigation, deep implementation, or any task where you want Gemini 3 Pro's full power (2M context window, multimodal reasoning) without throttling. Spawn at will.
 mode: subagent
 model: google/gemini-3.1-pro-preview
-steps: 40
+steps: 50
 permission:
   task:
     "*": allow

@@ -2,6 +2,7 @@
 description: High-powered, max-capacity worker for any purpose. Fully empowered — writes code, runs commands, edits files, commits. Use for complex investigation, deep implementation, or any task where you want Grok 4.3's full power without throttling. Spawn at will.
 mode: subagent
 model: xai/grok-4.3
+steps: 50
 permission:
   task:
     "*": allow

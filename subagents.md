@@ -132,7 +132,7 @@ The go-to for any task that doesn't fit a specialized role. Full access to edit 
 
 | Agent | Model | Steps | Color | Permissions |
 |-------|-------|-------|-------|-------------|
-| `worker` | Claude Sonnet 5 | 40 | `#A5B4FC` | Full |
+| `worker` | Claude Sonnet 5 | 50 | `#A5B4FC` | Full |
 
 **When to use**: Implementation, feature building, test writing, migrations, any general task.
 

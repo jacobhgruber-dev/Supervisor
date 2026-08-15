@@ -36,7 +36,7 @@ description: General-purpose subagent powered by Claude Sonnet 5. Mid-tier worke
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 40
+steps: 50
 color: "#818CF8"
 permission:
   edit: allow
@@ -197,7 +197,7 @@ description: Senior general-purpose subagent powered by Claude Opus 5. The most 
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 40
+steps: 50
 color: "#6366F1"
 permission:
   edit: allow
@@ -353,9 +353,9 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 
 | Role | Tier | File Name | Model | Steps | Edit | Bash | Web/Playwright |
 |------|------|-----------|-------|-------|------|------|-----|
-| **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
-| | Mid | `worker.md` | `anthropic/claude-sonnet-5` | 40 | ✅ | ✅ | ✅ |
-| | Senior | `senior-worker.md` | `anthropic/claude-opus-5` | 40 | ✅ | ✅ | ✅ |
+| **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-v4-pro` | 50 | ✅ | ✅ | ✅ |
+| | Mid | `worker.md` | `anthropic/claude-sonnet-5` | 50 | ✅ | ✅ | ✅ |
+| | Senior | `senior-worker.md` | `anthropic/claude-opus-5` | 50 | ✅ | ✅ | ✅ |
 | **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-v4-pro` | 25 | ✅ | ❌ | ✅ |
 | | Mid | `architect.md` | `anthropic/claude-sonnet-5` | 25 | ✅ | ❌ | ✅ |
 | | Senior | `senior-architect.md` | `anthropic/claude-opus-5` | 25 | ✅ | ❌ | ✅ |
