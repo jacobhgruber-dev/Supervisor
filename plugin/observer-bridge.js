@@ -20,6 +20,7 @@ try {
   }
 } catch {}
 
+const BRIDGE_PROVIDERS = ["deepseek"]
 const supportsImage = new Map()
 const injectedSessions = new Set()
 
@@ -27,10 +28,13 @@ export default async function () {
   return {
     "experimental.chat.system.transform": async (input, output) => {
       const capable = input.model?.capabilities?.input?.image ?? false
+      const provider = input.model?.providerID || input.model?.provider?.id || input.model?.provider
+      const isBridgeProvider = typeof provider === "string" && BRIDGE_PROVIDERS.includes(provider)
+      const active = !capable && isBridgeProvider
       if (input.sessionID) {
-        supportsImage.set(input.sessionID, capable)
+        supportsImage.set(input.sessionID, !active)
       }
-      if (!capable && input.sessionID && !injectedSessions.has(input.sessionID)) {
+      if (active && input.sessionID && !injectedSessions.has(input.sessionID)) {
         injectedSessions.add(input.sessionID)
         output.system.push(
           "## Visual Understanding (Images, Screenshots, Desktop State)\n" +
@@ -55,6 +59,10 @@ export default async function () {
     "chat.message": async (input, output) => {
       const capable = supportsImage.get(input.sessionID)
       if (capable) return
+
+      const provider = input.model?.providerID || input.model?.provider?.id || input.model?.provider
+      const isBridgeProvider = typeof provider === "string" && BRIDGE_PROVIDERS.includes(provider)
+      if (provider !== undefined && !isBridgeProvider) return
 
       let imageFound = false
 
