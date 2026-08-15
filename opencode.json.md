@@ -29,7 +29,7 @@ Once a provider is configured this way, OpenCode handles everything internally �
 | DeepSeek | https://platform.deepseek.com/api_keys | $2 new-user credit; extremely cheap |
 | Anthropic | https://console.anthropic.com | $5 credit recommended; lights up mid/senior tiers |
 | Google (Gemini) | https://aistudio.google.com/apikey | Free tier available; lights up Observer + Gemini workers |
-| xAI (Grok) | https://console.x.ai | Powers optional grok-worker addon |
+| xAI (Grok) | https://console.x.ai | Powers optional grok-worker addon + designer / designer-mule |
 
 DeepSeek alone runs the supervisor + junior tier. Adding Anthropic enables the mid/senior tiers. Google enables Observer. xAI is an optional add-on.
 
@@ -95,17 +95,19 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 | `context7` | Live, version-accurate library/API docs | Works keyless; optional key from https://context7.com |
 | `github` | Manage GitHub issues, PRs, repos | Docker + GitHub token in `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `macos-use` | Native macOS GUI control | macOS only; binary at `/usr/local/bin` — already pre-allowed in `permission` block |
+| `twenty-first` | 21st.dev component search/retrieval for UI work | Flip `"enabled": true`; **design MCP gating** — denied globally and for supervisor; allowed only on the `designer` agent |
+| `a11y-color-contrast` | WCAG color-contrast checks | Flip `"enabled": true`; allowed globally (and on `designer`) |
 
 > **Windows note:** `macos-automator` is macOS-only. For native Windows control, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) and add it to `"mcp"` the same opt-in way. `screenpipe` works on Windows.
 
-
+> **Design MCP gating:** `twenty-first_*` and `open-design_*` are denied at top-level `permission` and on `agent.supervisor`. The `agent.designer` block allows `twenty-first_*`, `open-design_*`, and `a11y-color-contrast_*`. The template does not ship an `open-design` MCP server definition (it is path-local); add your own server entry if you use open-design, and keep the permission keys.
 
 ## Permission Block
 
-The `permission` block controls which MCP tools agents are allowed to call. The template pre-approves three servers (`chrome-devtools`, `macos-use`, `vercel`) with `"allow"` entries. All other disabled MCPs have no entry in the `permission` block — to enable one, you need **both** changes:
+The `permission` block controls which MCP tools agents are allowed to call. The template pre-approves three servers (`chrome-devtools`, `macos-use`, `vercel`) with `"allow"` entries, plus `a11y-color-contrast_*`. Design tools (`twenty-first_*`, `open-design_*`) are explicitly `"deny"` at the top level and for the supervisor — only the `designer` agent is allowed them. All other disabled MCPs have no entry in the `permission` block — to enable one, you need **both** changes:
 
 1. Set `"enabled": true` inside that MCP's entry in the `mcp` block
-2. Add a corresponding `"<name>_*": "allow"` entry to the `permission` block
+2. Add a corresponding `"<name>_*": "allow"` entry to the `permission` block (or rely on agent-scoped allow for gated design tools)
 
 Skipping either step leaves the MCP unavailable. Reverse the steps to disable a built-in MCP (set `enabled: false` and remove its permission entry).
 

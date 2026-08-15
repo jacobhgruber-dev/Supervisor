@@ -1,6 +1,6 @@
 # Addons — Optional Extras
 
-The Supervisor repo ships with everything you need out of the box: one API key, one model, nine specialized subagent roles (41 agent files across 4 tiers). Addons layer on additional capabilities for a more complete setup.
+The Supervisor repo ships with everything you need out of the box: one API key, one model, nine specialized subagent roles (46 agent files across 4 tiers, including designer / designer-mule). Addons layer on additional capabilities for a more complete setup.
 
 ## Available Addons
 

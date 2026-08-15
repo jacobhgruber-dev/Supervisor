@@ -186,7 +186,7 @@ That's it. OpenCode saves the key in its own secure store (`~/.local/share/openc
 | **DeepSeek** | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) | Supervisor + all junior-tier agents + most mules (worker-mule, architect-mule, etc.) |
 | **Anthropic (Claude)** | [console.anthropic.com](https://console.anthropic.com) | Mid + senior tiers + claude-mule |
 | **Google (Gemini)** | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | Observer vision agent + gemini-worker + gemini-mule |
-| **xAI (Grok)** | [console.x.ai](https://console.x.ai) | grok-worker + grok-mule |
+| **xAI (Grok)** | [console.x.ai](https://console.x.ai) | grok-worker + grok-mule + designer + designer-mule |
 
 > 💰 Only the DeepSeek key is required to start. Anthropic unlocks the full mid + senior tiers. Google activates the Observer so you can paste screenshots into chat. xAI is optional — ignore it until you want it.
 
@@ -226,7 +226,7 @@ What you'll see: the Supervisor states a plan, spawns one or more specialists, r
 
 ## 🧱 Step 7 — Add Claude to unlock mid + senior tiers
 
-This is part of the core setup, not a bolt-on. The **full 4-tier system ships in the repo** — all 44 agent files in `agents/` are already on your machine. DeepSeek powers the junior tier (and handles ~80% of work on its own), and an **Anthropic (Claude)** key switches on the mid and senior tiers. You *can* run DeepSeek-only as a budget minimum, but the system is designed to run on both keys.
+This is part of the core setup, not a bolt-on. The **full 4-tier system ships in the repo** — all 46 agent files in `agents/` are already on your machine. DeepSeek powers the junior tier (and handles ~80% of work on its own), and an **Anthropic (Claude)** key switches on the mid and senior tiers. You *can* run DeepSeek-only as a budget minimum, but the system is designed to run on both keys.
 
 **How the three tiers work — it's just naming:**
 
@@ -254,7 +254,7 @@ The Claude-powered agents sit ready but inactive until the key is present — no
 
 ### 👁️ Observer — paste screenshots into chat (built in)
 
-Your Supervisor runs on a text-only model, so it can't see images. **Observer** fixes that: it's a vision agent (Gemini 3.5 Flash) that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
+Your Supervisor runs on a text-only DeepSeek model, so it can't see images. **Observer** fixes that: it's a vision agent (Gemini 3.5 Flash) that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
 
 Observer activates automatically once your **Google (Gemini)** key is in place — add it through Desktop Settings → Providers or `opencode auth login` (choose Google/Other). No model names or provider blocks to wire up. Pair it with `screenpipe` or `macos-automator` (Step 8) and the Supervisor can capture *and* understand on-screen state.
 
@@ -311,7 +311,7 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 |---------|------------------|-----|
 | **Supervisor doesn't appear** | `supervisor.md` missing, or missing `mode: primary` | Confirm `ls ~/.config/opencode/agent/supervisor.md` and that its frontmatter says `mode: primary`. Re-run the Step 3 copy commands if the file is missing. |
 | **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in an agent folder | Only real agent files belong in `~/.config/opencode/agent/` or `agents/`. Remove any docs that got copied there by mistake. |
-| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~44 files. If empty, re-run the copy command in Step 3. |
+| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~46 files. If empty, re-run the copy command in Step 3. |
 | **Subagent can't spawn a mule / "Task tool not available"** | `subagent_depth` too low | The template sets `"subagent_depth": 3`. If you skipped the template or wrote your own config, make sure this field is set to `3` — the default of `1` blocks nested agent spawns (supervisor → subagent → mule). |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
 | **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` (OpenCode Desktop usually auto-installs provider packages; this is only needed if you get 'Model not found' errors) |
@@ -327,7 +327,7 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 ## 🗺️ Where to go next
 
 - **[README.md](README.md)** — the full architecture and design philosophy.
-- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 44 agents in `agents/` (plus Supervisor).
+- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 46 agents in `agents/` (plus Supervisor).
 - **[DEPENDENCIES.md](DEPENDENCIES.md)** — every optional tool, organized by tier.
 - **[addons/README.md](addons/README.md)** — optional modes and Grok setup notes (Observer is built-in — see Step 7).
 

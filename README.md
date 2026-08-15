@@ -21,12 +21,12 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **44 agents across 4 tiers (junior, mid, senior, mule)** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers. All with built-in awareness of 14+ CLI code quality and security tools.
+- **46 agents across 4 tiers (junior, mid, senior, mule)** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **Grok worker** — an alternative-model worker on xAI's Grok 4.3. Ships in `agents/grok-worker.md` with a mirror copy and setup README in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
-- **Full 4-tier system built in** — all 44 agents (including mule tier and alternative model workers) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
-- **Observer (built in)** — a multimodal Gemini 3.5 Flash subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once a Google (Gemini) key is configured.
+- **Full 4-tier system built in** — all 46 agents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
+- **Observer (built in)** — a multimodal Gemini 3.5 Flash subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once a Google (Gemini) key is configured, for DeepSeek-based (text-only) models.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
@@ -149,7 +149,7 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
         +---> observer        (visual analysis, multimodal, read-only)
 ```
 
-(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. Local Ollama placeholders: `local-coder`, `local-reasoner`.)
+(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.5 / 4.3). Local Ollama placeholders: `local-coder`, `local-reasoner`.)
 
 ## How It Works
 
@@ -192,6 +192,8 @@ Supervisor/
 │   ├── observer.md                # Multimodal Observer subagent (Gemini 3.5 Flash)
 │   ├── gemini-worker.md           # High-powered worker (Gemini 3.1 Pro)
 │   ├── grok-worker.md             # High-powered worker (Grok 4.3)
+│   ├── designer.md                # UI/UX design (Grok 4.5, native image vision)
+│   ├── designer-mule.md           # Bounded design leaf (Grok 4.3)
 │   ├── local-coder.md             # Ollama placeholder (configure before use)
 │   └── local-reasoner.md          # Ollama placeholder (configure before use)
 ├── plugin/

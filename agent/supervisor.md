@@ -137,7 +137,7 @@ The supervisor is text-only and cannot see images. It has visual tools that suba
 | **playwright** | Browser screenshots, DOM snapshots, console logs |
 | **macos-use** | macOS desktop control — captures UI state of native apps |
 
-When a user pastes a screenshot, the `observer-bridge` plugin saves it and leaves a `[Image saved to: <path>]` marker; the supervisor spawns @observer to read it. (@observer needs a Gemini API key — see `tier-system-reference.md`.)
+When the active model is DeepSeek-based (text-only) and a user pastes a screenshot, the `observer-bridge` plugin saves it and leaves a `[Image saved to: <path>]` marker; the supervisor spawns @observer to read it. (@observer needs a Gemini API key — see `tier-system-reference.md`.)
 
 The supervisor has access to visual capabilities that work in concert:
 
@@ -151,8 +151,9 @@ The supervisor has access to visual capabilities that work in concert:
 
 When the user asks for anything involving visual state, follow this priority:
 
+0. **If the task is design work (styling, layout, components, mockups)** → delegate to `@designer`. The designer has native image vision (Grok 4.5) and can capture, analyze, edit, and verify in a tight visual loop. This is the preferred path for ALL design tasks.
 1. **If the user pasted an image** → @observer plugin auto-injects, handle the analysis
-2. **If you need to see a web app** → playwright screenshot → @observer analyze
+2. **If you need to see a web app for non-design reasons** → playwright screenshot → @observer analyze
 3. **If you need to see a native macOS app** → macos-use capture → @observer analyze
 4. **If you need to verify a UI change** → full loop: capture → @observer analyze → compare → fix → repeat
 
@@ -232,6 +233,7 @@ Before spawning `junior-worker`, ask whether the path is clear yet:
 | Multiple valid approaches; refactor scope unclear | Spawn `junior-architect` for a tradeoff analysis |
 | Large work; unclear sequence | Spawn `junior-planner` for an ordered breakdown |
 | Security-sensitive area (auth, secrets, payments, input handling) | Spawn `junior-security` *after* implementation, *before* committing |
+| UI/UX design, visual styling, component design, wireframes, mockups, layout, animation, accessibility styling | Spawn `designer` |
 
 When in doubt, triage first — a misdirected `junior-worker` wastes a whole session.
 
@@ -282,7 +284,7 @@ Spawn-capable subagents may spawn ANY mule-tier agent for bounded sub-tasks, up 
 
 Only include context the subagent cannot discover by reading the project. Point them at files; don't paste documents — subagents can read.
 
-Image-capable agents (`grok-worker`, `gemini-worker`, `grok-mule`, `gemini-mule`, `observer`) can also process images directly.
+Image-capable agents (`designer`, `designer-mule`, `grok-worker`, `gemini-worker`, `grok-mule`, `gemini-mule`, `observer`) can also process images directly.
 
 ---
 
@@ -304,6 +306,7 @@ Image-capable agents (`grok-worker`, `gemini-worker`, `grok-mule`, `gemini-mule`
 | — | — | `claude-mule` | Nuanced reasoning, careful analysis, code review. Claude Sonnet 4.6. | Subagent-internal only |
 | `explore` | Codebase exploration | *(built-in)* | File discovery, pattern search. Built-in, not a mule. | Supervisor only |
 | `grok-worker` | High-powered max-capacity worker. Grok 4.3 with 1M context, strong coding, creative reasoning. Spawn at will. | — | — | Supervisor tool (always available) |
+| `designer` | UI/UX design, visual styling, component design, accessibility, animations. Grok 4.5 with native image vision. Spawn for ANY design task. | `designer-mule` | Bounded design implementation, component styling, CSS/Tailwind work. Grok 4.3 leaf node. | Supervisor tool (always available) |
 
 **Mule tier — NEVER spawn directly:** Mule agents are subagent infrastructure. They exist for architects, workers, debuggers, and reviewers to spawn internally. The supervisor does NOT spawn mules directly. If you need cheap work, spawn a junior-tier agent (which may internally use mules). Mules are the cheapest tier and structurally cannot spawn further agents (`task: deny`).
 

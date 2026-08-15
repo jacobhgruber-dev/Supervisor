@@ -10,7 +10,17 @@
         "macos-use_*": "allow",
         "screenpipe_search-content": "allow",
         "screenpipe_export-video": "allow",
-        "vercel_*": "allow"
+        "vercel_*": "allow",
+        "twenty-first_*": "deny",
+        "open-design_*": "deny"
+      },
+      "options": {}
+    },
+    "designer": {
+      "permission": {
+        "twenty-first_*": "allow",
+        "open-design_*": "allow",
+        "a11y-color-contrast_*": "allow"
       },
       "options": {}
     }
@@ -85,12 +95,25 @@
       "type": "local",
       "command": ["/usr/local/bin/mcp-server-macos-use"],
       "enabled": false
+    },
+    "twenty-first": {
+      "type": "local",
+      "command": ["npx", "-y", "@21st-dev/mcp"],
+      "enabled": false
+    },
+    "a11y-color-contrast": {
+      "type": "local",
+      "command": ["npx", "-y", "a11y-color-contrast-mcp"],
+      "enabled": false
     }
   },
   "permission": {
     "chrome-devtools_*": "allow",
     "macos-use_*": "allow",
-    "vercel_*": "allow"
+    "vercel_*": "allow",
+    "twenty-first_*": "deny",
+    "open-design_*": "deny",
+    "a11y-color-contrast_*": "allow"
   },
   "compaction": {
     "auto": true,

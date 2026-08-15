@@ -85,6 +85,8 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 **What it powers:**
 - `grok-worker` — alternative-model worker on Grok 4.3 (requires installing the addon from `addons/grok-worker/`)
 - `grok-mule` — leaf agent for creative reasoning and complex coding (3x the cost of `worker-mule` — use sparingly)
+- `designer` — UI/UX design agent on Grok 4.5 with native image vision (ships in `agents/`)
+- `designer-mule` — bounded design leaf on Grok 4.3 (ships in `agents/`)
 
 **Cost:** Moderate. The Grok worker addon is optional and independent of the core system.
 
@@ -113,7 +115,7 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 | **DeepSeek** | Supervisor + 9 junior subagents (the whole system) | $ (cheapest) | ~2 min |
 | **Anthropic** | 9 mid + 9 senior subagents + Observer vision | $$$ (priciest) | ~3 min |
 | **Google** | gemini-worker + gemini-mule | $$ (moderate) | ~2 min |
-| **xAI** | grok-worker + grok-mule (optional addon) | $$ (moderate) | ~3 min |
+| **xAI** | grok-worker + grok-mule + designer + designer-mule | $$ (moderate) | ~3 min |
 
 **Architecture in one sentence:** The Supervisor runs on DeepSeek. It spawns junior agents on DeepSeek by default. Mid and senior agents (Anthropic), Gemini agents (Google), and Grok agents (xAI) sit ready and activate as soon as their key is connected. No config changes needed — the agent files are already installed.
 
@@ -148,4 +150,5 @@ When configuring providers manually or writing agent frontmatter:
 | Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
 | Google (Pro) | `google/gemini-3.1-pro-preview` | `gemini-worker.md` |
 | Google (Flash) | `google/gemini-3.5-flash` | `gemini-mule.md`, `observer.md` |
-| xAI (Grok) | `xai/grok-4.3` | `grok-worker.md` (addon), `grok-mule.md` |
+| xAI (Grok) | `xai/grok-4.3` | `grok-worker.md` (addon), `grok-mule.md`, `designer-mule.md` |
+| xAI (Grok 4.5) | `xai/grok-4.5` | `designer.md` |

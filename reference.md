@@ -17,7 +17,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek V4 Pro | Orchestration — plans, delegates, reviews, commits |
-| **41 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 5 / Gemini 2.5 Flash / Grok 4.3 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers |
+| **46 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 5 / Gemini 2.5 Flash / Grok 4.3 / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
 | **Observer** (built in) | Gemini 3.5 Flash | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
@@ -25,7 +25,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 
 ## Subagent Tiers
 
-The Supervisor ships with 41 agents across 4 tiers — 9 roles at each tier. The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet) and senior (Claude Opus) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
+The Supervisor ships with 46 agents across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers. The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet) and senior (Claude Opus) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
 | Subagent | Use For | Steps | Permissions |
 |----------|---------|-------|-------------|
@@ -66,7 +66,7 @@ The 4-tier system is fully configured in the repo. The naming convention:
 | Senior | Claude Opus 5 | `senior-worker`, etc. | Highest stakes only |
 | Mule | DeepSeek V4 Pro (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
 
-This gives you 41 agent files across 9 roles at 4 tiers. See `tier-system-reference.md` for the complete spec table and agent specifications.
+This gives you 46 agent files across 9 roles at 4 tiers (plus designer / designer-mule and alternative model workers). See `tier-system-reference.md` for the complete spec table and agent specifications.
 
 ### Quick Cost Guide
 
@@ -80,12 +80,12 @@ This gives you 41 agent files across 9 roles at 4 tiers. See `tier-system-refere
 
 ## Mule Tier
 
-12 mule-tier leaf agents that cannot spawn further subagents (`task: deny` in their permission block). This eliminates recursion risk — any agent that spawns a mule is guaranteed the work terminates there.
+13 mule-tier leaf agents that cannot spawn further subagents (`task: deny` in their permission block). This eliminates recursion risk — any agent that spawns a mule is guaranteed the work terminates there.
 
 Mules are subagent infrastructure. The supervisor never spawns mules directly; junior, mid, and senior agents spawn them internally for bounded work.
 
 - **9 DeepSeek mules** mirror the 9 roles (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`)
-- **3 cross-provider mules** for specialized workloads (`gemini-mule` for long-context/multimodal, `grok-mule` for creative reasoning, `claude-mule` for nuanced analysis)
+- **4 cross-provider mules** for specialized workloads (`gemini-mule` for long-context/multimodal, `grok-mule` for creative reasoning, `claude-mule` for nuanced analysis, `designer-mule` for bounded UI/UX)
 
 See [subagents.md](subagents.md) and [tier-system-reference.md](tier-system-reference.md) for full specifications, spawn rules, and individual agent details.
 
@@ -166,8 +166,9 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
       +---> editor / junior-editor / senior-editor  (proofreading, read + edit)
       +---> quote-auditor / junior-quote-auditor / senior-quote-auditor  (quotes)
       |
-      +---> mule-tier (12 leaf workers — subagent infrastructure, spawned internally)
+      +---> mule-tier (13 leaf workers — subagent infrastructure, spawned internally)
       |
+      +---> designer / designer-mule  (UI/UX, Grok 4.5 / 4.3)
       +---> observer           (visual analysis, Gemini 3.5 Flash)
 
 (Optional addons: gemini-worker (Gemini 3 Pro), grok-worker (Grok 4.3).)
@@ -192,5 +193,6 @@ Behavioral Modes (overlay on any agent):
 | "Proofread this blog post" | `editor` |
 | "Check that all quotes in this article are verbatim" | `quote-auditor` |
 | "Read the screenshot I just pasted" | `observer` |
+| "Style this component / design the landing page" | `designer` |
 | "Any task — I want Gemini's model" | `gemini-worker` *(optional addon)* |
 | "Any task — I want Grok's model" | `grok-worker` *(optional addon)* |
