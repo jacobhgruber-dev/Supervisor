@@ -170,8 +170,10 @@ opencode auth login
 
 You'll get a menu of providers. Then:
 
-1. Choose **DeepSeek**. (If DeepSeek isn't in the list, choose **Other**, and type `deepseek` as the provider id.)
+1. Choose **DeepSeek** — it's always in the interactive provider list.
 2. Paste the `sk-...` key from Step 2 and press Enter.
+
+> 💡 In the OpenCode TUI, the equivalent is the `/connect` command.
 
 That's it. OpenCode saves the key in its own secure store (`~/.local/share/opencode/auth.json`) — **not** in this repo's `opencode.template.json`, so there's no risk of committing it to GitHub. Cloud providers (DeepSeek, Anthropic, Google, xAI) are authenticated this way — do not add them as a `provider` block in `opencode.json`. The template's only `provider` entry is optional Ollama for local models.
 
@@ -202,9 +204,9 @@ opencode
 
 When OpenCode opens, look for the agent selector (often via the `Tab` key or a menu) and choose **Supervisor**. You're now talking to your project manager.
 
-> 🛠️ **"Model not found" error on launch?** OpenCode usually auto-installs the model package, but if it complains, run this once inside the config folder:
+> 🛠️ **"Model not found" error on launch?** OpenCode auto-installs its SDK packages itself — DeepSeek is wired via `@ai-sdk/openai-compatible` from models.dev, so no manual `npm install` needed. If the model list looks stale, refresh it:
 > ```bash
-> cd ~/.config/opencode && npm install @ai-sdk/deepseek
+> opencode models --refresh
 > ```
 
 ---
@@ -246,17 +248,11 @@ The Claude-powered agents sit ready but inactive until the key is present — no
    opencode auth login
    ```
    Choose **Anthropic** and paste your `sk-ant-...` key. (Or set `ANTHROPIC_API_KEY` in your environment.)
-3. Restart OpenCode. Now you can say *"use the senior architect for this."* (Screenshot paste / Observer is separate — it needs a **Google** key; see below.)
+3. Restart OpenCode. Now you can say *"use the senior architect for this."* (Screenshot paste / Observer is separate — it needs a **Google** key; see Step 8.)
 
 > 💰 **Heads up on cost.** Claude (especially Opus/"senior") is **much** pricier than DeepSeek. Use junior agents by default; call in the seniors only when it really matters. The Supervisor already follows this policy automatically.
 
 > 🪝 **Important config detail: `subagent_depth: 3`.** The template file you copied in Step 3 includes `"subagent_depth": 3`. This is what lets subagents spawn mules — supervisor → subagent → mule chains of depth 3. If you skip the template and write your own `opencode.json`, make sure this field is set to `3` (not the default of `1`, which blocks nested agent spawns).
-
-### 👁️ Observer — paste screenshots into chat (built in)
-
-Your Supervisor runs on a text-only DeepSeek model, so it can't see images. **Observer** fixes that: it's a vision agent (Gemini 3.7 Flash) that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
-
-Observer activates automatically once your **Google (Gemini)** key is in place — add it through Desktop Settings → Providers or `opencode auth login` (choose Google/Other). No model names or provider blocks to wire up. Pair it with `screenpipe` or `macos-automator` (Step 8) and the Supervisor can capture *and* understand on-screen state.
 
 ---
 
@@ -267,6 +263,12 @@ These are extras you can ignore until you want them:
 - **Grok (xAI)** — `grok-worker` already ships in `agents/grok-worker.md` (Step 3 copied it). Add an xAI key through Desktop Settings → Providers (or `opencode auth login`) to activate it. A mirror copy and setup notes live in [`addons/grok-worker/`](addons/grok-worker/). See [PROVIDERS.md](PROVIDERS.md).
 - **Addons** (`addons/` folder) — behavioral "modes," Grok setup notes, and a full reference catalog. See [`addons/README.md`](addons/README.md).
 - **CLI quality tools** — the reviewer/debugger agents can use tools like `ruff`, `mypy`, and `trivy` when present. Optional but nice. See [`DEPENDENCIES.md`](DEPENDENCIES.md).
+
+### 👁️ Observer — paste screenshots into chat (built in · Google/Gemini)
+
+Your Supervisor runs on a text-only DeepSeek model, so it can't see images. **Observer** fixes that: it's a vision agent (Gemini 3.7 Flash) that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
+
+Observer activates automatically once your **Google (Gemini)** key is in place — add it through Desktop Settings → Providers or `opencode auth login` (choose Google). No model names or provider blocks to wire up. Pair it with `screenpipe` or `macos-automator` (below) and the Supervisor can capture *and* understand on-screen state.
 
 ### Optional MCP servers (nice-to-haves)
 
@@ -292,7 +294,7 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 
 > 🪟 **On Windows?** `macos-automator` is macOS-only. For equivalent native desktop control on Windows, use **[CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP)** — follow that repo's setup, then add it to your `"mcp"` block the same way (disabled until you opt in). `screenpipe` already works on Windows.
 
-> 🧠 **Pairs well with Observer.** `screenpipe` and `macos-automator` capture what's on screen; the built-in **Observer** agent (a Gemini vision agent — see Step 7) then *reads* those screenshots and explains them to your text-only Supervisor.
+> 🧠 **Pairs well with Observer.** `screenpipe` and `macos-automator` capture what's on screen; the built-in **Observer** agent (a Gemini vision agent — see the Observer section above) then *reads* those screenshots and explains them to your text-only Supervisor.
 
 **How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`. For a few servers (`chrome-devtools`, `macos-use`, `vercel`), the template already has a matching `"allow"` entry in the `"permission"` block — just flip `enabled`. For the others (elevenlabs, railway, screenpipe, macos-automator, yt-dlp, gemini-api-docs, context7, github), you'll also need to add a corresponding `"<name>_*": "allow"` line to the `"permission"` block. For example, to enable railway:
 
@@ -314,12 +316,12 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 | **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~46 files. If empty, re-run the copy command in Step 3. |
 | **Subagent can't spawn a mule / "Task tool not available"** | `subagent_depth` too low | The template sets `"subagent_depth": 3`. If you skipped the template or wrote your own config, make sure this field is set to `3` — the default of `1` blocks nested agent spawns (supervisor → subagent → mule). |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
-| **"Model not found" / API errors** | Provider package missing | `cd ~/.config/opencode && npm install @ai-sdk/deepseek` (OpenCode Desktop usually auto-installs provider packages; this is only needed if you get 'Model not found' errors) |
+| **"Model not found" / API errors** | Stale model list | Run `opencode models --refresh`. OpenCode auto-installs its SDK packages itself (DeepSeek is wired via `@ai-sdk/openai-compatible`) — no manual `npm install` needed. |
 | **"Invalid API key" / "not authenticated"** | Key not connected, or a typo | Re-run `opencode auth login` and re-enter the key (no extra spaces). Confirm with `opencode auth list` that the provider shows up. |
 | **MCP error on startup** (e.g. elevenlabs/railway/screenpipe) | An optional MCP got enabled without its key/install | Harmless to the Supervisor. Either set that server back to `"enabled": false` in `opencode.json`, or finish its setup (see Step 8). |
-| **DeepSeek/Claude stopped working after adding config** | A cloud `provider` block in `opencode.json` overrides auth | Remove any `provider` block for DeepSeek, Anthropic, Google, or xAI from your `opencode.json`. The template ships an Ollama-only provider block (for local models only) — cloud provider blocks interfere with auth. |
+| **DeepSeek/Claude stopped working after adding config** | `options.apiKey` or `options.baseURL` overrides in a cloud `provider` block | Auth is loaded independently — a `provider` block never removes your stored key. Check any block for DeepSeek, Anthropic, Google, or xAI in your `opencode.json` and remove `options.apiKey`/`options.baseURL` overrides (or the whole cloud block — you don't need it). The template's Ollama-only block is fine to keep. |
 | **Too many agents in the agent selector** | Non-agent `.md` files or stray files being picked up | Only agent files should be in `agents/`. Remove any docs, notes, or reference files from that folder. |
-| **Max variant toggle disappeared** | A cloud `provider.models` block stripped built-in model variants | Remove any DeepSeek/Anthropic/Google/xAI `provider` (or `provider.models`) override from `opencode.json`. Keep the template's Ollama block if you use local models — `models.dev` handles cloud variants. |
+| **Max variant toggle disappeared** | The model or its variants are hidden by `blacklist`/`whitelist` | Partial `provider.models` entries merge with the built-in definition, so check for `blacklist`/`whitelist` entries hiding the model and remove them. Keep the template's Ollama block if you use local models — `models.dev` handles cloud variants. |
 | **Subagents appear in @ autocomplete** | Agent file missing `hidden: true` in frontmatter | Add `hidden: true` to subagent markdown files. All shipped subagents already have this set — if you created custom ones, add it manually. |
 
 ---
@@ -329,7 +331,7 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 - **[README.md](README.md)** — the full architecture and design philosophy.
 - **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 46 agents in `agents/` (plus Supervisor).
 - **[DEPENDENCIES.md](DEPENDENCIES.md)** — every optional tool, organized by tier.
-- **[addons/README.md](addons/README.md)** — optional modes and Grok setup notes (Observer is built-in — see Step 7).
+- **[addons/README.md](addons/README.md)** — optional modes and Grok setup notes (Observer is built-in — see Step 8).
 
 <div align="center">
 

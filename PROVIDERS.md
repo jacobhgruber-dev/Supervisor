@@ -33,7 +33,6 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 **What it powers:**
 - **Mid tier** — 9 agents on Claude Sonnet 5 (`worker`, `architect`, `reviewer`, etc.)
 - **Senior tier** — 9 agents on Claude Opus 5 (`senior-worker`, `senior-architect`, etc.)
-- **Observer** — screenshot reading / multimodal vision agent (Gemini 3.7 Flash)
 
 **Cost:** More expensive than DeepSeek. Use deliberately — the Supervisor defaults to junior (DeepSeek) agents and only escalates to mid/senior when you explicitly ask.
 
@@ -60,6 +59,7 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 **What it powers:**
 - `gemini-worker` — full-access Gemini agent (Gemini 3.7 Flash)
 - `gemini-mule` — leaf agent for long-context, multimodal, or web-heavy tasks (Gemini 3.7 Flash)
+- **Observer** — screenshot reading / multimodal vision agent (Gemini 3.7 Flash)
 
 **Cost:** Moderate. Cheaper than Anthropic, pricier than DeepSeek.
 
@@ -113,8 +113,8 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 | Provider | What It Unlocks | Cost Tier | Setup Time |
 |----------|----------------|-----------|------------|
 | **DeepSeek** | Supervisor + 9 junior subagents (the whole system) | $ (cheapest) | ~2 min |
-| **Anthropic** | 9 mid + 9 senior subagents + Observer vision | $$$ (priciest) | ~3 min |
-| **Google** | gemini-worker + gemini-mule | $$ (moderate) | ~2 min |
+| **Anthropic** | 9 mid + 9 senior subagents | $$$ (priciest) | ~3 min |
+| **Google** | gemini-worker + gemini-mule + Observer vision | $$ (moderate) | ~2 min |
 | **xAI** | grok-worker + grok-mule + designer + designer-mule | $$ (moderate) | ~3 min |
 
 **Architecture in one sentence:** The Supervisor runs on DeepSeek. It spawns junior agents on DeepSeek by default. Mid and senior agents (Anthropic), Gemini agents (Google), and Grok agents (xAI) sit ready and activate as soon as their key is connected. No config changes needed — the agent files are already installed.
@@ -125,9 +125,9 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 
 When you connect a key through OpenCode Desktop or `opencode auth login`, the key is stored in a secure internal file (`~/.local/share/opencode/auth.json`). OpenCode handles the provider wiring internally.
 
-Adding a `"provider"` block to `opencode.json` can **override** the internal implementation and break authentication. The template config (`opencode.json` in this repo) intentionally does not include a provider block for this reason.
+A `"provider"` block for a cloud provider is **deep-merged into the built-in (models.dev) definition** — it never removes the credentials stored in `~/.local/share/opencode/auth.json`. The real risks of adding one: `options.apiKey` shadows your stored key, `options.baseURL` overrides the endpoint and can break calls, and `blacklist`/`whitelist` hide models. Since none of that is ever needed for a plain cloud connection, the template config in this repo intentionally includes **no provider blocks for cloud providers** (DeepSeek, Anthropic, Google, xAI). It includes exactly one provider block — `ollama`, a local custom provider — because local/custom providers are the legitimate exception: they require a provider block since they are not built into OpenCode.
 
-If you see a `"provider"` block in any config template, delete it — let OpenCode manage providers natively.
+If you see a `"provider"` block for a cloud provider in any config template, delete it — you don't need it. (The one exception: blocks for local/custom providers like ollama, which are required.) A provider block is also the legitimate way to intentionally customize a built-in provider — e.g. a `baseURL` override — but you never need one just to connect a key.
 
 ---
 
@@ -148,7 +148,6 @@ When configuring providers manually or writing agent frontmatter:
 | DeepSeek | `deepseek/deepseek-v4-pro` | `supervisor.md`, all `junior-*.md` |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc. |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
-| Google (Pro) | `google/gemini-3.7-flash` | `gemini-worker.md` |
-| Google (Flash) | `google/gemini-3.7-flash` | `gemini-mule.md`, `observer.md` |
+| Google | `google/gemini-3.7-flash` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |
 | xAI (Grok) | `xai/grok-4.3` | `grok-worker.md` (addon), `grok-mule.md`, `designer-mule.md` |
 | xAI (Grok 4.5) | `xai/grok-4.5` | `designer.md` |

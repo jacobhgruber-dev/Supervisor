@@ -91,7 +91,7 @@ opencode auth login   # run again, choose Anthropic, paste your key
 
 Provider discovery is handled natively by OpenCode through models.dev — no provider block needed in your config; auth comes from your login.
 
-> **Note:** If DeepSeek isn't in the CLI menu, pick **Other** and enter `deepseek` as the id.
+> **Note:** DeepSeek is always in the interactive provider list — just pick it. (In the OpenCode TUI, the equivalent is the `/connect` command.)
 
 Keys are stored in OpenCode's secure file (`~/.local/share/opencode/auth.json`). Alternatively, set the `DEEPSEEK_API_KEY` and `ANTHROPIC_API_KEY` environment variables.
 
@@ -114,7 +114,7 @@ The Supervisor handles the rest — planning, spawning subagents, reviewing, fix
 ### Troubleshooting
 
 **"Model not found" or API errors on restart:**
-Make sure you've added your DeepSeek API key through OpenCode Desktop (Settings → Providers) or `opencode auth login`. If you modified `opencode.json` to add a custom `provider` block, remove it — built-in providers (DeepSeek, Anthropic, Google, xAI) are handled natively and don't belong in the config.
+Make sure you've added your DeepSeek API key through OpenCode Desktop (Settings → Providers) or `opencode auth login`. If you modified `opencode.json` to add a `provider` block for a cloud provider, remove it — you don't need one; built-in providers (DeepSeek, Anthropic, Google, xAI) are handled natively. (Blocks are only required for custom providers like ollama, or to intentionally override `options` such as `baseURL`.)
 
 **"Agent not found" when the Supervisor tries to spawn a subagent:**
 Make sure the agent `.md` files are in `~/.config/opencode/agents/` — not in a subdirectory. Run:

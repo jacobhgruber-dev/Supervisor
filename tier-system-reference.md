@@ -385,7 +385,7 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 
 | Provider | Model ID in frontmatter | npm Package |
 |----------|------------------------|-------------|
-| DeepSeek | `deepseek/deepseek-v4-pro` | `@ai-sdk/deepseek` |
+| DeepSeek | `deepseek/deepseek-v4-pro` | `@ai-sdk/openai-compatible` (via models.dev) |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `@ai-sdk/anthropic` |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | `@ai-sdk/anthropic` |
 | Google (gemini-mule) | `google/gemini-3.7-flash` | `@ai-sdk/google` |

@@ -48,13 +48,15 @@ Keys are stored in `~/.local/share/opencode/auth.json`, not in this config file.
 
 ## Warning: The `provider` Block
 
-**Do not add a `provider` block for DeepSeek, Anthropic, Google, or xAI.** OpenCode has built-in provider implementations for all four. Adding a `provider` block has two dangerous side effects:
+**You don't need a `provider` block for DeepSeek, Anthropic, Google, or xAI — connect them natively.** OpenCode has built-in provider implementations for all four (via models.dev), and a config `provider` block is **deep-merged** into that built-in definition — it never removes the credentials stored in `auth.json`. The real risks of adding a cloud-provider block:
 
-1. **`npm` + `models` fields override the internal implementation.** A `provider` block that specifies `npm` and `models` fully replaces OpenCode's built-in provider wiring. Previously-working providers can stop working entirely.
+1. **`options.apiKey` shadows your stored key** — a block that sets `options.apiKey` takes precedence over the key you saved through Desktop/auth login, and requests can fail authentication.
+2. **`options.baseURL` overrides the endpoint** — pointing at the wrong URL breaks calls entirely.
+3. **`blacklist`/`whitelist` hide models** — anything listed there disappears from the model selector, variants included.
 
-2. **`provider.models` replaces, not merges.** Any model you list in `provider.models` replaces the models.dev definition for that model ID. This strips built-in variants — for example, the DeepSeek "Max" toggle disappears if you define `deepseek/deepseek-v4-pro` in a custom `provider.models` block.
+For reference, `npm` and `models` do **not** replace the built-in wiring: provider-level `npm` is only a per-model fallback, and `models` entries merge per-field with fallbacks to the models.dev definition — a partial entry preserves built-in fields.
 
-**The `provider` block is only for custom providers** — local models (Ollama, LM Studio), proxies, or custom endpoints that OpenCode doesn't know about natively. The template already includes Ollama. Do not add cloud providers (DeepSeek, Anthropic, Google, xAI) here — use Desktop auth or env vars instead.
+**A `provider` block is required for custom providers** — local models (Ollama, LM Studio), proxies, or custom endpoints that OpenCode doesn't know about natively — and it's the legitimate way to intentionally customize a built-in (e.g. a `baseURL` override). The template already includes Ollama. For the four cloud providers, use Desktop auth or env vars instead.
 
 ## What's in This Config File
 
@@ -140,8 +142,8 @@ Restart opencode. Check that everything is wired up correctly:
 
 1. **Supervisor is the default agent** — when opencode starts, the agent selector should show "supervisor" as the active primary agent (not "general" or any other agent).
 2. **Clean agent selector** — you should see your configured agents in the dropdown. No missing providers, no broken model listings.
-3. **Provider check (Desktop)** — open Settings → Providers. Providers you configured through the UI should show as connected. If you added a **cloud** `provider` block (DeepSeek/Anthropic/Google/xAI) by mistake and providers are broken, remove that cloud block and restart. The template's Ollama-only `provider` entry is fine to keep for local models.
-4. **Model variants (Desktop)** — if you added DeepSeek through Settings, the "Max" toggle should appear in the model selector. If it's missing, you may have a cloud `provider.models` block overriding the built-in definition — remove that override.
+3. **Provider check (Desktop)** — open Settings → Providers. Providers you configured through the UI should show as connected. If you added a **cloud** `provider` block (DeepSeek/Anthropic/Google/xAI) with `options.apiKey` or `options.baseURL` overrides, remove those overrides (or the whole block — you don't need it) and restart. The template's Ollama-only `provider` entry is fine to keep for local models.
+4. **Model variants (Desktop)** — if you added DeepSeek through Settings, the "Max" toggle should appear in the model selector. If it's missing, you may have `blacklist`/`whitelist` entries in a cloud `provider` block hiding it — remove them. Partial `provider.models` entries merge with the built-in definition, so they don't strip variants on their own.
 5. **`subagent_depth`** — confirm `"subagent_depth": 3` is present so supervisor → subagent → mule chains work.
 
 If something is wrong, double-check that your `opencode.json` has **no cloud `provider` blocks** (DeepSeek/Anthropic/Google/xAI) and that you added those keys through Settings or `opencode auth login`, not by editing the config file directly.
