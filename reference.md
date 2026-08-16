@@ -17,8 +17,8 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek V4 Pro | Orchestration — plans, delegates, reviews, commits |
-| **46 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 5 / Gemini 2.5 Flash / Grok 4.3 / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
-| **Observer** (built in) | Gemini 3.5 Flash | Reads pasted screenshots / UI states / error images and returns structured text |
+| **46 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 4.6 / Claude Opus 5 / Gemini 3.7 Flash / Grok 4.3 / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
+| **Observer** (built in) | Gemini 3.7 Flash | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
 ---
@@ -169,9 +169,9 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
       +---> mule-tier (13 leaf workers — subagent infrastructure, spawned internally)
       |
       +---> designer / designer-mule  (UI/UX, Grok 4.5 / 4.3)
-      +---> observer           (visual analysis, Gemini 3.5 Flash)
+      +---> observer           (visual analysis, Gemini 3.7 Flash)
 
-(Optional addons: gemini-worker (Gemini 3 Pro), grok-worker (Grok 4.3).)
+(Optional addons: gemini-worker (Gemini 3.7 Flash), grok-worker (Grok 4.3).)
 
 Behavioral Modes (overlay on any agent):
   /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes

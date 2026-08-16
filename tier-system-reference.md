@@ -388,9 +388,9 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 | DeepSeek | `deepseek/deepseek-v4-pro` | `@ai-sdk/deepseek` |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `@ai-sdk/anthropic` |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | `@ai-sdk/anthropic` |
-| Google (gemini-mule) | `google/gemini-2.5-flash` | `@ai-sdk/google` |
-| Google (Observer) | `google/gemini-3.5-flash` | `@ai-sdk/google` |
-| Google (gemini-worker) | `google/gemini-3.1-pro-preview` | `@ai-sdk/google` |
+| Google (gemini-mule) | `google/gemini-3.7-flash` | `@ai-sdk/google` |
+| Google (Observer) | `google/gemini-3.7-flash` | `@ai-sdk/google` |
+| Google (gemini-worker) | `google/gemini-3.7-flash` | `@ai-sdk/google` |
 | xAI (Grok) | `xai/grok-4.3` | `@ai-sdk/xai` |
 
 ## Agent Directory Layout
@@ -448,9 +448,9 @@ OpenCode loads agent markdown from both `~/.config/opencode/agent/` and `~/.conf
      ├── claude-mule.md
      ├── designer-mule.md
      │
-     ├── observer.md           # Multimodal Observer (Gemini 3.5 Flash)
+     ├── observer.md           # Multimodal Observer (Gemini 3.7 Flash)
     │
-    ├── gemini-worker.md      # Addon worker (Gemini 3.1 Pro)
+    ├── gemini-worker.md      # Addon worker (Gemini 3.7 Flash)
     ├── grok-worker.md        # Addon worker (Grok 4.3)
     ├── local-coder.md        # Ollama placeholder (configure before use)
     └── local-reasoner.md     # Ollama placeholder (configure before use)
@@ -498,6 +498,6 @@ Beyond the 3 escalation tiers, the repo also ships with **13 mule-tier agents** 
 
 Mules are subagent infrastructure. The supervisor never spawns mules directly — they exist for architects, workers, debuggers, and reviewers to spawn internally for bounded sub-tasks.
 
-All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}` and 30-step limits. Nine are DeepSeek V4 Pro (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 2.5 Flash), `grok-mule` (Grok 4.3), `claude-mule` (Claude Sonnet 5), and `designer-mule` (Grok 4.3).
+All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}` and 30-step limits. Nine are DeepSeek V4 Pro (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 3.7 Flash), `grok-mule` (Grok 4.3), `claude-mule` (Claude Sonnet 5), and `designer-mule` (Grok 4.3).
 
 > ⚠️ **Mules require `subagent_depth >= 3`.** The Supervisor spawns a subagent (depth 2), which spawns a mule (depth 3). Without `"subagent_depth": 3` in `opencode.json`, the mule spawn will be silently blocked.

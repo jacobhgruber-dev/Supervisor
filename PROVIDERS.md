@@ -33,7 +33,7 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 **What it powers:**
 - **Mid tier** — 9 agents on Claude Sonnet 5 (`worker`, `architect`, `reviewer`, etc.)
 - **Senior tier** — 9 agents on Claude Opus 5 (`senior-worker`, `senior-architect`, etc.)
-- **Observer** — screenshot reading / multimodal vision agent (Gemini 3.5 Flash)
+- **Observer** — screenshot reading / multimodal vision agent (Gemini 3.7 Flash)
 
 **Cost:** More expensive than DeepSeek. Use deliberately — the Supervisor defaults to junior (DeepSeek) agents and only escalates to mid/senior when you explicitly ask.
 
@@ -58,8 +58,8 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 ## Tier 3: Google / Gemini (Recommended)
 
 **What it powers:**
-- `gemini-worker` — full-access Gemini agent (Gemini 2.5 Pro)
-- `gemini-mule` — leaf agent for long-context, multimodal, or web-heavy tasks (Gemini 2.5 Flash)
+- `gemini-worker` — full-access Gemini agent (Gemini 3.7 Flash)
+- `gemini-mule` — leaf agent for long-context, multimodal, or web-heavy tasks (Gemini 3.7 Flash)
 
 **Cost:** Moderate. Cheaper than Anthropic, pricier than DeepSeek.
 
@@ -148,7 +148,7 @@ When configuring providers manually or writing agent frontmatter:
 | DeepSeek | `deepseek/deepseek-v4-pro` | `supervisor.md`, all `junior-*.md` |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc. |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
-| Google (Pro) | `google/gemini-3.1-pro-preview` | `gemini-worker.md` |
-| Google (Flash) | `google/gemini-3.5-flash` | `gemini-mule.md`, `observer.md` |
+| Google (Pro) | `google/gemini-3.7-flash` | `gemini-worker.md` |
+| Google (Flash) | `google/gemini-3.7-flash` | `gemini-mule.md`, `observer.md` |
 | xAI (Grok) | `xai/grok-4.3` | `grok-worker.md` (addon), `grok-mule.md`, `designer-mule.md` |
 | xAI (Grok 4.5) | `xai/grok-4.5` | `designer.md` |

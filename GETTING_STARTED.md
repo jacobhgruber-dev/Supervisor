@@ -254,7 +254,7 @@ The Claude-powered agents sit ready but inactive until the key is present — no
 
 ### 👁️ Observer — paste screenshots into chat (built in)
 
-Your Supervisor runs on a text-only DeepSeek model, so it can't see images. **Observer** fixes that: it's a vision agent (Gemini 3.5 Flash) that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
+Your Supervisor runs on a text-only DeepSeek model, so it can't see images. **Observer** fixes that: it's a vision agent (Gemini 3.7 Flash) that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
 
 Observer activates automatically once your **Google (Gemini)** key is in place — add it through Desktop Settings → Providers or `opencode auth login` (choose Google/Other). No model names or provider blocks to wire up. Pair it with `screenpipe` or `macos-automator` (Step 8) and the Supervisor can capture *and* understand on-screen state.
 
