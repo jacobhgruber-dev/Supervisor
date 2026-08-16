@@ -303,7 +303,7 @@ Image-capable agents (`designer`, `designer-mule`, `grok-worker`, `gemini-worker
 | `junior-quote-auditor` | Quote verification | `quote-auditor-mule` | Source verification leaf. | Junior-tier only |
 | — | — | `gemini-mule` | Long-context (>128K), reads images/screenshots directly, agentic web research. Gemini 3.7 Flash at budget price. | Subagent-internal only |
 | — | — | `grok-mule` | Creative reasoning, novel algorithms, reads images/screenshots for visual analysis. Grok 4.3 (3x cost — require justification in Subdelegation Log). | Subagent-internal only |
-| — | — | `claude-mule` | Nuanced reasoning, careful analysis, code review. Claude Sonnet 4.6. | Subagent-internal only |
+| — | — | `claude-mule` | Nuanced reasoning, careful analysis, code review. Claude Sonnet 5. | Subagent-internal only |
 | `explore` | Codebase exploration | *(built-in)* | File discovery, pattern search. Built-in, not a mule. | Supervisor only |
 | `grok-worker` | High-powered max-capacity worker. Grok 4.3 with 1M context, strong coding, creative reasoning. Spawn at will. | — | — | Supervisor tool (always available) |
 | `designer` | UI/UX design, visual styling, component design, accessibility, animations. Grok 4.5 with native image vision. Spawn for ANY design task. | `designer-mule` | Bounded design implementation, component styling, CSS/Tailwind work. Grok 4.3 leaf node. | Supervisor tool (always available) |

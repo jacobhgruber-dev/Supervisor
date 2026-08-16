@@ -1,7 +1,7 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Subagents — Quick Reference
 
-46 agent files across 9 roles at 4 tiers  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 4.6  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
+46 agent files across 9 roles at 4 tiers  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 5  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
 
 For full tier specifications, see [tier-system-reference.md](tier-system-reference.md).
 For the full system reference including modes, local agents, and commands, see [reference.md](reference.md).
@@ -182,7 +182,7 @@ Mules are subagent infrastructure — architects, workers, debuggers, and review
 | `quote-auditor-mule` | DeepSeek V4 Pro | Source verification |
 | `gemini-mule` | Gemini 3.7 Flash | Long-context, multimodal, web research |
 | `grok-mule` | Grok 4.3 | Coding, reasoning, creative |
-| `claude-mule` | Claude Sonnet 4.6 | Nuanced reasoning, careful analysis, code review |
+| `claude-mule` | Claude Sonnet 5 | Nuanced reasoning, careful analysis, code review |
 | `designer-mule` | Grok 4.3 | Bounded UI/UX, component styling, CSS/Tailwind |
 
 See [tier-system-reference.md](tier-system-reference.md) for full mule tier specifications.
