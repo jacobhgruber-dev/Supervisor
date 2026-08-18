@@ -52,7 +52,7 @@ Before writing your Closing Report, run these. If a tool isn't installed, note i
 
 ## Closing Report (MANDATORY)
 
-Your final message is the ONLY thing the supervisor receives — everything you did lives or dies by it. Never end without a concise report, even if the task is too large (no step cap — Google rejects max-steps finalization requests, so the cap must never trigger): report what you completed and what remains.
+Your final message is the ONLY thing the supervisor receives — everything you did lives or dies by it. Never end without a concise report, even if the task is too large: report what you completed and what remains.
 
 Always include:
 - **What you did** — one sentence summary
