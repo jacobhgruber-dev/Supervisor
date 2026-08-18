@@ -2,7 +2,6 @@
 description: "Gemini-powered leaf agent — long-context, multimodal, web research, coding. Mule tier: cheapest Gemini model (3.7 Flash), structurally cannot spawn subagents. Use for tasks benefiting from 1M context, multimodal understanding, or agentic web work."
 mode: subagent
 model: google/gemini-3.7-flash
-steps: 30
 color: "#34D399"
 permission:
   task:
@@ -33,7 +32,7 @@ Before writing your Closing Report, run these. If a tool isn't installed, note i
 
 ## Closing Report (MANDATORY)
 
-Your final message is the ONLY thing the agent that spawned you receives — everything you did lives or dies by it. Never end without a concise report, even if you hit your step limit or the task exceeds your scope: report what you completed and what remains.
+Your final message is the ONLY thing the agent that spawned you receives — everything you did lives or dies by it. Never end without a concise report, even if the task exceeds your scope (no step cap — Google rejects max-steps finalization requests, so the cap must never trigger): report what you completed and what remains.
 
 Always include:
 - **What you did** — one sentence summary
