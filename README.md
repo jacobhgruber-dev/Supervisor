@@ -21,15 +21,33 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **46 agents across 4 tiers (junior, mid, senior, mule)** — 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
+- **47 subagents across 4 tiers (junior, mid, senior, mule)** — 48 agents total with the Supervisor primary. 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek V4 Pro), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
-- **Grok worker** — an alternative-model worker on xAI's Grok 4.3. Ships in `agents/grok-worker.md` with a mirror copy and setup README in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
-- **Full 4-tier system built in** — all 46 agents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
-- **Observer (built in)** — a multimodal Gemini 3.7 Flash subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). The supervisor sees the text; the observer sees the image. Activates automatically once a Google (Gemini) key is configured, for DeepSeek-based (text-only) models.
+- **22 bundled skills (19 motion/design + 3 utility)** — a self-contained skill library in `skills/` that installs with everything else: 19 motion/design skills (animate, framer-motion ×5, gsap-core, motion-design, design-system, ui-styling, apple-design, and more) plus 3 utility skills (`agent-reach` for web research, `anna` for book/article downloads, `use-railway` for Railway infrastructure). See [skills/README.md](skills/README.md).
+- **Grok worker** — an alternative-model worker on xAI's Grok 4.5. Ships in `agents/grok-worker.md` with notes in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
+- **Full 4-tier system built in** — all 47 subagents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
+- **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 3.7 Flash — with automatic fallback to Claude Sonnet 5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
+
+### Fastest path: the one-line installers
+
+Clone the repo, then run one command. The installer copies the Supervisor agent, all 47 subagents, the 22 bundled skills, the Observer plugin, and AGENTS.md into your OpenCode config — and safely **merges** the config instead of overwriting it (your existing `opencode.json` is backed up first, and your settings always win).
+
+| Platform | Install | Update later |
+|----------|---------|--------------|
+| macOS / Linux | `./install.sh` | `./update.sh` |
+| Windows (PowerShell) | `.\setup.ps1` | `.\update.ps1` |
+
+Check what else your machine is missing:
+
+```bash
+./install.sh --doctor    # Dependency Doctor — prints tailored install commands; never fails, writes nothing
+```
+
+> The installers do **not** log you in — you still need Steps 1 (get a DeepSeek key) and 3 (connect your keys) below. Step 2's manual copy commands remain as a reference for what the installer does. The updaters are safe by design: they never overwrite files you've modified (add `--interactive` to decide) and snapshot everything into `~/.config/opencode/backups/`, so you can `./update.sh --rollback <timestamp>` to undo.
 
 ### 1. Get a DeepSeek API Key
 
@@ -149,7 +167,7 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
         +---> observer        (visual analysis, multimodal, read-only)
 ```
 
-(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.5 / 4.3). Local Ollama placeholders: `local-coder`, `local-reasoner`.)
+(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.5). Local Ollama placeholders: `local-coder`, `local-reasoner`.)
 
 ## How It Works
 
@@ -170,7 +188,16 @@ Key principle: **Always delegate.** The Supervisor self-executes only mechanical
 ```
 Supervisor/
 ├── README.md                      # This file
+├── GETTING_STARTED.md             # Zero-to-hero beginner guide (~15 minutes)
+├── PROVIDERS.md                   # API key setup for all 4 providers
 ├── DEPENDENCIES.md                # Full dependency list (CLI tools, packages, services)
+├── index.html                     # Visual, interactive setup guide (open in a browser)
+├── LICENSE                        # MIT
+├── install.sh                     # One-line installer (macOS/Linux) + dependency doctor
+├── setup.ps1                      # One-line installer (Windows PowerShell)
+├── update.sh                      # Safe updater (macOS/Linux) — skips user-modified files
+├── update.ps1                     # Safe updater (Windows PowerShell)
+├── deps.json                      # Dependency Doctor manifest
 ├── agent/supervisor.md   # Primary Supervisor agent (source — install to ~/.config/opencode/agent/)
 ├── opencode.template.json         # Template config with MCP servers, Ollama provider, subagent_depth: 3
 ├── opencode.json.md               # Config setup instructions
@@ -178,7 +205,8 @@ Supervisor/
 ├── subagents.md                   # Quick reference for the 9 base subagents
 ├── tier-system-reference.md       # Complete 4-tier agent specs and naming conventions
 ├── AGENTS.md                      # Behavioral guidelines (-> ~/.config/opencode/)
-├── agents/                        # All subagents (-> ~/.config/opencode/agents/)
+├── scripts/                       # Installer helpers (config merge, template validation)
+├── agents/                        # All 47 subagents (-> ~/.config/opencode/agents/)
 │   ├── worker.md                  # General-purpose implementation agent
 │   ├── architect.md               # System design and tradeoff analysis
 │   ├── planner.md                 # Task breakdown and sequencing
@@ -189,24 +217,26 @@ Supervisor/
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── junior-* / * / senior-* / *-mule  # Same 9 roles at all 4 tiers (DeepSeek, Claude, Opus, mule)
-│   ├── observer.md                # Multimodal Observer subagent (Gemini 3.7 Flash)
+│   ├── observer.md                # Multimodal Observer (Gemini 3.7 Flash — primary)
+│   ├── observer-claude.md         # Observer fallback (Claude Sonnet 5 — used when only Anthropic is configured)
 │   ├── gemini-worker.md           # High-powered worker (Gemini 3.7 Flash)
-│   ├── grok-worker.md             # High-powered worker (Grok 4.3)
+│   ├── grok-worker.md             # High-powered worker (Grok 4.5)
 │   ├── designer.md                # UI/UX design (Grok 4.5, native image vision)
-│   ├── designer-mule.md           # Bounded design leaf (Grok 4.3)
+│   ├── designer-mule.md           # Bounded design leaf (Grok 4.5)
 │   ├── local-coder.md             # Ollama placeholder (configure before use)
 │   └── local-reasoner.md          # Ollama placeholder (configure before use)
 ├── plugin/
 │   └── observer-bridge.js         # Paste-a-screenshot interception — deploys to config root: ~/.config/opencode/observer-bridge.js (not a plugin/ subdirectory)
 ├── addons/
 │   ├── README.md                  # Addon overview
-│   ├── grok-worker/               # Optional xAI Grok worker (+ setup README)
+│   ├── grok-worker/               # Grok worker notes (grok-worker.md itself now ships in agents/)
 │   └── open-code-modes/           # 9 behavioral modes (trigger words)
 │       ├── README.md
 │       ├── AGENTS.md              # Mode switching rules — ⚠️ WARNING: merge with existing root AGENTS.md; do NOT overwrite (-> ~/.config/opencode/)
 │       └── modes/                 # Individual mode files
 └── skills/
-    └── README.md                  # Skills system documentation
+    ├── README.md                  # The 22 bundled skills (19 motion/design + 3 utility)
+    └── <skill>/                   # One self-contained dir per skill (agent-reach, anna, use-railway + 19 motion/design skills)
 ```
 
 ## Requirements

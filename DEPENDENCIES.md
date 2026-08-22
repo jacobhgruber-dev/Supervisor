@@ -2,6 +2,8 @@
 
 A complete list of everything needed to run the Supervisor agent workflow. Start with Tier 1 (you can be up and running in 5 minutes) and add tiers as you go.
 
+> 🩺 **Dependency Doctor.** Not sure what's installed? Run `./install.sh --doctor` (macOS/Linux) — it scans your machine against the repo's dependency manifest (`deps.json`), tells you which tools are present, and prints a tailored install command for every missing one. It never fails and writes nothing.
+
 ---
 
 ## Tier 1: Essential (3 items)
@@ -72,6 +74,8 @@ These are baked into the subagent instructions (reviewer, debugger, worker). The
 | `python-docx` | worker | `pip3 install --break-system-packages python-docx` |
 | `beautifulsoup4` | worker | `pip3 install --break-system-packages beautifulsoup4` |
 
+> 🔐 Security agents (`security`, `junior-security`, `senior-security`, `security-mule`) also run these as optional scanners — see their `Tool Awareness` sections.
+
 ---
 
 ## Tier 4: Python Packages (4 items)
@@ -101,40 +105,47 @@ The `large-v3` model downloads automatically on first use (~3 GB).
 
 ## Tier 5: MCP Servers
 
-The config ships with **two browser/automation MCP servers enabled by default** — no keys needed, OpenCode runs them via `npx` on first use:
+The config ships with **two MCP servers enabled by default** — no keys needed, OpenCode runs them via `npx` on first use:
 
 | MCP | What it adds |
 |-----|--------------|
 | `playwright` | Drive a real browser — clicks, forms, login flows |
-| `chrome-devtools` | Inspect pages, console, and network for web debugging |
+| `a11y-color-contrast` | WCAG color-contrast checks for design and accessibility work |
 
-It also includes **seven optional MCP servers, disabled by default.** Each needs a key or an extra install, so you opt in only when you want it. To turn one on: set its `"enabled": true` in the `"mcp"` block **and** change its line in the `"permission"` block from `"deny"` to `"allow"`.
+It also includes **thirteen optional MCP servers, disabled by default.** Each needs a key or an extra install, so you opt in only when you want it. To turn one on: set its `"enabled": true` in the `"mcp"` block **and** make sure the `"permission"` block allows it (`"<name>_*": "allow"` — `twenty-first` ships as `"deny"` and must be changed).
 
 | MCP | What it adds | Setup |
 |-----|--------------|-------|
-| `firecrawl` | Web scraping + search for JS-heavy pages | Free key from [firecrawl.dev](https://firecrawl.dev) → `YOUR_FIRECRAWL_KEY` |
+| `chrome-devtools` | Inspect pages, console, and network for web debugging | Just flip `"enabled": true` — no key needed, already pre-allowed in the permission block |
 | `elevenlabs` | Text-to-speech / voice generation | Key from [elevenlabs.io](https://elevenlabs.io) → `YOUR_ELEVENLABS_KEY`; needs [`uv`](https://docs.astral.sh/uv/) installed |
 | `railway` | Deploy & manage apps on Railway | Install the [Railway CLI](https://docs.railway.com/guides/cli), then `railway login` |
 | `screenpipe` | Search 24/7 screen + audio history | Install & run the [screenpipe](https://screenpi.pe) app (records locally). Cross-platform. |
 | `macos-automator` | Control native **macOS** apps via AppleScript/JXA | macOS only. Node 24+, plus Automation + Accessibility permission. |
+| `yt-dlp` | Download audio/video from YouTube and other sites for transcription/analysis | `brew install yt-dlp` or `pip install yt-dlp` |
+| `vercel` | Deploy & manage apps on Vercel | Key from [vercel.com/account/tokens](https://vercel.com/account/tokens) → `YOUR_VERCEL_TOKEN` |
+| `gemini-api-docs` | Live Gemini API documentation lookup | Needs [`uv`](https://docs.astral.sh/uv/) installed. Works keyless. |
 | `context7` | Live, version-accurate library/API docs | Works keyless; optional free key from [context7.com](https://context7.com) for higher limits. |
 | `github` | Manage GitHub issues, PRs, repos | [Docker](https://www.docker.com) + a [GitHub token](https://github.com/settings/tokens) → `YOUR_GITHUB_TOKEN`. |
+| `macos-use` | Native macOS GUI control — mouse, keyboard, accessibility automation | macOS only. Needs the `mcp-server-macos-use` binary at `/usr/local/bin`. |
+| `firecrawl` | Web scrape/search for JS-heavy pages (optional worker tool) | Free tier key at [firecrawl.dev](https://www.firecrawl.dev). Set `FIRECRAWL_API_KEY`. |
+| `twenty-first` | UI component search & generation (21st.dev) | Flip `"enabled": true` and change its permission from `"deny"` to `"allow"`. |
 
-**Windows desktop control:** `macos-automator` is macOS-only. On Windows, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) (follow its repo setup) and add it to `"mcp"` the same opt-in way. `screenpipe` runs on Windows already.
+> ℹ️ `open-design` appears in the config only as a **permission key** (gating the designer agent) — there is no `open-design` MCP server entry in the template. If you want that service, add a server entry to the `"mcp"` block yourself and set its permission to `"allow"`.
 
-Example — enabling Firecrawl:
+**Windows desktop control:** `macos-automator` and `macos-use` are macOS-only. On Windows, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) (follow its repo setup) and add it to `"mcp"` the same opt-in way. The Windows installer (`setup.ps1`) drops the macOS-only entries automatically. `screenpipe` runs on Windows already.
+
+Example — enabling Context7:
 
 ```json
 "mcp": {
-  "firecrawl": {
+  "context7": {
     "type": "local",
-    "command": ["npx", "-y", "firecrawl-mcp"],
-    "enabled": true,
-    "environment": { "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY" }
+    "command": ["npx", "-y", "@upstash/context7-mcp"],
+    "enabled": true
   }
 },
 "permission": {
-  "firecrawl_*": "allow"
+  "context7_*": "allow"
 }
 ```
 
@@ -142,5 +153,5 @@ Example — enabling Firecrawl:
 
 ## What's Not Listed Here
 
-- **Anthropic API key** — documented in `opencode.json.md` (providers) and `tier-system-reference.md` (3-tier configuration).
+- **API keys** (DeepSeek, Anthropic, Google, xAI) — documented in [PROVIDERS.md](PROVIDERS.md).
 - **Model files** (whisper models) — auto-downloaded on first use.

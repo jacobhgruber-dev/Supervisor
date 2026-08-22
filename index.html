@@ -181,14 +181,14 @@
   <div class="wrap">
     <span class="badge-pill">★ Beginner-friendly · ~15 minutes · ~$1 to start</span>
     <h1>Build your own AI<br>coding team.</h1>
-    <p class="sub">The <b>Supervisor</b> turns OpenCode into a manager that plans your work, delegates to 46 specialist agents, reviews their output, and reports back. You talk to one agent — it runs the whole team.</p>
+    <p class="sub">The <b>Supervisor</b> turns OpenCode into a manager that plans your work, delegates to 47 specialist agents, reviews their output, and reports back. You talk to one agent — it runs the whole team.</p>
     <div class="cta-row">
       <a class="btn btn-primary" href="GETTING_STARTED.md">📖 Read the Zero-to-Hero Guide</a>
       <a class="btn btn-ghost" href="#start">⚡ Quick Start</a>
     </div>
     <div class="stat-row">
       <span><b>1</b> API key to start</span>
-      <span><b>46</b> specialist agents</span>
+      <span><b>47</b> specialist agents</span>
       <span><b>4</b> power tiers</span>
       <span><b>$0</b> for the software</span>
     </div>
@@ -257,10 +257,14 @@
         <div class="num">3</div>
         <div>
           <h3>Copy the files into place</h3>
-          <p>Download the repo, then put the pieces where OpenCode looks for them.</p>
+          <p>Download the repo, then run the one-liner installer. It copies everything into OpenCode's config folder — and safely <b>merges</b> the config instead of overwriting it (your existing settings always win).</p>
           <div class="code"><button class="copy">Copy</button>git clone https://github.com/jacobhgruber-dev/Supervisor.git
 cd Supervisor
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
+./install.sh        <span class="cmt"># macOS / Linux — or run: .\setup.ps1 (Windows PowerShell)</span></div>
+          <p style="margin-top:10px;">New machine? Run the <b>Dependency Doctor</b> first — it scans your system and prints a tailored install command for every missing tool:</p>
+          <div class="code"><button class="copy">Copy</button>./install.sh --doctor   <span class="cmt"># never fails, writes nothing — just tells you what's missing</span></div>
+          <p style="margin-top:10px;"><b>Prefer to do it by hand?</b> The manual copy below is the reference — same result, one file at a time.</p>
+          <div class="code"><button class="copy">Copy</button>mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
 # If you already configured providers in Desktop (Settings → Providers), skip the opencode.template.json copy — you only need the agents, plugin, and AGENTS.md.
 cp opencode.template.json ~/.config/opencode/opencode.json
 cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md  <span class="cmt"># Supervisor → agent/</span>
@@ -279,7 +283,7 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
           <h3>Connect your key (no file editing)</h3>
           <p>Let OpenCode store your key securely — it never goes in the repo config.</p>
           <div class="code"><button class="copy">Copy</button>opencode auth login</div>
-          <p style="margin-top:10px;">Choose <b>DeepSeek</b> (or <b>Other</b> → <code>deepseek</code>) and paste your <code>sk-...</code> key. Later, run it again and choose <b>Anthropic</b> to unlock the Claude tiers + Observer.</p>
+          <p style="margin-top:10px;">Choose <b>DeepSeek</b> (or <b>Other</b> → <code>deepseek</code>) and paste your <code>sk-...</code> key. Later, run it again and choose <b>Anthropic</b> to unlock the Claude tiers, or <b>Google</b> to activate Observer — the built-in screenshot vision (see below).</p>
         </div>
       </div>
 
@@ -321,10 +325,23 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
         <tr><td><b>Junior</b> · the default</td><td><code>junior-worker</code></td><td>DeepSeek V4 Pro</td><td>DeepSeek key</td><td class="dollar">$</td></tr>
         <tr><td><b>Mid</b> · deeper reasoning</td><td><code>worker</code></td><td>Claude Sonnet 5</td><td>Anthropic key</td><td class="dollar mid">$$</td></tr>
         <tr><td><b>Senior</b> · highest stakes</td><td><code>senior-worker</code></td><td>Claude Opus 5</td><td>Anthropic key</td><td class="dollar hi">$$$$</td></tr>
+        <tr><td><b>Design</b> · UI/UX work</td><td><code>designer</code></td><td>Grok 4.5</td><td>xAI key</td><td class="dollar mid">$$</td></tr>
       </tbody>
     </table>
     <div class="callout warn" style="margin-top:18px;">
-      All 46 agent files already ship in the repo. The Claude-powered ones simply sit unused until you connect an Anthropic key with <code>opencode auth login</code>. Full details in the <a href="GETTING_STARTED.md">guide</a>.
+      All 47 agent files already ship in the repo. The Claude- and Grok-powered ones simply sit unused until you connect their keys with <code>opencode auth login</code>. Full details in the <a href="GETTING_STARTED.md">guide</a>.
+    </div>
+  </div>
+</section>
+
+<!-- OBSERVER -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Built-in vision</div>
+    <h2>Observer — paste a screenshot, get an analysis</h2>
+    <p class="lede">Your Supervisor runs on a text-only model, so it can't see images. <b>Observer</b> is its eyes: paste a screenshot of an error, a UI bug, or a design mockup into chat and Observer reads it — extracting text, locating the problem, and handing the Supervisor a description it can act on.</p>
+    <div class="callout">
+      <b>Dual multimodal vision, zero setup.</b> Observer's primary model is <b>Google Gemini 3.7 Flash</b>. If only <b>Anthropic</b> is configured (no Google key), the Observer plugin automatically falls back to <b>Claude Sonnet 5</b> — the same structured analysis, either way. Connect a key with <code>opencode auth login</code> and the paste-a-screenshot bridge just works.
     </div>
   </div>
 </section>
@@ -349,7 +366,7 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
     </details>
     <details>
       <summary>What are the “mcp” entries in the config? Do I need them?</summary>
-      <p>Two browser tools (<code>playwright</code>, <code>chrome-devtools</code>) ship enabled and need no keys. Seven more (<code>firecrawl</code>, <code>elevenlabs</code>, <code>railway</code>, <code>screenpipe</code> for screen history, <code>macos-automator</code> for native Mac control, <code>context7</code> for live library docs, and <code>github</code> for issues/PRs) are optional nice-to-haves, <b>disabled by default</b> — turn one on only if you want it. (On Windows, swap <code>macos-automator</code> for <a href="https://github.com/CursorTouch/Windows-MCP">Windows-MCP</a>.) The Supervisor runs perfectly without any of them. See the <a href="GETTING_STARTED.md">guide</a> for how to enable one.</p>
+      <p>Two tools ship <b>enabled</b> and need no keys: <code>playwright</code> (drives a real browser — clicks, forms, login flows) and <code>a11y-color-contrast</code> (WCAG color-contrast checks for design work). Thirteen more are optional nice-to-haves, <b>disabled by default</b> — <code>chrome-devtools</code>, <code>elevenlabs</code>, <code>railway</code>, <code>screenpipe</code> (screen history), <code>macos-automator</code> (native Mac control), <code>yt-dlp</code>, <code>vercel</code>, <code>gemini-api-docs</code>, <code>context7</code> (live library docs), <code>github</code> (issues/PRs), <code>macos-use</code> (Mac GUI control), <code>firecrawl</code>, and <code>twenty-first</code> — turn one on only if you want it. (On Windows, the installer drops the macOS-only ones — swap in <a href="https://github.com/CursorTouch/Windows-MCP">Windows-MCP</a> for native desktop control.) The Supervisor runs perfectly without any of them. See the <a href="GETTING_STARTED.md">guide</a> for how to enable one.</p>
     </details>
     <details>
       <summary>I already have an OpenCode config — will this overwrite it?</summary>

@@ -59,7 +59,7 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 **What it powers:**
 - `gemini-worker` — full-access Gemini agent (Gemini 3.7 Flash)
 - `gemini-mule` — leaf agent for long-context, multimodal, or web-heavy tasks (Gemini 3.7 Flash)
-- **Observer** — screenshot reading / multimodal vision agent (Gemini 3.7 Flash)
+- **Observer** — screenshot reading / multimodal vision agent. Primary model: Gemini 3.7 Flash. If only an Anthropic key is configured (no Google key), Observer automatically falls back to Claude Sonnet 5 (`observer-claude.md`) — the same analysis, either way.
 
 **Cost:** Moderate. Cheaper than Anthropic, pricier than DeepSeek.
 
@@ -83,10 +83,10 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 ## Tier 4: xAI / Grok (Optional)
 
 **What it powers:**
-- `grok-worker` — alternative-model worker on Grok 4.3 (requires installing the addon from `addons/grok-worker/`)
+- `grok-worker` — alternative-model worker on Grok 4.5 (ships in `agents/`; activates with your key)
 - `grok-mule` — leaf agent for creative reasoning and complex coding (3x the cost of `worker-mule` — use sparingly)
 - `designer` — UI/UX design agent on Grok 4.5 with native image vision (ships in `agents/`)
-- `designer-mule` — bounded design leaf on Grok 4.3 (ships in `agents/`)
+- `designer-mule` — bounded design leaf on Grok 4.5 (ships in `agents/`)
 
 **Cost:** Moderate. The Grok worker addon is optional and independent of the core system.
 
@@ -104,7 +104,7 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 - **OpenCode Desktop:** Settings → Providers → xAI → Paste the key.
 - **CLI:** Run `opencode auth login`, choose **xAI**, paste the key.
 
-> To use `grok-worker`, you must also install the addon — copy `addons/grok-worker/grok-worker.md` into `~/.config/opencode/agents/`. See `addons/grok-worker/README.md` for full instructions.
+> `grok-worker` ships in the core repo (`agents/grok-worker.md`) and activates as soon as your xAI key is present — nothing to copy. The `addons/grok-worker/` folder keeps notes and background; see `addons/grok-worker/README.md`.
 
 ---
 
@@ -146,8 +146,7 @@ When configuring providers manually or writing agent frontmatter:
 | Provider | Model ID | Agent Files |
 |----------|----------|-------------|
 | DeepSeek | `deepseek/deepseek-v4-pro` | `supervisor.md`, all `junior-*.md` |
-| Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc. |
+| Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc., `observer-claude.md` |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
 | Google | `google/gemini-3.7-flash` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |
-| xAI (Grok) | `xai/grok-4.3` | `grok-worker.md` (addon), `grok-mule.md`, `designer-mule.md` |
-| xAI (Grok 4.5) | `xai/grok-4.5` | `designer.md` |
+| xAI (Grok) | `xai/grok-4.5` | `grok-worker.md`, `grok-mule.md`, `designer.md`, `designer-mule.md` |

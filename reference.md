@@ -17,15 +17,15 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek V4 Pro | Orchestration — plans, delegates, reviews, commits |
-| **46 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.7 Flash / Grok 4.3 / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
-| **Observer** (built in) | Gemini 3.7 Flash | Reads pasted screenshots / UI states / error images and returns structured text |
+| **47 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.7 Flash / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
+| **Observer** (built in) | Gemini 3.7 Flash (primary), Claude Sonnet 5 fallback (`observer-claude`) | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
 ---
 
 ## Subagent Tiers
 
-The Supervisor ships with 46 agents across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers. The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet) and senior (Claude Opus) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
+The Supervisor ships with 47 subagent files across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers (48 agents total including the Supervisor itself). The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet 5) and senior (Claude Opus 5) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
 | Subagent | Use For | Steps | Permissions |
 |----------|---------|-------|-------------|
@@ -66,7 +66,7 @@ The 4-tier system is fully configured in the repo. The naming convention:
 | Senior | Claude Opus 5 | `senior-worker`, etc. | Highest stakes only |
 | Mule | DeepSeek V4 Pro (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
 
-This gives you 46 agent files across 9 roles at 4 tiers (plus designer / designer-mule and alternative model workers). See `tier-system-reference.md` for the complete spec table and agent specifications.
+This gives you 47 subagent files across 9 roles at 4 tiers (plus designer / designer-mule and alternative model workers). See `tier-system-reference.md` for the complete spec table and agent specifications.
 
 ### Quick Cost Guide
 
@@ -168,10 +168,9 @@ Supervisor Agent (primary, DeepSeek V4 Pro)
       |
       +---> mule-tier (13 leaf workers — subagent infrastructure, spawned internally)
       |
-      +---> designer / designer-mule  (UI/UX, Grok 4.5 / 4.3)
-      +---> observer           (visual analysis, Gemini 3.7 Flash)
-
-(Optional addons: gemini-worker (Gemini 3.7 Flash), grok-worker (Grok 4.3).)
+      +---> designer / designer-mule  (UI/UX, Grok 4.5)
+      +---> grok-worker / gemini-worker  (alternative model workers, built in — Grok 4.5 / Gemini 3.7 Flash)
+      +---> observer / observer-claude  (visual analysis, Gemini 3.7 Flash / Claude Sonnet 5)
 
 Behavioral Modes (overlay on any agent):
   /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes
@@ -194,5 +193,5 @@ Behavioral Modes (overlay on any agent):
 | "Check that all quotes in this article are verbatim" | `quote-auditor` |
 | "Read the screenshot I just pasted" | `observer` |
 | "Style this component / design the landing page" | `designer` |
-| "Any task — I want Gemini's model" | `gemini-worker` *(optional addon)* |
-| "Any task — I want Grok's model" | `grok-worker` *(optional addon)* |
+| "Any task — I want Gemini's model" | `gemini-worker` *(built in)* |
+| "Any task — I want Grok's model" | `grok-worker` *(built in)* |

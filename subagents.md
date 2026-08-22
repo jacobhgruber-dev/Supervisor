@@ -1,7 +1,7 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Subagents — Quick Reference
 
-46 agent files across 9 roles at 4 tiers  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 5  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
+47 subagent files across 9 roles at 4 tiers (48 agents total with the Supervisor primary)  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 5  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
 
 For full tier specifications, see [tier-system-reference.md](tier-system-reference.md).
 For the full system reference including modes, local agents, and commands, see [reference.md](reference.md).
@@ -20,7 +20,7 @@ Key principle: **Delegate everything.** The Supervisor reads docs for orientatio
 
 ### How tiers work
 
-This repo ships with all 4 tiers of agents already configured — 46 agent files across 9 roles (plus designer / designer-mule and alternative model workers). The junior tier (`junior-*`) runs on DeepSeek V4 Pro and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
+This repo ships with all 4 tiers of agents already configured — 47 subagent files across 9 roles (plus designer / designer-mule and alternative model workers; 48 agents total with the Supervisor). The junior tier (`junior-*`) runs on DeepSeek V4 Pro and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
 
 ---
 
@@ -138,15 +138,15 @@ The go-to for any task that doesn't fit a specialized role. Full access to edit 
 
 ---
 
-## Bonus: Alternative Model Worker (Optional Addon)
+## Bonus: Alternative Model Worker (Built In)
 
-When you want a specific model's strengths, the optional `grok-worker` addon adds a full-access worker on xAI's Grok 4.3. It lives outside the core agent set so it never auto-loads.
+When you want a specific model's strengths, the built-in `grok-worker` adds a full-access worker on xAI's Grok 4.5 (`xai/grok-4.5`). It ships in `agents/` and activates automatically once you connect an xAI key.
 
 | Agent | Model | Setup | Permissions |
 |-------|-------|-------|------------|
-| `grok-worker` | Grok 4.3 (xAI) | Add an xAI key through Desktop Settings → Providers, then copy one file. | Full |
+| `grok-worker` | Grok 4.5 (xAI) | Add an xAI key through Desktop Settings → Providers. Nothing else — the agent file is already installed. | Full |
 
-See [`addons/grok-worker/README.md`](addons/grok-worker/README.md) for setup. No auth plugin required.
+See [`addons/grok-worker/README.md`](addons/grok-worker/README.md) for background and activation notes.
 
 ---
 
@@ -157,7 +157,7 @@ Specialized design agents with native image vision. The supervisor prefers `@des
 | Agent | Model | Steps | Permissions |
 |-------|-------|-------|-------------|
 | `designer` | Grok 4.5 (xAI) | 60 | Full + design MCPs (twenty-first, open-design, a11y-color-contrast) |
-| `designer-mule` | Grok 4.3 (xAI) | 30 | Same tools; leaf node (`task: deny`) |
+| `designer-mule` | Grok 4.5 (xAI) | 30 | Same tools; leaf node (`task: deny`) |
 
 **When to use**: UI/UX styling, component design, wireframes, mockups, layout, animation, accessibility styling. Spawn `designer` from the supervisor; `designer` may spawn `designer-mule` for bounded sub-tasks.
 
@@ -181,9 +181,9 @@ Mules are subagent infrastructure — architects, workers, debuggers, and review
 | `editor-mule` | DeepSeek V4 Pro | Documentation polish |
 | `quote-auditor-mule` | DeepSeek V4 Pro | Source verification |
 | `gemini-mule` | Gemini 3.7 Flash | Long-context, multimodal, web research |
-| `grok-mule` | Grok 4.3 | Coding, reasoning, creative |
+| `grok-mule` | Grok 4.5 | Coding, reasoning, creative |
 | `claude-mule` | Claude Sonnet 5 | Nuanced reasoning, careful analysis, code review |
-| `designer-mule` | Grok 4.3 | Bounded UI/UX, component styling, CSS/Tailwind |
+| `designer-mule` | Grok 4.5 | Bounded UI/UX, component styling, CSS/Tailwind |
 
 See [tier-system-reference.md](tier-system-reference.md) for full mule tier specifications.
 
@@ -203,7 +203,7 @@ See [tier-system-reference.md](tier-system-reference.md) for full mule tier spec
 | Verify quotes match sources | `quote-auditor` |
 | Build a feature / fix a bug | `worker` |
 | UI/UX, styling, components, mockups | `designer` |
-| Any task with Grok's model | `grok-worker` *(optional addon)* |
+| Any task with Grok's model | `grok-worker` |
 
 ---
 

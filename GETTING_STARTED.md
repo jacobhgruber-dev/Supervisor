@@ -118,7 +118,22 @@ git clone https://github.com/jacobhgruber-dev/Supervisor.git
 cd Supervisor
 ```
 
-Now copy the pieces into place. Paste these one block at a time:
+### ⚡ Fastest path — the one-line installer (recommended)
+
+Run one command and you're done. The installer copies the Supervisor, all 47 subagents, the 22 bundled skills, the Observer plugin, and AGENTS.md into place — and it safely **merges** the config instead of overwriting it (your existing `opencode.json` is backed up first, and your settings always win):
+
+| Platform | Install | Update later |
+|----------|---------|--------------|
+| **macOS / Linux** | `./install.sh` | `./update.sh` |
+| **Windows (PowerShell)** | `.\setup.ps1` | `.\update.ps1` |
+
+> 🩺 **Dependency Doctor.** Not sure what else your machine needs? Run `./install.sh --doctor` — it scans your system against the repo's dependency manifest and prints a tailored install command for every missing tool. It never fails and writes nothing. Re-run it any time.
+
+> ✅ **Checkpoint:** You should see lines like `copied agent/supervisor.md, 47 agents/*.md, skills/...` and `Verification passed.`
+
+### Manual method (reference)
+
+Prefer to do it by hand? The manual copy below does exactly what the installer does, one file at a time:
 
 > ⚠️ **Already configured providers in Desktop or have custom settings in your opencode.json?** Skip the template copy — just copy the agent files, plugin, and AGENTS.md. The template WILL overwrite your existing config, including any real API keys you've stored in MCP server fields.
 
@@ -140,7 +155,7 @@ cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
 cp AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
-> 🪟 **On Windows?** Use these PowerShell equivalents instead:
+> 🪟 **On Windows?** The one-liner is `.\setup.ps1` (and `.\update.ps1` for updates). Or use these PowerShell equivalents of the manual copy:
 > ```powershell
 > # ~/.config/opencode/ → %USERPROFILE%\.config\opencode\
 > mkdir $env:USERPROFILE\.config\opencode\agent
@@ -228,7 +243,7 @@ What you'll see: the Supervisor states a plan, spawns one or more specialists, r
 
 ## 🧱 Step 7 — Add Claude to unlock mid + senior tiers
 
-This is part of the core setup, not a bolt-on. The **full 4-tier system ships in the repo** — all 46 agent files in `agents/` are already on your machine. DeepSeek powers the junior tier (and handles ~80% of work on its own), and an **Anthropic (Claude)** key switches on the mid and senior tiers. You *can* run DeepSeek-only as a budget minimum, but the system is designed to run on both keys.
+This is part of the core setup, not a bolt-on. The **full 4-tier system ships in the repo** — all 47 subagent files in `agents/` (48 agents total with the Supervisor primary) are already on your machine. DeepSeek powers the junior tier (and handles ~80% of work on its own), and an **Anthropic (Claude)** key switches on the mid and senior tiers. You *can* run DeepSeek-only as a budget minimum, but the system is designed to run on both keys.
 
 **How the three tiers work — it's just naming:**
 
@@ -248,7 +263,7 @@ The Claude-powered agents sit ready but inactive until the key is present — no
    opencode auth login
    ```
    Choose **Anthropic** and paste your `sk-ant-...` key. (Or set `ANTHROPIC_API_KEY` in your environment.)
-3. Restart OpenCode. Now you can say *"use the senior architect for this."* (Screenshot paste / Observer is separate — it needs a **Google** key; see Step 8.)
+3. Restart OpenCode. Now you can say *"use the senior architect for this."* (Screenshot paste / Observer is separate — it needs a **Google (Gemini)** key, or an Anthropic key for the Claude fallback; see Step 8.)
 
 > 💰 **Heads up on cost.** Claude (especially Opus/"senior") is **much** pricier than DeepSeek. Use junior agents by default; call in the seniors only when it really matters. The Supervisor already follows this policy automatically.
 
@@ -260,23 +275,30 @@ The Claude-powered agents sit ready but inactive until the key is present — no
 
 These are extras you can ignore until you want them:
 
-- **Grok (xAI)** — `grok-worker` already ships in `agents/grok-worker.md` (Step 3 copied it). Add an xAI key through Desktop Settings → Providers (or `opencode auth login`) to activate it. A mirror copy and setup notes live in [`addons/grok-worker/`](addons/grok-worker/). See [PROVIDERS.md](PROVIDERS.md).
-- **Addons** (`addons/` folder) — behavioral "modes," Grok setup notes, and a full reference catalog. See [`addons/README.md`](addons/README.md).
+- **Grok (xAI)** — `grok-worker` (Grok 4.5), `grok-mule`, `designer`, and `designer-mule` all ship in `agents/` (Step 3 copied them). Add an xAI key through Desktop Settings → Providers (or `opencode auth login`) to activate them. See [PROVIDERS.md](PROVIDERS.md).
+- **Addons** (`addons/` folder) — behavioral "modes," Grok notes, and a full reference catalog. See [`addons/README.md`](addons/README.md).
+- **Bundled skills (22)** — 19 motion/design skills (animate, framer-motion, gsap-core, motion-design, design-system, ui-styling, and more) plus 3 utility skills (`agent-reach`, `anna`, `use-railway`) ship in `skills/` and install with everything else. Agents load them automatically when a task matches. See [`skills/README.md`](skills/README.md).
 - **CLI quality tools** — the reviewer/debugger agents can use tools like `ruff`, `mypy`, and `trivy` when present. Optional but nice. See [`DEPENDENCIES.md`](DEPENDENCIES.md).
 
-### 👁️ Observer — paste screenshots into chat (built in · Google/Gemini)
+### 👁️ Observer — paste screenshots into chat (built in · dual-provider vision)
 
-Your Supervisor runs on a text-only DeepSeek model, so it can't see images. **Observer** fixes that: it's a vision agent (Gemini 3.7 Flash) that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
+Your Supervisor runs on a text-only DeepSeek model, so it can't see images. **Observer** fixes that: it's a vision agent that ships with the repo (you already copied it in Step 3). Paste a screenshot of an error, a UI bug, or a design mockup directly into the chat, and Observer reads it — extracting the text, locating the problem, and handing the Supervisor a description it can act on.
 
-Observer activates automatically once your **Google (Gemini)** key is in place — add it through Desktop Settings → Providers or `opencode auth login` (choose Google). No model names or provider blocks to wire up. Pair it with `screenpipe` or `macos-automator` (below) and the Supervisor can capture *and* understand on-screen state.
+Observer has **dual multimodal vision with zero extra setup**:
+
+- **Primary:** Google **Gemini 3.7 Flash** — activates automatically once your **Google (Gemini)** key is in place (`opencode auth login`, choose Google).
+- **Automatic fallback:** if only **Anthropic (Claude)** is configured (no Google key), the Observer plugin switches to **Claude Sonnet 5** — the same structured analysis, either way.
+
+No model names or provider blocks to wire up. Pair it with `screenpipe` or `macos-automator` (below) and the Supervisor can capture *and* understand on-screen state.
 
 ### Optional MCP servers (nice-to-haves)
 
-The config ships with one browser/automation tool **already enabled** and ready — no setup, no keys:
+The config ships with two tools **already enabled** and ready — no setup, no keys:
 
 - **`playwright`** — lets agents drive a real browser (clicks, forms, login flows).
+- **`a11y-color-contrast`** — WCAG color-contrast checks for design and accessibility work.
 
-It also includes eleven **optional** MCP servers that are **disabled by default**. Most need a key, an app, or an extra install, so you turn them on only if you want them:
+It also includes **thirteen optional** MCP servers that are **disabled by default**. Most need a key, an app, or an extra install, so you turn them on only if you want them:
 
 | MCP | What it adds | To enable |
 |-----|--------------|-----------|
@@ -291,12 +313,14 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 | **`context7`** | Live, version-accurate library/API docs so coding agents aren't guessing from old memory | Just flip it on — works keyless. (Optional free key at [context7.com](https://context7.com) for higher rate limits.) |
 | **`github`** | Manage GitHub issues, PRs, and repos directly | Needs [Docker](https://www.docker.com) installed and a [GitHub token](https://github.com/settings/tokens) in `YOUR_GITHUB_TOKEN`. |
 | **`macos-use`** | Native macOS GUI control — mouse, keyboard, accessibility automation | macOS only. Needs the `mcp-server-macos-use` binary at `/usr/local/bin`. Already pre-allowed in the permission block. |
+| `firecrawl` | Optional web scrape/search (JS-heavy pages) | Get a key at firecrawl.dev; set `FIRECRAWL_API_KEY` |
+| **`twenty-first`** | UI component search & generation (21st.dev) for design work | Flip `"enabled": true` and change its permission line from `"deny"` to `"allow"`. |
 
 > 🪟 **On Windows?** `macos-automator` is macOS-only. For equivalent native desktop control on Windows, use **[CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP)** — follow that repo's setup, then add it to your `"mcp"` block the same way (disabled until you opt in). `screenpipe` already works on Windows.
 
-> 🧠 **Pairs well with Observer.** `screenpipe` and `macos-automator` capture what's on screen; the built-in **Observer** agent (a Gemini vision agent — see the Observer section above) then *reads* those screenshots and explains them to your text-only Supervisor.
+> 🧠 **Pairs well with Observer.** `screenpipe` and `macos-automator` capture what's on screen; the built-in **Observer** agent (dual-provider vision — Gemini 3.7 Flash primary, Claude Sonnet 5 fallback — see the Observer section above) then *reads* those screenshots and explains them to your text-only Supervisor.
 
-**How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`. For a few servers (`chrome-devtools`, `macos-use`, `vercel`), the template already has a matching `"allow"` entry in the `"permission"` block — just flip `enabled`. For the others (elevenlabs, railway, screenpipe, macos-automator, yt-dlp, gemini-api-docs, context7, github), you'll also need to add a corresponding `"<name>_*": "allow"` line to the `"permission"` block. For example, to enable railway:
+**How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`. For a few servers (`chrome-devtools`, `macos-use`, `vercel`), the template already has a matching `"allow"` entry in the `"permission"` block — just flip `enabled`. For the others (elevenlabs, railway, screenpipe, macos-automator, yt-dlp, gemini-api-docs, context7, github), you'll also need to add a corresponding `"<name>_*": "allow"` line to the `"permission"` block. `twenty-first` ships with a `"deny"` permission entry — change it to `"allow"` too. For example, to enable railway:
 
 ```json
 "mcp": { "railway": { "enabled": true, ... } },
@@ -313,7 +337,7 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 |---------|------------------|-----|
 | **Supervisor doesn't appear** | `supervisor.md` missing, or missing `mode: primary` | Confirm `ls ~/.config/opencode/agent/supervisor.md` and that its frontmatter says `mode: primary`. Re-run the Step 3 copy commands if the file is missing. |
 | **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in an agent folder | Only real agent files belong in `~/.config/opencode/agent/` or `agents/`. Remove any docs that got copied there by mistake. |
-| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see ~46 files. If empty, re-run the copy command in Step 3. |
+| **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see 47 files. If empty, re-run the copy command in Step 3 (or `./install.sh`). |
 | **Subagent can't spawn a mule / "Task tool not available"** | `subagent_depth` too low | The template sets `"subagent_depth": 3`. If you skipped the template or wrote your own config, make sure this field is set to `3` — the default of `1` blocks nested agent spawns (supervisor → subagent → mule). |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
 | **"Model not found" / API errors** | Stale model list | Run `opencode models --refresh`. OpenCode auto-installs its SDK packages itself (DeepSeek is wired via `@ai-sdk/openai-compatible`) — no manual `npm install` needed. |
@@ -329,9 +353,10 @@ It also includes eleven **optional** MCP servers that are **disabled by default*
 ## 🗺️ Where to go next
 
 - **[README.md](README.md)** — the full architecture and design philosophy.
-- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 46 agents in `agents/` (plus Supervisor).
+- **[tier-system-reference.md](tier-system-reference.md)** — exact specs for all 47 subagents in `agents/` (48 agents total with the Supervisor).
 - **[DEPENDENCIES.md](DEPENDENCIES.md)** — every optional tool, organized by tier.
-- **[addons/README.md](addons/README.md)** — optional modes and Grok setup notes (Observer is built-in — see Step 8).
+- **[skills/README.md](skills/README.md)** — the 22 bundled skills (19 motion/design + 3 utility).
+- **[addons/README.md](addons/README.md)** — optional modes and Grok notes (Observer is built-in — see Step 8).
 
 <div align="center">
 
