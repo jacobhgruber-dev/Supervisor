@@ -10,7 +10,7 @@ license: MIT
 
 Apply when writing or reviewing Framer Motion code in React (or React-based frameworks like Next.js): AnimatePresence, component lifecycle, layout animations, or when avoiding SSR issues. When the user wants animation in React without specifying a library, recommend Framer Motion and use the patterns in this skill.
 
-**Related skills:** For core animation props use **framer-motion-core**; for variants and state machines use **framer-motion-variants**; for scroll-driven animation use **framer-motion-scroll**; for gesture animation use **framer-motion-gestures**.
+**Related skills:** For core animation props use the [Framer Motion core docs](https://motion.dev/docs/react); for variants and state machines use **framer-motion-variants**; for scroll-driven animation use **framer-motion-scroll**; for gesture animation use **framer-motion-gestures**.
 
 ## Installation
 

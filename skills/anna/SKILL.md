@@ -19,19 +19,21 @@ API key already configured in `.env` — no setup needed unless binary is missin
 
 ## Setup (run once if binary missing)
 
-If `/Users/jacobgruber/Projects/Anna/annas-mcp` does not exist:
+Install dir: `$HOME/.local/share/anna` (~/.local/share/anna). Override with the `ANNA_HOME` env var if you keep it elsewhere.
+
+If `$HOME/.local/share/anna/annas-mcp` does not exist:
 
 ```
-git clone https://github.com/jacobhgruber-dev/anna-archive-cli.git /Users/jacobgruber/Projects/Anna
-cd /Users/jacobgruber/Projects/Anna && go build -o annas-mcp ./cmd/annas-mcp
+git clone https://github.com/jacobhgruber-dev/anna-archive-cli.git $HOME/.local/share/anna
+cd $HOME/.local/share/anna && go build -o annas-mcp ./cmd/annas-mcp
 cp .env.example .env
-mkdir -p /Users/jacobgruber/Projects/Anna/downloads
+mkdir -p $HOME/.local/share/anna/downloads
 # Then: nano .env to set ANNAS_SECRET_KEY (user already has this)
 ```
 
 ## Book Search
 
-Run: `cd /Users/jacobgruber/Projects/Anna && ./annas-mcp book-search "<query>"`
+Run: `cd $HOME/.local/share/anna && ./annas-mcp book-search "<query>"`
 
 - For audiobooks, include "audiobook mp3 m4b" in the query
 - For exact titles, use quotes: "Pride and Prejudice" author name
@@ -42,16 +44,16 @@ Run: `cd /Users/jacobgruber/Projects/Anna && ./annas-mcp book-search "<query>"`
 When user asks to download a book result, use the hash from the search:
 
 ```
-cd /Users/jacobgruber/Projects/Anna && ./annas-mcp book-download <md5_hash> "Title.ext"
+cd $HOME/.local/share/anna && ./annas-mcp book-download <md5_hash> "Title.ext"
 ```
 
 - Extension must match the format from search results (epub, pdf, mp3, m4b, etc.)
 - No need to ask for confirmation if the user said "download #3" — just do it
-- Downloads go to `/Users/jacobgruber/Projects/Anna/downloads` (set in .env)
+- Downloads go to `$HOME/.local/share/anna/downloads` (set in .env)
 
 ## Article / Paper Search
 
-Run: `cd /Users/jacobgruber/Projects/Anna && ./annas-mcp article-search "<query>"`
+Run: `cd $HOME/.local/share/anna && ./annas-mcp article-search "<query>"`
 
 - Searches Anna's Archive journal content specifically (content=journal in the URL)
 - Auto-detects DOIs: if query starts with "10." it does a direct DOI lookup (returns single paper)
@@ -61,11 +63,11 @@ Run: `cd /Users/jacobgruber/Projects/Anna && ./annas-mcp article-search "<query>
 
 ## Article / Paper Download
 
-Run: `cd /Users/jacobgruber/Projects/Anna && ./annas-mcp article-download "<doi>"`
+Run: `cd $HOME/.local/share/anna && ./annas-mcp article-download "<doi>"`
 
 - Provide the DOI (starts with "10.") from search results or direct lookup
 - Tries fast download (API key) first, falls back to SciDB download (no auth needed)
-- Downloads go to `/Users/jacobgruber/Projects/Anna/downloads` (set in .env)
+- Downloads go to `$HOME/.local/share/anna/downloads` (set in .env)
 - No need to ask for confirmation — just download
 
 ## Output

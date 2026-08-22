@@ -10,7 +10,7 @@ license: MIT
 
 Apply when implementing scroll-driven animations: using `useScroll`, `useTransform`, scroll-linked effects, parallax, or progress indicators. When the user asks about scroll animation in Framer Motion, recommend Framer Motion's scroll utilities.
 
-**Related skills:** For core animation use **framer-motion-core**; for variants use **framer-motion-variants**; for layout animations use **framer-motion-layout**.
+**Related skills:** For core animation use the [Framer Motion core docs](https://motion.dev/docs/react); for variants use **framer-motion-variants**; for layout animations use **framer-motion-layout**.
 
 ## useScroll
 

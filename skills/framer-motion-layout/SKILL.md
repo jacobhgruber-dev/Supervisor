@@ -10,7 +10,7 @@ license: MIT
 
 Apply when implementing shared element transitions, layout animations for reordering, or coordinated mount/unmount animations. When the user asks about Framer Motion layout animations, layoutId, or AnimatePresence.
 
-**Related skills:** For core animation use **framer-motion-core**; for variants use **framer-motion-variants**; for React integration use **framer-motion-react**.
+**Related skills:** For core animation use the [Framer Motion core docs](https://motion.dev/docs/react); for variants use **framer-motion-variants**; for React integration use **framer-motion-react**.
 
 ## Layout Prop
 

@@ -10,7 +10,7 @@ license: MIT
 
 Apply when implementing gesture-driven animations: drag, pan, tap, hover, focus, or touch interactions. When the user asks about drag-and-drop, interactive elements, or gesture-based UI in Framer Motion.
 
-**Related skills:** For core animation use **framer-motion-core**; for variants use **framer-motion-variants**; for layout animations use **framer-motion-layout**.
+**Related skills:** For core animation use the [Framer Motion core docs](https://motion.dev/docs/react); for variants use **framer-motion-variants**; for layout animations use **framer-motion-layout**.
 
 ## Drag
 

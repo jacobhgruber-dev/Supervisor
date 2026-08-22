@@ -10,7 +10,7 @@ license: MIT
 
 Apply when building multi-step animations, coordinated animations across multiple elements, or when using variants for state-based animation control. Variants are Framer Motion's way of defining reusable animation states that can be choreographed.
 
-**Related skills:** For core animation props use **framer-motion-core**; for React integration use **framer-motion-react**; for scroll-driven variants use **framer-motion-scroll**.
+**Related skills:** For core animation props use the [Framer Motion core docs](https://motion.dev/docs/react); for React integration use **framer-motion-react**; for scroll-driven variants use **framer-motion-scroll**.
 
 ## Defining Variants
 
