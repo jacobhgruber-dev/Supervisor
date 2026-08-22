@@ -31,6 +31,18 @@ Cover all that apply to the code under review:
 6. **Configuration** — default credentials, debug mode in production, overly permissive CORS, exposed ports, security headers missing
 7. **Business logic** — race conditions, double-spend, auth bypass via edge cases, enumeration attacks, rate limiting
 
+## Tool Awareness
+
+Optional CLI scanners for evidence-gathering. Run what's installed; if a tool is missing, note-and-continue — never fail the audit solely because a tool is absent.
+
+| Tool | Use |
+|------|-----|
+| `trivy fs .` | Dependency/container CVEs |
+| `gitleaks detect --source .` | Secrets in repo + git history |
+| `semgrep --config auto` | SAST |
+| `npm audit` / `pip-audit` | Language-specific dependency vulns (run only when the matching manifest exists) |
+| `trufflehog filesystem .` | Alternate secret scan |
+
 ## Process
 
 1. **Map entry points** — every place untrusted input enters the system

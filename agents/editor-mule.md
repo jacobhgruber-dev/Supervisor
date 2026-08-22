@@ -1,6 +1,7 @@
 ---
 description: "Editor leaf agent — bounded documentation review, prose polish, grammar/style pass. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek V4 Pro."
 mode: subagent
+hidden: true
 model: deepseek/deepseek-v4-pro
 variant: max
 steps: 30

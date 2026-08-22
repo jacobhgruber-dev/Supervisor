@@ -1,6 +1,7 @@
 ---
 description: "Claude-powered leaf agent — strong reasoning, nuanced analysis, careful code review. Mule tier: Claude Sonnet 5, structurally cannot spawn subagents. Use for tasks benefiting from Claude's analytical depth, safety-conscious reasoning, and careful code generation."
 mode: subagent
+hidden: true
 model: anthropic/claude-sonnet-5
 variant: max
 steps: 30

@@ -1,32 +1,18 @@
-# Grok Worker — Optional Alternative-Model Worker
+# Grok Worker — Now Bundled in Core
 
-A full-access generalist subagent that runs on **xAI's Grok 4.3** instead of DeepSeek/Claude. Use it when you specifically want Grok's model for a task. It's entirely optional and ships **outside** the core agent set so it never auto-loads unless you opt in.
+Grok Worker is no longer an addon. It is included out of the box in the core agent set as [`agents/grok-worker.md`](../../agents/grok-worker.md), running on **Grok 4.5** (`xai/grok-4.5`). There is nothing to copy — the Supervisor can spawn it as soon as your xAI key is configured.
 
-## What it is
+## Activation (1 step)
 
-`grok-worker.md` is a `mode: subagent` agent with full permissions (edit, bash, web). The only thing that makes it "Grok" is its frontmatter line `model: xai/grok-4.3`.
+### Add your xAI key
 
-## Setup (3 steps)
-
-### 1. Add your xAI key
-
-In OpenCode Desktop: Settings → Providers → xAI → paste your API key.
+In OpenCode Desktop: **Settings → Providers → xAI** → paste your API key.
 
 Or CLI: `opencode auth login` → choose xAI → paste key.
 
 Get a key at [console.x.ai](https://console.x.ai). No provider block needed in opencode.json — xAI is a built-in provider that OpenCode handles natively through models.dev.
 
-### 2. Copy the agent into your agents folder
-
-```bash
-cp addons/grok-worker/grok-worker.md ~/.config/opencode/agents/grok-worker.md
-```
-
-(Same folder as every other agent — see the main guide.)
-
-### 3. Restart OpenCode
-
-Now you can say *"send this to the grok-worker"* and the Supervisor will spawn Grok.
+Once the key is set, say *"send this to the grok-worker"* and the Supervisor will spawn Grok 4.5.
 
 ## Cost
 

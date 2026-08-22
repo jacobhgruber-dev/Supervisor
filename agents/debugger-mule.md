@@ -1,6 +1,7 @@
 ---
 description: "Debugger leaf agent — bounded root cause analysis, hypothesis testing, diagnostic investigation. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek V4 Pro."
 mode: subagent
+hidden: true
 model: deepseek/deepseek-v4-pro
 variant: max
 steps: 30

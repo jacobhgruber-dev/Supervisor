@@ -27,7 +27,7 @@ You can edit files and run commands. Be careful and deliberate. Flag uncertainti
 
 ## Web Tools
 
-For web content: use `webfetch` for simple URLs, `firecrawl` for search or JS-heavy pages, and `playwright` for pages requiring interaction (clicks, forms, login). If firecrawl fails, fall back to `webfetch` or `playwright`.
+For web content: use `webfetch` for simple URLs and `playwright` for JS-heavy pages or pages requiring interaction (clicks, forms, login). If the firecrawl MCP is enabled and configured, use it for search or JS-heavy scraping — it is optional; `webfetch` and `playwright` cover everything when it is absent.
 
 ## Pre-Completion Checks
 

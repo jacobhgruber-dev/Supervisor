@@ -1,13 +1,14 @@
 # Addons — Optional Extras
 
-The Supervisor repo ships with everything you need out of the box: one API key, one model, nine specialized subagent roles (46 agent files across 4 tiers, including designer / designer-mule). Addons layer on additional capabilities for a more complete setup.
+The Supervisor repo ships with everything you need out of the box: one API key, one model, nine specialized subagent roles (47 subagent files across 4 tiers — 48 agents total with the Supervisor — including designer / designer-mule). Addons layer on additional capabilities for a more complete setup.
 
 ## Available Addons
 
 | Addon | What It Adds | Setup Time |
 |-------|-------------|------------|
 | [OpenCode Modes](open-code-modes/) | 9 behavioral modes for the main agent — trigger words that change how it thinks (architect, debug, review, etc.) | 1 minute — copy one file |
-| [Grok Worker](grok-worker/) | An alternative-model subagent running on xAI's Grok 4.3, for when you want Grok's strengths on a task | 2 minutes — add an xAI key + copy one file |
+
+> **Grok Worker is no longer an addon — it's built into the base setup.** The alternative-model worker subagent (`agents/grok-worker.md`) ships with the core repo, running on Grok 4.5 (`xai/grok-4.5`), and activates once an xAI API key is configured. See [grok-worker/](grok-worker/) for activation details.
 
 > **Observer is no longer an addon — it's built into the base setup.** The multimodal screenshot-reading subagent (`agents/observer.md`) and its paste-interception plugin (`plugin/observer-bridge.js`) ship with the core repo and activate once a Google (Gemini) key is configured. See [GETTING_STARTED.md](../GETTING_STARTED.md).
 

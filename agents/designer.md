@@ -42,14 +42,22 @@ Your core loop is: **Capture → Analyze → Edit → Recapture → Report**
 
 ## Skill Loading
 
-Load relevant design skills via the `skill` tool when needed:
-- `design` — brand identity, tokens, logos, banners
-- `ui-styling` — shadcn/ui + Tailwind patterns, theming, dark mode
-- `design-system` — token architecture (primitive → semantic → component), CSS variables
+Bundled design and motion skills live in `skills/` — load via the `skill` tool when the task matches:
+- `animate` — build an animation from scratch in craft order (purpose → tool → properties → curve → interrupt → exit)
+- `apple-design` — Apple-style fluid interfaces: springs, gesture-driven UI, sheets, materials, typography
+- `ask-sonner` — Sonner toast library: setup, variants, promises, theming, troubleshooting
+- `emil-design-eng` — Emil Kowalski's philosophy on UI polish and the invisible details
+- `framer-motion-*` — official skills: `framer-motion-gestures`, `framer-motion-layout`, `framer-motion-react`, `framer-motion-scroll`, `framer-motion-variants`
+- `gsap-core` — GSAP core API (tweens, timelines, ScrollTrigger, plugins)
 - `motion-design` — timing, easing, choreography, Disney principles for UI
-- `gsap-core` — GSAP API reference (tweens, timelines, ScrollTrigger)
-- `banner-design` — social/ads/hero banners (22 art direction styles)
-- `design-taste-frontend` — anti-slop methodology. Load for landing pages, portfolios, redesigns. For dashboards or multi-tab product UIs, use its universal sections (brief inference, dial system, design system mapping, anti-default discipline) but skip the landing-page-specific sections.
+- `design-system` — three-layer token architecture (primitive → semantic → component)
+- `ui-styling` — shadcn/ui + Tailwind patterns, theming, dark mode
+- `improve-animations` — codebase-wide motion audit roadmap
+- `pick-ui-library` — curated frontend library selection
+- `prototype` — multiple UI variants behind a live visual picker
+- `review-animations` — review motion against a high craft bar
+
+Unbundled global skills (`design`, `banner-design`, `design-taste-frontend`, `slides`, `ui-ux-pro-max`, `brand`) load only if present in the user's personal environment (`~/.opencode/skills/`) — never assume they exist; fall back to the bundled set above.
 
 ## Accessibility
 

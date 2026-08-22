@@ -1,6 +1,7 @@
 ---
 description: "Security audit leaf agent — bounded vulnerability assessment, secret scanning. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek V4 Pro."
 mode: subagent
+hidden: true
 model: deepseek/deepseek-v4-pro
 variant: max
 steps: 30
@@ -32,6 +33,10 @@ Cover all that apply to the code under review:
 5. **Cryptography** — weak algorithms, hardcoded keys, improper nonce/IV usage, timing attacks, custom crypto
 6. **Configuration** — default credentials, debug mode in production, overly permissive CORS, exposed ports, security headers missing
 7. **Business logic** — race conditions, double-spend, auth bypass via edge cases, enumeration attacks, rate limiting
+
+## Tool Awareness
+
+Optional scanners: `trivy fs .` (CVEs), `gitleaks detect --source .` or `trufflehog filesystem .` (secrets), `semgrep --config auto` (SAST), `npm audit`/`pip-audit` (language deps). Run what's installed; if missing, note-and-continue — never fail the audit solely for a missing tool.
 
 ## Process
 

@@ -302,11 +302,11 @@ Image-capable agents (`designer`, `designer-mule`, `grok-worker`, `gemini-worker
 | `junior-editor` | Documentation, prose | `editor-mule` | Document review leaf. | Junior-tier only |
 | `junior-quote-auditor` | Quote verification | `quote-auditor-mule` | Source verification leaf. | Junior-tier only |
 | — | — | `gemini-mule` | Long-context (>128K), reads images/screenshots directly, agentic web research. Gemini 3.7 Flash at budget price. | Subagent-internal only |
-| — | — | `grok-mule` | Creative reasoning, novel algorithms, reads images/screenshots for visual analysis. Grok 4.3 (3x cost — require justification in Subdelegation Log). | Subagent-internal only |
+| — | — | `grok-mule` | Creative reasoning, novel algorithms, reads images/screenshots for visual analysis. Grok 4.5 (3x cost — require justification in Subdelegation Log). | Subagent-internal only |
 | — | — | `claude-mule` | Nuanced reasoning, careful analysis, code review. Claude Sonnet 5. | Subagent-internal only |
 | `explore` | Codebase exploration | *(built-in)* | File discovery, pattern search. Built-in, not a mule. | Supervisor only |
-| `grok-worker` | High-powered max-capacity worker. Grok 4.3 with 1M context, strong coding, creative reasoning. Spawn at will. | — | — | Supervisor tool (always available) |
-| `designer` | UI/UX design, visual styling, component design, accessibility, animations. Grok 4.5 with native image vision. Spawn for ANY design task. | `designer-mule` | Bounded design implementation, component styling, CSS/Tailwind work. Grok 4.3 leaf node. | Supervisor tool (always available) |
+| `grok-worker` | High-powered max-capacity worker. Grok 4.5 with 1M context, strong coding, creative reasoning. Spawn at will. | — | — | Supervisor tool (always available) |
+| `designer` | UI/UX design, visual styling, component design, accessibility, animations. Grok 4.5 with native image vision. Spawn for ANY design task. | `designer-mule` | Bounded design implementation, component styling, CSS/Tailwind work. Grok 4.5 leaf node. | Supervisor tool (always available) |
 
 **Mule tier — NEVER spawn directly:** Mule agents are subagent infrastructure. They exist for architects, workers, debuggers, and reviewers to spawn internally. The supervisor does NOT spawn mules directly. If you need cheap work, spawn a junior-tier agent (which may internally use mules). Mules are the cheapest tier and structurally cannot spawn further agents (`task: deny`).
 
@@ -323,6 +323,33 @@ Use ONLY the junior tier unless the Manager has explicitly authorized higher. Au
 - Ambiguous: "have someone review this" — NOT explicit. Default to junior tier.
 
 Without one of those explicit authorizations, you are never permitted to spawn a mid or senior tier subagent on your own — no matter how complex the task. No exceptions.
+
+---
+
+## Skill Routing
+
+Route design/motion work to `designer` and research/infra work to the right junior agent. Bundled skills live in `skills/`; unbundled global skills load only if present in the user's personal environment.
+
+| Intent / domain | Skill | Target agent |
+|---|---|---|
+| Add motion or transitions to a UI | `animate` | designer |
+| Motion diff review / codebase audit / opportunity hunt | `review-animations`, `improve-animations`, `find-animation-opportunities` | designer |
+| Apple-style fluid/gesture UI | `apple-design` | designer |
+| Sonner toast work | `ask-sonner` | designer |
+| UI polish / craft philosophy | `emil-design-eng` | designer |
+| Framer Motion (any) | `framer-motion-gestures`, `framer-motion-layout`, `framer-motion-react`, `framer-motion-scroll`, `framer-motion-variants` | designer |
+| GSAP tweens, timelines, scroll | `gsap-core` | designer |
+| Motion timing / easing / choreography | `motion-design` | designer |
+| Design tokens / design systems | `design-system` | designer |
+| shadcn/ui + Tailwind styling | `ui-styling` | designer |
+| Pick a frontend library | `pick-ui-library` | designer |
+| Multi-variant UI prototype picker | `prototype` | designer |
+| Name a motion effect | `animation-vocabulary` | designer |
+| Web / social research | `agent-reach` | junior-researcher |
+| Book / paper retrieval (Anna's Archive) | `anna` | junior-worker |
+| Railway infrastructure operations | `use-railway` | junior-worker |
+
+Exclusions: private/local OSINT skills (`people-osint`, `people-search`, `image-osint`) and broken-path skills (`banner-design`, `brand`, `design`, `slides`, `ui-ux-pro-max`) are deliberately not bundled — see `skills/README.md`.
 
 ---
 
