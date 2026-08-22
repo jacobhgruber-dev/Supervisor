@@ -105,11 +105,20 @@
     "a11y-color-contrast": {
       "type": "local",
       "command": ["npx", "-y", "a11y-color-contrast-mcp"],
-      "enabled": false
+      "enabled": true
+    },
+    "firecrawl": {
+      "type": "local",
+      "command": ["npx", "-y", "firecrawl-mcp"],
+      "enabled": false,
+      "environment": {
+        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY"
+      }
     }
   },
   "permission": {
     "chrome-devtools_*": "allow",
+    "firecrawl_*": "allow",
     "macos-use_*": "allow",
     "vercel_*": "allow",
     "twenty-first_*": "deny",
