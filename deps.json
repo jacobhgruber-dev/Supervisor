@@ -1,0 +1,250 @@
+{
+  "$comment": "Shared tool manifest consumed by install.sh --doctor and setup.ps1 -Doctor. Schema: categories -> tools -> { detect: { commands[], python_modules[] }, install: { windows|darwin|linux: { manager: argv[] } }, notes }. See DEPENDENCIES.md for the full story.",
+  "categories": {
+    "core": {
+      "label": "Core tools",
+      "tools": {
+        "node": {
+          "detect": { "commands": ["node"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "OpenJS.NodeJS.LTS"], "choco": ["choco", "install", "nodejs-lts", "-y"], "scoop": ["scoop", "install", "nodejs-lts"] },
+            "darwin": { "brew": ["brew", "install", "node"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "nodejs"] }
+          },
+          "notes": "OpenCode and every npx-based MCP server run on Node."
+        },
+        "git": {
+          "detect": { "commands": ["git"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "Git.Git"], "choco": ["choco", "install", "git", "-y"], "scoop": ["scoop", "install", "git"] },
+            "darwin": { "brew": ["brew", "install", "git"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "git"] }
+          },
+          "notes": "Needed to clone this repo and to produce -Diff output."
+        },
+        "python": {
+          "detect": { "commands": ["python3", "python"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "Python.Python.3.12"], "choco": ["choco", "install", "python", "-y"], "scoop": ["scoop", "install", "python"] },
+            "darwin": { "brew": ["brew", "install", "python"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "python3"] }
+          },
+          "notes": "Many quality tools (ruff, mypy, ...) are pip packages."
+        },
+        "opencode": {
+          "detect": { "commands": ["opencode"] },
+          "install": {
+            "windows": { "npm": ["npm", "install", "-g", "opencode"] },
+            "darwin": { "npm": ["npm", "install", "-g", "opencode"] },
+            "linux": { "npm": ["npm", "install", "-g", "opencode"] }
+          },
+          "notes": "The OpenCode app itself. Then run: opencode auth login"
+        },
+        "uv": {
+          "detect": { "commands": ["uv"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "astral-sh.uv"], "choco": ["choco", "install", "uv", "-y"], "scoop": ["scoop", "install", "uv"], "pip": ["python", "-m", "pip", "install", "uv"] },
+            "darwin": { "brew": ["brew", "install", "uv"] },
+            "linux": { "pip3": ["pip3", "install", "uv"] }
+          },
+          "notes": "Required by several optional MCP servers (elevenlabs, gemini-api-docs)."
+        }
+      }
+    },
+    "quality": {
+      "label": "Code quality & security tools",
+      "tools": {
+        "ruff": {
+          "detect": { "commands": ["ruff"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "ruff"] },
+            "darwin": { "brew": ["brew", "install", "ruff"], "pip3": ["pip3", "install", "ruff"] },
+            "linux": { "pip3": ["pip3", "install", "ruff"] }
+          }
+        },
+        "mypy": {
+          "detect": { "commands": ["mypy"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "mypy"] },
+            "darwin": { "pip3": ["pip3", "install", "mypy"] },
+            "linux": { "pip3": ["pip3", "install", "mypy"] }
+          }
+        },
+        "shellcheck": {
+          "detect": { "commands": ["shellcheck"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "koalaman.shellcheck"], "choco": ["choco", "install", "shellcheck", "-y"], "scoop": ["scoop", "install", "shellcheck"] },
+            "darwin": { "brew": ["brew", "install", "shellcheck"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "shellcheck"] }
+          }
+        },
+        "trivy": {
+          "detect": { "commands": ["trivy"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "AquaSecurity.Trivy"], "choco": ["choco", "install", "trivy", "-y"], "scoop": ["scoop", "install", "trivy"] },
+            "darwin": { "brew": ["brew", "install", "trivy"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "trivy"] }
+          }
+        },
+        "radon": {
+          "detect": { "python_modules": ["radon"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "radon"] },
+            "darwin": { "pip3": ["pip3", "install", "radon"] },
+            "linux": { "pip3": ["pip3", "install", "radon"] }
+          }
+        },
+        "lizard": {
+          "detect": { "python_modules": ["lizard"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "lizard"] },
+            "darwin": { "pip3": ["pip3", "install", "lizard"] },
+            "linux": { "pip3": ["pip3", "install", "lizard"] }
+          }
+        },
+        "py-spy": {
+          "detect": { "commands": ["py-spy"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "py-spy"] },
+            "darwin": { "pip3": ["pip3", "install", "py-spy"] },
+            "linux": { "pip3": ["pip3", "install", "py-spy"] }
+          }
+        },
+        "scalene": {
+          "detect": { "python_modules": ["scalene"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "scalene"] },
+            "darwin": { "pip3": ["pip3", "install", "scalene"] },
+            "linux": { "pip3": ["pip3", "install", "scalene"] }
+          }
+        },
+        "coverage": {
+          "detect": { "python_modules": ["coverage"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "coverage"] },
+            "darwin": { "pip3": ["pip3", "install", "coverage"] },
+            "linux": { "pip3": ["pip3", "install", "coverage"] }
+          }
+        },
+        "hypothesis": {
+          "detect": { "python_modules": ["hypothesis"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "hypothesis"] },
+            "darwin": { "pip3": ["pip3", "install", "hypothesis"] },
+            "linux": { "pip3": ["pip3", "install", "hypothesis"] }
+          }
+        }
+      }
+    },
+    "documents": {
+      "label": "Document handling",
+      "tools": {
+        "pymupdf": {
+          "detect": { "python_modules": ["fitz"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "pymupdf"] },
+            "darwin": { "pip3": ["pip3", "install", "pymupdf"] },
+            "linux": { "pip3": ["pip3", "install", "pymupdf"] }
+          },
+          "notes": "PDF text/table extraction for the worker agent."
+        },
+        "python-docx": {
+          "detect": { "python_modules": ["docx"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "python-docx"] },
+            "darwin": { "pip3": ["pip3", "install", "python-docx"] },
+            "linux": { "pip3": ["pip3", "install", "python-docx"] }
+          }
+        },
+        "beautifulsoup4": {
+          "detect": { "python_modules": ["bs4"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "beautifulsoup4"] },
+            "darwin": { "pip3": ["pip3", "install", "beautifulsoup4"] },
+            "linux": { "pip3": ["pip3", "install", "beautifulsoup4"] }
+          }
+        },
+        "requests": {
+          "detect": { "python_modules": ["requests"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "requests"] },
+            "darwin": { "pip3": ["pip3", "install", "requests"] },
+            "linux": { "pip3": ["pip3", "install", "requests"] }
+          }
+        }
+      }
+    },
+    "media": {
+      "label": "Media tools",
+      "tools": {
+        "ffmpeg": {
+          "detect": { "commands": ["ffmpeg"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "Gyan.FFmpeg"], "choco": ["choco", "install", "ffmpeg", "-y"], "scoop": ["scoop", "install", "ffmpeg"] },
+            "darwin": { "brew": ["brew", "install", "ffmpeg"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "ffmpeg"] }
+          },
+          "notes": "Audio conversion for whisper transcription."
+        },
+        "whisper-cpp": {
+          "detect": { "commands": ["whisper-cli"] },
+          "install": {
+            "darwin": { "brew": ["brew", "install", "whisper-cpp"] },
+            "linux": { "pip3": ["pip3", "install", "whisper-cpp"] }
+          },
+          "notes": "Fast local audio transcription. Windows: build from https://github.com/ggerganov/whisper.cpp"
+        },
+        "faster-whisper": {
+          "detect": { "python_modules": ["faster_whisper"] },
+          "install": {
+            "windows": { "pip": ["python", "-m", "pip", "install", "faster-whisper"] },
+            "darwin": { "pip3": ["pip3", "install", "faster-whisper"] },
+            "linux": { "pip3": ["pip3", "install", "faster-whisper"] }
+          },
+          "notes": "High-quality transcription; best installed inside a dedicated venv."
+        }
+      }
+    },
+    "cli": {
+      "label": "CLI extras",
+      "tools": {
+        "gh": {
+          "detect": { "commands": ["gh"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "GitHub.cli"], "choco": ["choco", "install", "gh", "-y"], "scoop": ["scoop", "install", "gh"] },
+            "darwin": { "brew": ["brew", "install", "gh"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "gh"] }
+          },
+          "notes": "GitHub CLI - commits, PRs and repo management."
+        },
+        "docker": {
+          "detect": { "commands": ["docker"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "Docker.DockerDesktop"], "choco": ["choco", "install", "docker-desktop", "-y"] },
+            "darwin": { "brew": ["brew", "install", "--cask", "docker"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "docker.io"] }
+          },
+          "notes": "Required by the optional github MCP server."
+        },
+        "railway": {
+          "detect": { "commands": ["railway"] },
+          "install": {
+            "windows": { "npm": ["npm", "install", "-g", "@railway/cli"] },
+            "darwin": { "brew": ["brew", "install", "railway"] },
+            "linux": { "npm": ["npm", "install", "-g", "@railway/cli"] }
+          },
+          "notes": "Railway CLI - required by the optional railway MCP server."
+        },
+        "ripgrep": {
+          "detect": { "commands": ["rg"] },
+          "install": {
+            "windows": { "winget": ["winget", "install", "BurntSushi.ripgrep.MSVC"], "choco": ["choco", "install", "ripgrep", "-y"], "scoop": ["scoop", "install", "ripgrep"] },
+            "darwin": { "brew": ["brew", "install", "ripgrep"] },
+            "linux": { "apt-get": ["sudo", "apt-get", "install", "-y", "ripgrep"] }
+          },
+          "notes": "Fast code search - subagents use it constantly."
+        }
+      }
+    }
+  }
+}

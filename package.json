@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "validate": "python3 scripts/validate-template.py"
+  },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.1",
     "@ai-sdk/deepseek": "^3.0.1",
