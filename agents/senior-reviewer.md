@@ -3,7 +3,6 @@ description: Code reviewer subagent — bug detection, logic flaws, edge cases, 
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 30
 color: "#FF4444"
 permission:
   task:

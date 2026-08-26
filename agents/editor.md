@@ -3,7 +3,6 @@ description: Content editor for clarity, flow, and readability. Powered by Claud
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 25
 color: "#FDE68A"
 permission:
   task:

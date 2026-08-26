@@ -3,7 +3,6 @@ description: Editor subagent — structural revision, clarity, flow, voice, audi
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 25
 color: "#EAB308"
 permission:
   task:

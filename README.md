@@ -155,19 +155,20 @@ You (the User)
       v
 Supervisor Agent (primary, DeepSeek V4 Pro)
       |
-       +---> worker          (implementation, 50 steps, full access)
-       +---> architect       (design, 25 steps, edit + web + playwright)
-       +---> planner         (sequencing, 25 steps, read-only)
-       +---> reviewer        (code review, 30 steps, read-only)
-       +---> debugger        (runtime errors, 35 steps, edit + web + playwright)
-       +---> security        (vulnerability scan, 30 steps, read-only + bash + web + playwright)
-       +---> researcher      (information, 40 steps, full access)
-        +---> editor          (proofreading, 25 steps, read + edit)
-        +---> quote-auditor   (quote verification, 25 steps, read-only)
+       +---> worker          (implementation, uncapped, full access)
+       +---> architect       (design, uncapped, edit + web + playwright)
+       +---> planner         (sequencing, uncapped, read-only)
+       +---> reviewer        (code review, uncapped, read-only)
+       +---> debugger        (runtime errors, uncapped, edit + web + playwright)
+       +---> security        (vulnerability scan, uncapped, read-only + bash + web + playwright)
+       +---> researcher      (information, uncapped, full access)
+        +---> editor          (proofreading, uncapped, read + edit)
+        +---> quote-auditor   (quote verification, uncapped, read-only)
         +---> observer        (visual analysis, multimodal, read-only)
 ```
 
 (Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.5). Local Ollama placeholders: `local-coder`, `local-reasoner`.)
+Mid and senior tiers (Claude Sonnet 5 / Opus 5) and `claude-mule` are uncapped — Anthropic rejects the max-steps wrap-up (assistant prefill); the DeepSeek junior tier and DeepSeek/Grok mules keep per-role step caps.
 
 ## How It Works
 

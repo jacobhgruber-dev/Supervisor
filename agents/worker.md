@@ -3,7 +3,6 @@ description: General-purpose worker subagent — handles any task that doesn't f
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 50
 color: "#818CF8"
 permission:
   task:

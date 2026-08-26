@@ -27,17 +27,19 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 
 The Supervisor ships with 47 subagent files across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers (48 agents total including the Supervisor itself). The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet 5) and senior (Claude Opus 5) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
-| Subagent | Use For | Steps | Permissions |
-|----------|---------|-------|-------------|
-| `worker` | Implementation — features, tests, migrations, frontend | 50 | Full (edit, bash, web, playwright) |
-| `researcher` | Web research, multi-source synthesis, API/library docs | 40 | Full |
-| `debugger` | Runtime errors, test failures, root cause analysis | 35 | Full (edit, bash, web, playwright) |
-| `architect` | Design questions, refactoring plans, tradeoff analysis | 25 | Edit + web + playwright (no bash) |
-| `reviewer` | Code review — quality, bugs, style, pre-commit pass | 30 | Read-only + bash |
-| `security` | Vulnerability scanning — secrets, injections, unsafe patterns | 30 | Read-only + bash + web + playwright |
-| `planner` | Task breakdown, sequencing, milestone planning | 25 | Read-only |
-| `editor` | Grammar, spelling, punctuation, readability | 25 | Read + edit |
-| `quote-auditor` | Quotation verification against sources | 25 | Read-only |
+| Subagent | Use For | Permissions |
+|----------|---------|-------------|
+| `worker` | Implementation — features, tests, migrations, frontend | Full (edit, bash, web, playwright) |
+| `researcher` | Web research, multi-source synthesis, API/library docs | Full |
+| `debugger` | Runtime errors, test failures, root cause analysis | Full (edit, bash, web, playwright) |
+| `architect` | Design questions, refactoring plans, tradeoff analysis | Edit + web + playwright (no bash) |
+| `reviewer` | Code review — quality, bugs, style, pre-commit pass | Read-only + bash |
+| `security` | Vulnerability scanning — secrets, injections, unsafe patterns | Read-only + bash + web + playwright |
+| `planner` | Task breakdown, sequencing, milestone planning | Read-only |
+| `editor` | Grammar, spelling, punctuation, readability | Read + edit |
+| `quote-auditor` | Quotation verification against sources | Read-only |
+
+All nine mid-tier agents run Claude Sonnet 5 and are uncapped — Anthropic rejects the max-steps wrap-up (assistant-role prefill), so no `steps` is set. The DeepSeek junior tier keeps per-role step caps; see [tier-system-reference.md](tier-system-reference.md).
 
 ### When to Use
 

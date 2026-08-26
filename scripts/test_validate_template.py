@@ -3,7 +3,8 @@
 Property-based tests (hypothesis) cover the YAML-subset frontmatter
 parser: round-trip rendering of arbitrary nested maps and crash-freedom
 on arbitrary input. Unit tests cover the malformed-input error paths and
-a smoke check against the real ``agents/worker.md``.
+smoke checks against the real ``agents/worker.md`` and
+``agents/claude-mule.md``.
 """
 
 import importlib.util
@@ -179,6 +180,76 @@ def test_observer_claude_model_enforced():
     assert errors == []
 
 
+def test_anthropic_agent_rejects_steps():
+    errors = []
+    vt.check_steps(
+        {"model": "anthropic/claude-sonnet-5", "steps": 50}, "worker", "w", errors
+    )
+    assert len(errors) == 1
+    assert "must NOT have 'steps'" in errors[0]
+    errors = []
+    vt.check_steps(
+        {"model": "anthropic/claude-opus-5", "steps": 25}, "senior-worker", "w", errors
+    )
+    assert len(errors) == 1
+
+
+def test_anthropic_agent_accepts_no_steps():
+    errors = []
+    vt.check_steps({"model": "anthropic/claude-sonnet-5"}, "worker", "w", errors)
+    assert errors == []
+    errors = []
+    vt.check_steps({"model": "anthropic/claude-opus-5"}, "senior-worker", "w", errors)
+    assert errors == []
+
+
+def test_claude_mule_is_uncapped():
+    errors = []
+    vt.check_steps({"model": "anthropic/claude-sonnet-5"}, "claude-mule", "w", errors)
+    assert errors == []
+    errors = []
+    vt.check_steps(
+        {"model": "anthropic/claude-sonnet-5", "steps": 30}, "claude-mule", "w", errors
+    )
+    assert len(errors) == 1
+
+
+def test_observer_claude_is_uncapped():
+    errors = []
+    vt.check_steps(
+        {"model": "anthropic/claude-sonnet-5"}, "observer-claude", "w", errors
+    )
+    assert errors == []
+    errors = []
+    vt.check_steps(
+        {"model": "anthropic/claude-sonnet-5", "steps": 30},
+        "observer-claude",
+        "w",
+        errors,
+    )
+    assert len(errors) == 1
+
+
+def test_deepseek_mule_still_requires_30_steps():
+    errors = []
+    vt.check_steps({"steps": 30}, "worker-mule", "w", errors)
+    assert errors == []
+    errors = []
+    vt.check_steps({"steps": 25}, "worker-mule", "w", errors)
+    assert len(errors) == 1
+
+
+def test_gemini_mule_still_exempt():
+    errors = []
+    vt.check_steps({"model": "google/gemini-3.7-flash"}, "gemini-mule", "w", errors)
+    assert errors == []
+    errors = []
+    vt.check_steps(
+        {"model": "google/gemini-3.7-flash", "steps": 30}, "gemini-mule", "w", errors
+    )
+    assert errors == []
+
+
 # ---------------------------------------------------------------------------
 # Smoke test against the real template
 # ---------------------------------------------------------------------------
@@ -189,8 +260,19 @@ def test_real_worker_agent_passes():
     fm = vt.extract_frontmatter(path)
     assert fm["mode"] == "subagent"
     assert fm["model"] == "anthropic/claude-sonnet-5"
+    assert "steps" not in fm  # Anthropic agents must be uncapped
     errors = []
     vt.validate_agent("worker", "agents/worker.md", path, errors)
+    assert errors == []
+
+
+def test_real_claude_mule_passes():
+    path = Path(__file__).resolve().parent.parent / "agents" / "claude-mule.md"
+    fm = vt.extract_frontmatter(path)
+    assert fm["model"] == "anthropic/claude-sonnet-5"
+    assert "steps" not in fm  # Anthropic agents must be uncapped
+    errors = []
+    vt.validate_agent("claude-mule", "agents/claude-mule.md", path, errors)
     assert errors == []
 
 

@@ -3,7 +3,6 @@ description: Researcher for topic exploration, source gathering, and structured 
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 40
 color: "#6EE7B7"
 permission:
   task:

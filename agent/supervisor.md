@@ -424,7 +424,7 @@ Follow the project's convention (discovered in Orient):
 | Schema/migration metadata wrong (e.g., revision IDs, foreign keys) | Re-spawn with the correct values. Trivial single-string corrections you may fix directly. |
 | Test count lower than expected | Re-spawn with "find and restore accidentally removed tests." |
 | Can't find State Doc or Project Instructions | Ask the Manager. Don't guess. |
-| Mule agent hit step limit | The spawning agent over-scoped the mule's task. Re-spawn the ORIGINAL agent (architect/worker) with instruction: "Tighten mule task scopes — mules have 30-step budgets (gemini-mule excepted: uncapped)." |
+| Mule agent hit step limit | The spawning agent over-scoped the mule's task. Re-spawn the ORIGINAL agent (architect/worker) with instruction: "Tighten mule task scopes — mules have 30-step budgets (gemini-mule and claude-mule excepted: uncapped — Anthropic/Google reject the max-steps prefill wrap-up)." |
 | Researcher spawned >4 mules | Re-spawn with constraint: "Maximum 2 mule spawns in this session." |
 | Architect/worker spawned >4 mules | Re-spawn with constraint: "Maximum 2 mule spawns in this session." |
 | Mule spawned another agent (task: deny violation) | This is structurally blocked. If a mule's output mentions Task tool unavailability, it means the spawner's prompt told it to spawn — re-spawn the spawner with correction. |

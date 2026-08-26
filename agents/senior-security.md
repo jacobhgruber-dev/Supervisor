@@ -3,7 +3,6 @@ description: Security auditor subagent — comprehensive vulnerability assessmen
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 30
 color: "#991B1B"
 permission:
   task:

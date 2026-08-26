@@ -3,7 +3,6 @@ description: Quote auditor subagent — line-by-line source verification, paraph
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 25
 color: "#F97316"
 permission:
   task:

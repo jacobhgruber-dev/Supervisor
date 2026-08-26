@@ -3,7 +3,6 @@ description: Software architect for design decisions, refactoring plans, and sys
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 25
 color: "#3B82F6"
 permission:
   task:

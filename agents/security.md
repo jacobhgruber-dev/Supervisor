@@ -3,7 +3,6 @@ description: Security auditor for vulnerability scanning — secrets, injections
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 30
 color: "#DC2626"
 permission:
   task:

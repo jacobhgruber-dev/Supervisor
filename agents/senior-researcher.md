@@ -3,7 +3,6 @@ description: Researcher subagent — multi-source investigation, synthesis, cont
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 40
 color: "#10B981"
 permission:
   task:

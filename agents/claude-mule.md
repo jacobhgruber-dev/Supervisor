@@ -4,7 +4,6 @@ mode: subagent
 hidden: true
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 30
 color: "#7B61FF"
 permission:
   task:

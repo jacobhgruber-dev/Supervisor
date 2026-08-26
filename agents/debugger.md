@@ -3,7 +3,6 @@ description: Debugger subagent — runtime error investigation, root cause analy
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 35
 color: "#EF4444"
 permission:
   task:

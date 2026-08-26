@@ -3,7 +3,6 @@ description: Quote auditor for verifying quotations against their sources. Power
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 25
 color: "#FDBA74"
 permission:
   task:

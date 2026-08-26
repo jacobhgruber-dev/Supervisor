@@ -3,7 +3,6 @@ description: Planner subagent for task breakdown, dependency mapping, sequencing
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 25
 color: "#A78BFA"
 permission:
   task:

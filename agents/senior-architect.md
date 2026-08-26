@@ -3,7 +3,6 @@ description: Architecture subagent for design decisions, tradeoff analysis, refa
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 25
 color: "#B026FF"
 permission:
   task:

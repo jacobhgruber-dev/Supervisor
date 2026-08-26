@@ -36,7 +36,6 @@ description: General-purpose subagent powered by Claude Sonnet 5. Mid-tier worke
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 50
 color: "#818CF8"
 permission:
   edit: allow
@@ -55,7 +54,6 @@ description: Software architect for design decisions, refactoring plans, and sys
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 25
 color: "#7B61FF"
 permission:
   edit: allow
@@ -74,7 +72,6 @@ description: Planner for breaking down tasks into ordered steps, identifying dep
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 25
 color: "#A78BFA"
 permission:
   edit: deny
@@ -90,7 +87,6 @@ description: Code reviewer for bugs, logic errors, and code quality. Powered by 
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 30
 color: "#F87171"
 permission:
   edit: deny
@@ -106,7 +102,6 @@ description: Debugger for runtime errors, stack traces, and unexpected behavior.
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 35
 color: "#EF4444"
 permission:
   edit: allow
@@ -125,7 +120,6 @@ description: Security auditor for vulnerability scanning — secrets, injections
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 30
 color: "#B91C1C"
 permission:
   edit: deny
@@ -144,7 +138,6 @@ description: Content editor for clarity, flow, and readability. Powered by Claud
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 25
 color: "#FDE68A"
 permission:
   edit: allow
@@ -160,7 +153,6 @@ description: Researcher for topic exploration, source gathering, and structured 
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 40
 color: "#34D399"
 permission:
   edit: allow
@@ -179,7 +171,6 @@ description: Quote auditor for verifying quotations against their sources. Power
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-steps: 25
 color: "#FB923C"
 permission:
   edit: deny
@@ -197,7 +188,6 @@ description: Senior general-purpose subagent powered by Claude Opus 5. The most 
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 50
 color: "#6366F1"
 permission:
   edit: allow
@@ -216,7 +206,6 @@ description: Senior-level system architect. Deep architectural reasoning, comple
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 25
 color: "#B026FF"
 permission:
   edit: allow
@@ -234,7 +223,6 @@ description: Senior planner for complex multi-phase execution strategy, dependen
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 25
 color: "#8B5CF6"
 permission:
   edit: deny
@@ -250,7 +238,6 @@ description: Senior code reviewer. Deep bug detection, architectural misuse, and
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 30
 color: "#FF4444"
 permission:
   edit: deny
@@ -266,7 +253,6 @@ description: Senior debugger for the hardest bugs — race conditions, memory le
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 35
 color: "#DC2626"
 permission:
   edit: allow
@@ -285,7 +271,6 @@ description: Senior security auditor for comprehensive vulnerability assessment 
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 30
 color: "#991B1B"
 permission:
   edit: deny
@@ -304,7 +289,6 @@ description: Senior editor for content strategy, structural revision, and high-s
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 25
 color: "#EAB308"
 permission:
   edit: allow
@@ -320,7 +304,6 @@ description: Senior researcher for deep multi-source investigation, complex topi
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 40
 color: "#10B981"
 permission:
   edit: allow
@@ -339,7 +322,6 @@ description: Senior quotation auditor for line-by-line source verification, para
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
-steps: 25
 color: "#F97316"
 permission:
   edit: deny
@@ -354,32 +336,34 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 | Role | Tier | File Name | Model | Steps | Edit | Bash | Web/Playwright |
 |------|------|-----------|-------|-------|------|------|-----|
 | **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-v4-pro` | 50 | ✅ | ✅ | ✅ |
-| | Mid | `worker.md` | `anthropic/claude-sonnet-5` | 50 | ✅ | ✅ | ✅ |
-| | Senior | `senior-worker.md` | `anthropic/claude-opus-5` | 50 | ✅ | ✅ | ✅ |
+| | Mid | `worker.md` | `anthropic/claude-sonnet-5` | — | ✅ | ✅ | ✅ |
+| | Senior | `senior-worker.md` | `anthropic/claude-opus-5` | — | ✅ | ✅ | ✅ |
 | **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-v4-pro` | 25 | ✅ | ❌ | ✅ |
-| | Mid | `architect.md` | `anthropic/claude-sonnet-5` | 25 | ✅ | ❌ | ✅ |
-| | Senior | `senior-architect.md` | `anthropic/claude-opus-5` | 25 | ✅ | ❌ | ✅ |
+| | Mid | `architect.md` | `anthropic/claude-sonnet-5` | — | ✅ | ❌ | ✅ |
+| | Senior | `senior-architect.md` | `anthropic/claude-opus-5` | — | ✅ | ❌ | ✅ |
 | **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
-| | Mid | `planner.md` | `anthropic/claude-sonnet-5` | 25 | ❌ | ❌ | ❌ |
-| | Senior | `senior-planner.md` | `anthropic/claude-opus-5` | 25 | ❌ | ❌ | ❌ |
+| | Mid | `planner.md` | `anthropic/claude-sonnet-5` | — | ❌ | ❌ | ❌ |
+| | Senior | `senior-planner.md` | `anthropic/claude-opus-5` | — | ❌ | ❌ | ❌ |
 | **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-v4-pro` | 30 | ❌ | ✅ | ❌ |
-| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5` | 30 | ❌ | ✅ | ❌ |
-| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-5` | 30 | ❌ | ✅ | ❌ |
+| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5` | — | ❌ | ✅ | ❌ |
+| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-5` | — | ❌ | ✅ | ❌ |
 | **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-v4-pro` | 35 | ✅ | ✅ | ✅ |
-| | Mid | `debugger.md` | `anthropic/claude-sonnet-5` | 35 | ✅ | ✅ | ✅ |
-| | Senior | `senior-debugger.md` | `anthropic/claude-opus-5` | 35 | ✅ | ✅ | ✅ |
+| | Mid | `debugger.md` | `anthropic/claude-sonnet-5` | — | ✅ | ✅ | ✅ |
+| | Senior | `senior-debugger.md` | `anthropic/claude-opus-5` | — | ✅ | ✅ | ✅ |
 | **Security** | Junior | `junior-security.md` | `deepseek/deepseek-v4-pro` | 30 | ❌ | ✅ | ✅ |
-| | Mid | `security.md` | `anthropic/claude-sonnet-5` | 30 | ❌ | ✅ | ✅ |
-| | Senior | `senior-security.md` | `anthropic/claude-opus-5` | 30 | ❌ | ✅ | ✅ |
+| | Mid | `security.md` | `anthropic/claude-sonnet-5` | — | ❌ | ✅ | ✅ |
+| | Senior | `senior-security.md` | `anthropic/claude-opus-5` | — | ❌ | ✅ | ✅ |
 | **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-v4-pro` | 25 | ✅ | ❌ | ❌ |
-| | Mid | `editor.md` | `anthropic/claude-sonnet-5` | 25 | ✅ | ❌ | ❌ |
-| | Senior | `senior-editor.md` | `anthropic/claude-opus-5` | 25 | ✅ | ❌ | ❌ |
+| | Mid | `editor.md` | `anthropic/claude-sonnet-5` | — | ✅ | ❌ | ❌ |
+| | Senior | `senior-editor.md` | `anthropic/claude-opus-5` | — | ✅ | ❌ | ❌ |
 | **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-v4-pro` | 40 | ✅ | ✅ | ✅ |
-| | Mid | `researcher.md` | `anthropic/claude-sonnet-5` | 40 | ✅ | ✅ | ✅ |
-| | Senior | `senior-researcher.md` | `anthropic/claude-opus-5` | 40 | ✅ | ✅ | ✅ |
+| | Mid | `researcher.md` | `anthropic/claude-sonnet-5` | — | ✅ | ✅ | ✅ |
+| | Senior | `senior-researcher.md` | `anthropic/claude-opus-5` | — | ✅ | ✅ | ✅ |
 | **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-v4-pro` | 25 | ❌ | ❌ | ❌ |
-| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5` | 25 | ❌ | ❌ | ❌ |
-| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-5` | 25 | ❌ | ❌ | ❌ |
+| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5` | — | ❌ | ❌ | ❌ |
+| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-5` | — | ❌ | ❌ | ❌ |
+
+Mid and senior agents (Anthropic models) are uncapped (`—`): Anthropic rejects the max-steps wrap-up (assistant-role prefill), so those agents must not set `steps`. Junior DeepSeek agents keep their step caps.
 
 ## Model IDs Quick Reference
 
@@ -501,6 +485,6 @@ Beyond the 3 escalation tiers, the repo also ships with **13 mule-tier agents** 
 
 Mules are subagent infrastructure. The supervisor never spawns mules directly — they exist for architects, workers, debuggers, and reviewers to spawn internally for bounded sub-tasks.
 
-All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}`. Twelve use 30-step limits; `gemini-mule` is uncapped — Google's API rejects the max-steps wrap-up request, so its cap must never trigger. Nine are DeepSeek V4 Pro (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 3.7 Flash), `grok-mule` (Grok 4.5), `claude-mule` (Claude Sonnet 5), and `designer-mule` (Grok 4.5).
+All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}`. Eleven use 30-step limits; `gemini-mule` and `claude-mule` are uncapped — Google's and Anthropic's APIs reject the max-steps wrap-up request (an assistant-role prefill), so those caps must never trigger. Nine are DeepSeek V4 Pro (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 3.7 Flash), `grok-mule` (Grok 4.5), `claude-mule` (Claude Sonnet 5), and `designer-mule` (Grok 4.5).
 
 > ⚠️ **Mules require `subagent_depth >= 3`.** The Supervisor spawns a subagent (depth 2), which spawns a mule (depth 3). Without `"subagent_depth": 3` in `opencode.json`, the mule spawn will be silently blocked.
