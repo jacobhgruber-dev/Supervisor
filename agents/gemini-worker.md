@@ -1,7 +1,7 @@
 ---
-description: High-powered, max-capacity worker for any purpose. Fully empowered — writes code, runs commands, edits files, commits. Use for complex investigation, deep implementation, or any task where you want Gemini 3.7 Flash's full power (1M context window, multimodal reasoning) without throttling. Spawn at will.
+description: High-powered, max-capacity worker for any purpose. Fully empowered — writes code, runs commands, edits files, commits. Use for complex investigation, deep implementation, or any task where you want Gemini 3.8 Flash's full power (1M context window, multimodal reasoning) without throttling. Spawn at will.
 mode: subagent
-model: google/gemini-3.7-flash
+model: google/gemini-3.8-flash
 permission:
   task:
     "*": allow

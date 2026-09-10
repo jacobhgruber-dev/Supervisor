@@ -27,7 +27,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **22 bundled skills (19 motion/design + 3 utility)** — a self-contained skill library in `skills/` that installs with everything else: 19 motion/design skills (animate, framer-motion ×5, gsap-core, motion-design, design-system, ui-styling, apple-design, and more) plus 3 utility skills (`agent-reach` for web research, `anna` for book/article downloads, `use-railway` for Railway infrastructure). See [skills/README.md](skills/README.md).
 - **Grok worker** — an alternative-model worker on xAI's Grok 4.5. Ships in `agents/grok-worker.md` with notes in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
 - **Full 4-tier system built in** — all 47 subagents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
-- **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 3.7 Flash — with automatic fallback to Claude Sonnet 5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image.
+- **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 3.8 Flash — with automatic fallback to Claude Sonnet 5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
@@ -218,9 +218,9 @@ Supervisor/
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── junior-* / * / senior-* / *-mule  # Same 9 roles at all 4 tiers (DeepSeek, Claude, Opus, mule)
-│   ├── observer.md                # Multimodal Observer (Gemini 3.7 Flash — primary)
+│   ├── observer.md                # Multimodal Observer (Gemini 3.8 Flash — primary)
 │   ├── observer-claude.md         # Observer fallback (Claude Sonnet 5 — used when only Anthropic is configured)
-│   ├── gemini-worker.md           # High-powered worker (Gemini 3.7 Flash)
+│   ├── gemini-worker.md           # High-powered worker (Gemini 3.8 Flash)
 │   ├── grok-worker.md             # High-powered worker (Grok 4.5)
 │   ├── designer.md                # UI/UX design (Grok 4.5, native image vision)
 │   ├── designer-mule.md           # Bounded design leaf (Grok 4.5)

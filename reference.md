@@ -17,8 +17,8 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek Flash | Orchestration — plans, delegates, reviews, commits |
-| **47 agents** (4 tiers) | DeepSeek Flash / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.7 Flash / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
-| **Observer** (built in) | Gemini 3.7 Flash (primary), Claude Sonnet 5 fallback (`observer-claude`) | Reads pasted screenshots / UI states / error images and returns structured text |
+| **47 agents** (4 tiers) | DeepSeek Flash / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.8 Flash / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
+| **Observer** (built in) | Gemini 3.8 Flash (primary), Claude Sonnet 5 fallback (`observer-claude`) | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
 ---
@@ -171,8 +171,8 @@ Supervisor Agent (primary, DeepSeek Flash)
       +---> mule-tier (13 leaf workers — subagent infrastructure, spawned internally)
       |
       +---> designer / designer-mule  (UI/UX, Grok 4.5)
-      +---> grok-worker / gemini-worker  (alternative model workers, built in — Grok 4.5 / Gemini 3.7 Flash)
-      +---> observer / observer-claude  (visual analysis, Gemini 3.7 Flash / Claude Sonnet 5)
+      +---> grok-worker / gemini-worker  (alternative model workers, built in — Grok 4.5 / Gemini 3.8 Flash)
+      +---> observer / observer-claude  (visual analysis, Gemini 3.8 Flash / Claude Sonnet 5)
 
 Behavioral Modes (overlay on any agent):
   /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes

@@ -171,7 +171,7 @@ def test_observer_claude_must_deny_task():
 
 def test_observer_claude_model_enforced():
     errors = []
-    vt.check_model({"model": "google/gemini-3.7-flash"}, "observer-claude", "w", errors)
+    vt.check_model({"model": "google/gemini-3.8-flash"}, "observer-claude", "w", errors)
     assert len(errors) == 1
     errors = []
     vt.check_model(
@@ -241,11 +241,11 @@ def test_deepseek_mule_still_requires_30_steps():
 
 def test_gemini_mule_still_exempt():
     errors = []
-    vt.check_steps({"model": "google/gemini-3.7-flash"}, "gemini-mule", "w", errors)
+    vt.check_steps({"model": "google/gemini-3.8-flash"}, "gemini-mule", "w", errors)
     assert errors == []
     errors = []
     vt.check_steps(
-        {"model": "google/gemini-3.7-flash", "steps": 30}, "gemini-mule", "w", errors
+        {"model": "google/gemini-3.8-flash", "steps": 30}, "gemini-mule", "w", errors
     )
     assert errors == []
 

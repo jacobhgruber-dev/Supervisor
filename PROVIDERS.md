@@ -57,9 +57,9 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 ## Tier 3: Google / Gemini (Recommended)
 
 **What it powers:**
-- `gemini-worker` — full-access Gemini agent (Gemini 3.7 Flash)
-- `gemini-mule` — leaf agent for long-context, multimodal, or web-heavy tasks (Gemini 3.7 Flash)
-- **Observer** — screenshot reading / multimodal vision agent. Primary model: Gemini 3.7 Flash. If only an Anthropic key is configured (no Google key), Observer automatically falls back to Claude Sonnet 5 (`observer-claude.md`) — the same analysis, either way.
+- `gemini-worker` — full-access Gemini agent (Gemini 3.8 Flash)
+- `gemini-mule` — leaf agent for long-context, multimodal, or web-heavy tasks (Gemini 3.8 Flash)
+- **Observer** — screenshot reading / multimodal vision agent. Primary model: Gemini 3.8 Flash. If only an Anthropic key is configured (no Google key), Observer automatically falls back to Claude Sonnet 5 (`observer-claude.md`) — the same analysis, either way.
 
 **Cost:** Moderate. Cheaper than Anthropic, pricier than DeepSeek.
 
@@ -148,5 +148,5 @@ When configuring providers manually or writing agent frontmatter:
 | DeepSeek | `deepseek/deepseek-flash` | `supervisor.md`, all `junior-*.md` |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc., `observer-claude.md` |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
-| Google | `google/gemini-3.7-flash` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |
+| Google | `google/gemini-3.8-flash` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |
 | xAI (Grok) | `xai/grok-4.5` | `grok-worker.md`, `grok-mule.md`, `designer.md`, `designer-mule.md` |

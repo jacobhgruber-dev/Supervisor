@@ -180,7 +180,7 @@ Mules are subagent infrastructure — architects, workers, debuggers, and review
 | `planner-mule` | DeepSeek Flash | Task breakdown, sequencing |
 | `editor-mule` | DeepSeek Flash | Documentation polish |
 | `quote-auditor-mule` | DeepSeek Flash | Source verification |
-| `gemini-mule` | Gemini 3.7 Flash | Long-context, multimodal, web research |
+| `gemini-mule` | Gemini 3.8 Flash | Long-context, multimodal, web research |
 | `grok-mule` | Grok 4.5 | Coding, reasoning, creative |
 | `claude-mule` | Claude Sonnet 5 | Nuanced reasoning, careful analysis, code review |
 | `designer-mule` | Grok 4.5 | Bounded UI/UX, component styling, CSS/Tailwind |
