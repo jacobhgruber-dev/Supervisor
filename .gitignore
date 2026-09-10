@@ -18,6 +18,9 @@ node_modules/
 *.pyc
 __pycache__/
 
+# Local tooling
+.playwright-mcp/
+
 # Databases
 *.db
 
