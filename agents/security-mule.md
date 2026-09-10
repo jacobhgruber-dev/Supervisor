@@ -1,8 +1,8 @@
 ---
-description: "Security audit leaf agent — bounded vulnerability assessment, secret scanning. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek V4 Pro."
+description: "Security audit leaf agent — bounded vulnerability assessment, secret scanning. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek Flash."
 mode: subagent
 hidden: true
-model: deepseek/deepseek-v4-pro
+model: deepseek/deepseek-flash
 variant: max
 steps: 30
 color: "#F87171"

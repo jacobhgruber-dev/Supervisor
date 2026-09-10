@@ -20,7 +20,7 @@ Validates, using only the Python standard library:
   - ``task: {"*": "deny"}`` (or ``task: deny``) on all mules,
     ``observer``, ``observer-claude``, ``local-coder``, and
     ``local-reasoner``.
-  - model per tier: junior → ``deepseek/deepseek-v4-pro``, mid →
+  - model per tier: junior → ``deepseek/deepseek-flash``, mid →
     ``anthropic/claude-sonnet-5``, senior → ``anthropic/claude-opus-5``,
     Grok agents → ``xai/grok-4.5``; ``observer-claude`` →
     ``anthropic/claude-sonnet-5``.
@@ -68,7 +68,7 @@ MID_TIER_ROLES = {
     "quote-auditor",
 }
 
-JUNIOR_MODEL = "deepseek/deepseek-v4-pro"
+JUNIOR_MODEL = "deepseek/deepseek-flash"
 MID_MODEL = "anthropic/claude-sonnet-5"
 SENIOR_MODEL = "anthropic/claude-opus-5"
 GROK_MODEL = "xai/grok-4.5"

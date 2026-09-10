@@ -1,7 +1,7 @@
 ---
-description: Security auditor subagent — comprehensive vulnerability assessment across injection, auth, secrets, dependencies, crypto, configuration, and business logic. Powered by DeepSeek V4 Pro.
+description: Security auditor subagent — comprehensive vulnerability assessment across injection, auth, secrets, dependencies, crypto, configuration, and business logic. Powered by DeepSeek Flash.
 mode: subagent
-model: deepseek/deepseek-v4-pro
+model: deepseek/deepseek-flash
 variant: max
 steps: 30
 color: "#DC2626"

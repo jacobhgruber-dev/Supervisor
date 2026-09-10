@@ -1,7 +1,7 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Subagents — Quick Reference
 
-47 subagent files across 9 roles at 4 tiers (48 agents total with the Supervisor primary)  •  junior: DeepSeek V4 Pro  •  mid: Claude Sonnet 5  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
+47 subagent files across 9 roles at 4 tiers (48 agents total with the Supervisor primary)  •  junior: DeepSeek Flash  •  mid: Claude Sonnet 5  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
 
 For full tier specifications, see [tier-system-reference.md](tier-system-reference.md).
 For the full system reference including modes, local agents, and commands, see [reference.md](reference.md).
@@ -20,7 +20,7 @@ Key principle: **Delegate everything.** The Supervisor reads docs for orientatio
 
 ### How tiers work
 
-This repo ships with all 4 tiers of agents already configured — 47 subagent files across 9 roles (plus designer / designer-mule and alternative model workers; 48 agents total with the Supervisor). The junior tier (`junior-*`) runs on DeepSeek V4 Pro and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
+This repo ships with all 4 tiers of agents already configured — 47 subagent files across 9 roles (plus designer / designer-mule and alternative model workers; 48 agents total with the Supervisor). The junior tier (`junior-*`) runs on DeepSeek Flash and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
 
 ---
 
@@ -171,15 +171,15 @@ Mules are subagent infrastructure — architects, workers, debuggers, and review
 
 | Mule | Model | Best for |
 |---|---|---|
-| `worker-mule` | DeepSeek V4 Pro | Implementation, file edits, bash commands |
-| `architect-mule` | DeepSeek V4 Pro | Design sub-problems, refactor scoping |
-| `researcher-mule` | DeepSeek V4 Pro | Web research, documentation lookup |
-| `debugger-mule` | DeepSeek V4 Pro | Hypothesis testing, diagnostics |
-| `reviewer-mule` | DeepSeek V4 Pro | Diff-level code review |
-| `security-mule` | DeepSeek V4 Pro | Vulnerability scanning |
-| `planner-mule` | DeepSeek V4 Pro | Task breakdown, sequencing |
-| `editor-mule` | DeepSeek V4 Pro | Documentation polish |
-| `quote-auditor-mule` | DeepSeek V4 Pro | Source verification |
+| `worker-mule` | DeepSeek Flash | Implementation, file edits, bash commands |
+| `architect-mule` | DeepSeek Flash | Design sub-problems, refactor scoping |
+| `researcher-mule` | DeepSeek Flash | Web research, documentation lookup |
+| `debugger-mule` | DeepSeek Flash | Hypothesis testing, diagnostics |
+| `reviewer-mule` | DeepSeek Flash | Diff-level code review |
+| `security-mule` | DeepSeek Flash | Vulnerability scanning |
+| `planner-mule` | DeepSeek Flash | Task breakdown, sequencing |
+| `editor-mule` | DeepSeek Flash | Documentation polish |
+| `quote-auditor-mule` | DeepSeek Flash | Source verification |
 | `gemini-mule` | Gemini 3.7 Flash | Long-context, multimodal, web research |
 | `grok-mule` | Grok 4.5 | Coding, reasoning, creative |
 | `claude-mule` | Claude Sonnet 5 | Nuanced reasoning, careful analysis, code review |

@@ -249,7 +249,7 @@ This is part of the core setup, not a bolt-on. The **full 4-tier system ships in
 
 | You ask for… | Agent used | Model | Powered by |
 |--------------|-----------|-------|------------|
-| (automatic / "the junior worker") | `junior-worker` | DeepSeek V4 Pro | Your DeepSeek key |
+| (automatic / "the junior worker") | `junior-worker` | DeepSeek Flash | Your DeepSeek key |
 | "send this to the worker / architect" | `worker`, `architect` | Claude Sonnet 5 | Anthropic key |
 | "use the **senior** reviewer" | `senior-reviewer` | Claude Opus 5 | Anthropic key |
 

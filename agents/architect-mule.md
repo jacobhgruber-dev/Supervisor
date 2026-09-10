@@ -1,8 +1,8 @@
 ---
-description: "Architecture leaf agent — bounded design decisions, tradeoff analysis, refactor scoping. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek V4 Pro."
+description: "Architecture leaf agent — bounded design decisions, tradeoff analysis, refactor scoping. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek Flash."
 mode: subagent
 hidden: true
-model: deepseek/deepseek-v4-pro
+model: deepseek/deepseek-flash
 variant: max
 steps: 30
 color: "#A5B4FC"

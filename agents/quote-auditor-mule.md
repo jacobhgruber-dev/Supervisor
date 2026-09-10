@@ -1,8 +1,8 @@
 ---
-description: "Quote audit leaf agent — bounded source verification, attribution accuracy check. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek V4 Pro."
+description: "Quote audit leaf agent — bounded source verification, attribution accuracy check. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek Flash."
 mode: subagent
 hidden: true
-model: deepseek/deepseek-v4-pro
+model: deepseek/deepseek-flash
 variant: max
 steps: 30
 color: "#FDE68A"

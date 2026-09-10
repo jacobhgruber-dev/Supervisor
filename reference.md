@@ -16,8 +16,8 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 
 | Component | Model | Purpose |
 |-----------|-------|---------|
-| **Supervisor** (primary) | DeepSeek V4 Pro | Orchestration — plans, delegates, reviews, commits |
-| **47 agents** (4 tiers) | DeepSeek V4 Pro / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.7 Flash / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
+| **Supervisor** (primary) | DeepSeek Flash | Orchestration — plans, delegates, reviews, commits |
+| **47 agents** (4 tiers) | DeepSeek Flash / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.7 Flash / Grok 4.5 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
 | **Observer** (built in) | Gemini 3.7 Flash (primary), Claude Sonnet 5 fallback (`observer-claude`) | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
@@ -25,7 +25,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 
 ## Subagent Tiers
 
-The Supervisor ships with 47 subagent files across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers (48 agents total including the Supervisor itself). The junior tier (DeepSeek V4 Pro) is the default workhorse. Mid (Claude Sonnet 5) and senior (Claude Opus 5) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
+The Supervisor ships with 47 subagent files across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers (48 agents total including the Supervisor itself). The junior tier (DeepSeek Flash) is the default workhorse. Mid (Claude Sonnet 5) and senior (Claude Opus 5) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
 | Subagent | Use For | Permissions |
 |----------|---------|-------------|
@@ -63,10 +63,10 @@ The 4-tier system is fully configured in the repo. The naming convention:
 
 | Tier | Model | Naming | Default Behavior |
 |------|-------|--------|-----------------|
-| Junior | DeepSeek V4 Pro | `junior-worker`, etc. | Default — automatic spawning |
+| Junior | DeepSeek Flash | `junior-worker`, etc. | Default — automatic spawning |
 | Mid | Claude Sonnet 5 | `worker`, etc. (bare name) | Explicitly invoked |
 | Senior | Claude Opus 5 | `senior-worker`, etc. | Highest stakes only |
-| Mule | DeepSeek V4 Pro (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
+| Mule | DeepSeek Flash (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
 
 This gives you 47 subagent files across 9 roles at 4 tiers (plus designer / designer-mule and alternative model workers). See `tier-system-reference.md` for the complete spec table and agent specifications.
 
@@ -74,7 +74,7 @@ This gives you 47 subagent files across 9 roles at 4 tiers (plus designer / desi
 
 | Tier | Model | Relative Cost | Best For |
 |------|-------|--------------|----------|
-| Junior | DeepSeek V4 Pro | $ | 80% of all tasks |
+| Junior | DeepSeek Flash | $ | 80% of all tasks |
 | Mid | Claude Sonnet 5 | $$ | Complex reasoning, deeper reviews |
 | Senior | Claude Opus 5 | $$$$ | Production-critical, highest stakes |
 
@@ -156,7 +156,7 @@ To create one, add an entry to your `opencode.json`:
 You (the User)
       |
       v
-Supervisor Agent (primary, DeepSeek V4 Pro)
+Supervisor Agent (primary, DeepSeek Flash)
       |
       +---> worker / junior-worker / senior-worker     (implementation)
       +---> architect / junior-architect / senior-architect  (design)

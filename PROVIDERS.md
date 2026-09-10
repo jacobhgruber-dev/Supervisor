@@ -145,7 +145,7 @@ When configuring providers manually or writing agent frontmatter:
 
 | Provider | Model ID | Agent Files |
 |----------|----------|-------------|
-| DeepSeek | `deepseek/deepseek-v4-pro` | `supervisor.md`, all `junior-*.md` |
+| DeepSeek | `deepseek/deepseek-flash` | `supervisor.md`, all `junior-*.md` |
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc., `observer-claude.md` |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
 | Google | `google/gemini-3.7-flash` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |

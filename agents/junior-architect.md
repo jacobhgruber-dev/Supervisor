@@ -1,7 +1,7 @@
 ---
-description: Architecture subagent for design decisions, tradeoff analysis, refactor scoping, cross-cutting concerns, API design, and fresh first-principles thinking. Powered by DeepSeek V4 Pro.
+description: Architecture subagent for design decisions, tradeoff analysis, refactor scoping, cross-cutting concerns, API design, and fresh first-principles thinking. Powered by DeepSeek Flash.
 mode: subagent
-model: deepseek/deepseek-v4-pro
+model: deepseek/deepseek-flash
 variant: max
 steps: 25
 color: "#3B82F6"

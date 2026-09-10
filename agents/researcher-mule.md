@@ -1,8 +1,8 @@
 ---
-description: "Research leaf agent — bounded web research, documentation lookup, API investigation. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek V4 Pro."
+description: "Research leaf agent — bounded web research, documentation lookup, API investigation. Mule tier: structurally cannot spawn subagents. Powered by DeepSeek Flash."
 mode: subagent
 hidden: true
-model: deepseek/deepseek-v4-pro
+model: deepseek/deepseek-flash
 variant: max
 steps: 30
 color: "#6EE7B7"

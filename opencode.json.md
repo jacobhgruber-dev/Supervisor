@@ -64,7 +64,7 @@ The shipped `opencode.template.json` contains only an Ollama provider for local 
 
 | Field | Value | What it does |
 |-------|-------|--------------|
-| `model` | `deepseek/deepseek-v4-pro` | Primary model for the supervisor and subagents |
+| `model` | `deepseek/deepseek-flash` | Primary model for the supervisor and subagents |
 | `default_agent` | `supervisor` | Makes Supervisor the default agent on startup |
 | `subagent_depth` | `3` | How many levels deep subagents can spawn subagents. 1 = only supervisor can spawn. 3 = supervisor → subagent → mule chains work. |
 | `mcp` | *(see below)* | MCP server definitions (tools available to agents) |
