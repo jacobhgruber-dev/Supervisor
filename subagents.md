@@ -140,11 +140,11 @@ The go-to for any task that doesn't fit a specialized role. Full access to edit 
 
 ## Bonus: Alternative Model Worker (Built In)
 
-When you want a specific model's strengths, the built-in `grok-worker` adds a full-access worker on xAI's Grok 4.5 (`xai/grok-4.5`). It ships in `agents/` and activates automatically once you connect an xAI key.
+When you want a specific model's strengths, the built-in `grok-worker` adds a full-access worker on xAI's Grok 4.6 (`xai/grok-4.6`). It ships in `agents/` and activates automatically once you connect an xAI key.
 
 | Agent | Model | Setup | Permissions |
 |-------|-------|-------|------------|
-| `grok-worker` | Grok 4.5 (xAI) | Add an xAI key through Desktop Settings → Providers. Nothing else — the agent file is already installed. | Full |
+| `grok-worker` | Grok 4.6 (xAI) | Add an xAI key through Desktop Settings → Providers. Nothing else — the agent file is already installed. | Full |
 
 See [`addons/grok-worker/README.md`](addons/grok-worker/README.md) for background and activation notes.
 
@@ -156,8 +156,8 @@ Specialized design agents with native image vision. The supervisor prefers `@des
 
 | Agent | Model | Steps | Permissions |
 |-------|-------|-------|-------------|
-| `designer` | Grok 4.5 (xAI) | 60 | Full + design MCPs (twenty-first, open-design, a11y-color-contrast) |
-| `designer-mule` | Grok 4.5 (xAI) | 30 | Same tools; leaf node (`task: deny`) |
+| `designer` | Grok 4.6 (xAI) | 60 | Full + design MCPs (twenty-first, open-design, a11y-color-contrast) |
+| `designer-mule` | Grok 4.6 (xAI) | 30 | Same tools; leaf node (`task: deny`) |
 
 **When to use**: UI/UX styling, component design, wireframes, mockups, layout, animation, accessibility styling. Spawn `designer` from the supervisor; `designer` may spawn `designer-mule` for bounded sub-tasks.
 
@@ -181,9 +181,9 @@ Mules are subagent infrastructure — architects, workers, debuggers, and review
 | `editor-mule` | DeepSeek Flash | Documentation polish |
 | `quote-auditor-mule` | DeepSeek Flash | Source verification |
 | `gemini-mule` | Gemini 3.8 Flash | Long-context, multimodal, web research |
-| `grok-mule` | Grok 4.5 | Coding, reasoning, creative |
+| `grok-mule` | Grok 4.6 | Coding, reasoning, creative |
 | `claude-mule` | Claude Sonnet 5 | Nuanced reasoning, careful analysis, code review |
-| `designer-mule` | Grok 4.5 | Bounded UI/UX, component styling, CSS/Tailwind |
+| `designer-mule` | Grok 4.6 | Bounded UI/UX, component styling, CSS/Tailwind |
 
 See [tier-system-reference.md](tier-system-reference.md) for full mule tier specifications.
 

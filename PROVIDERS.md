@@ -83,10 +83,10 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 ## Tier 4: xAI / Grok (Optional)
 
 **What it powers:**
-- `grok-worker` — alternative-model worker on Grok 4.5 (ships in `agents/`; activates with your key)
+- `grok-worker` — alternative-model worker on Grok 4.6 (ships in `agents/`; activates with your key)
 - `grok-mule` — leaf agent for creative reasoning and complex coding (3x the cost of `worker-mule` — use sparingly)
-- `designer` — UI/UX design agent on Grok 4.5 with native image vision (ships in `agents/`)
-- `designer-mule` — bounded design leaf on Grok 4.5 (ships in `agents/`)
+- `designer` — UI/UX design agent on Grok 4.6 with native image vision (ships in `agents/`)
+- `designer-mule` — bounded design leaf on Grok 4.6 (ships in `agents/`)
 
 **Cost:** Moderate. The Grok worker addon is optional and independent of the core system.
 
@@ -149,4 +149,4 @@ When configuring providers manually or writing agent frontmatter:
 | Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc., `observer-claude.md` |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
 | Google | `google/gemini-3.8-flash` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |
-| xAI (Grok) | `xai/grok-4.5` | `grok-worker.md`, `grok-mule.md`, `designer.md`, `designer-mule.md` |
+| xAI (Grok) | `xai/grok-4.6` | `grok-worker.md`, `grok-mule.md`, `designer.md`, `designer-mule.md` |

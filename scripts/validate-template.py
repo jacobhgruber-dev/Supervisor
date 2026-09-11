@@ -22,7 +22,7 @@ Validates, using only the Python standard library:
     ``local-reasoner``.
   - model per tier: junior → ``deepseek/deepseek-flash``, mid →
     ``anthropic/claude-sonnet-5``, senior → ``anthropic/claude-opus-5``,
-    Grok agents → ``xai/grok-4.5``; ``observer-claude`` →
+    Grok agents → ``xai/grok-4.6``; ``observer-claude`` →
     ``anthropic/claude-sonnet-5``.
 * ``opencode.template.json`` (or ``opencode.json`` with ``--installed``):
   valid JSON, ``default_agent: supervisor``, ``subagent_depth: 3``, and
@@ -71,7 +71,7 @@ MID_TIER_ROLES = {
 JUNIOR_MODEL = "deepseek/deepseek-flash"
 MID_MODEL = "anthropic/claude-sonnet-5"
 SENIOR_MODEL = "anthropic/claude-opus-5"
-GROK_MODEL = "xai/grok-4.5"
+GROK_MODEL = "xai/grok-4.6"
 OBSERVER_CLAUDE_NAME = "observer-claude"  # Claude Sonnet 5 fallback observer
 
 STEP_COUNTS = {

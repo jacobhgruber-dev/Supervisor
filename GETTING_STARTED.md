@@ -275,7 +275,7 @@ The Claude-powered agents sit ready but inactive until the key is present — no
 
 These are extras you can ignore until you want them:
 
-- **Grok (xAI)** — `grok-worker` (Grok 4.5), `grok-mule`, `designer`, and `designer-mule` all ship in `agents/` (Step 3 copied them). Add an xAI key through Desktop Settings → Providers (or `opencode auth login`) to activate them. See [PROVIDERS.md](PROVIDERS.md).
+- **Grok (xAI)** — `grok-worker` (Grok 4.6), `grok-mule`, `designer`, and `designer-mule` all ship in `agents/` (Step 3 copied them). Add an xAI key through Desktop Settings → Providers (or `opencode auth login`) to activate them. See [PROVIDERS.md](PROVIDERS.md).
 - **Addons** (`addons/` folder) — behavioral "modes," Grok notes, and a full reference catalog. See [`addons/README.md`](addons/README.md).
 - **Bundled skills (22)** — 19 motion/design skills (animate, framer-motion, gsap-core, motion-design, design-system, ui-styling, and more) plus 3 utility skills (`agent-reach`, `anna`, `use-railway`) ship in `skills/` and install with everything else. Agents load them automatically when a task matches. See [`skills/README.md`](skills/README.md).
 - **CLI quality tools** — the reviewer/debugger agents can use tools like `ruff`, `mypy`, and `trivy` when present. Optional but nice. See [`DEPENDENCIES.md`](DEPENDENCIES.md).
