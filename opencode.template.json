@@ -9,8 +9,6 @@
       "permission": {
         "chrome-devtools_*": "allow",
         "macos-use_*": "allow",
-        "screenpipe_search-content": "allow",
-        "screenpipe_export-video": "allow",
         "vercel_*": "allow",
         "twenty-first_*": "deny",
         "open-design_*": "deny"
@@ -49,11 +47,6 @@
     "railway": {
       "type": "local",
       "command": ["railway", "mcp"],
-      "enabled": false
-    },
-    "screenpipe": {
-      "type": "local",
-      "command": ["npx", "-y", "screenpipe-mcp@latest"],
       "enabled": false
     },
     "macos-automator": {
@@ -99,26 +92,17 @@
     },
     "twenty-first": {
       "type": "local",
-      "command": ["npx", "-y", "@21st-dev/mcp"],
+      "command": ["npx", "-y", "@21st-dev/magic"],
       "enabled": false
     },
     "a11y-color-contrast": {
       "type": "local",
       "command": ["npx", "-y", "a11y-color-contrast-mcp"],
       "enabled": true
-    },
-    "firecrawl": {
-      "type": "local",
-      "command": ["npx", "-y", "firecrawl-mcp"],
-      "enabled": false,
-      "environment": {
-        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_KEY"
-      }
     }
   },
   "permission": {
     "chrome-devtools_*": "allow",
-    "firecrawl_*": "allow",
     "macos-use_*": "allow",
     "vercel_*": "allow",
     "twenty-first_*": "deny",
@@ -130,15 +114,7 @@
     "prune": true,
     "reserved": 20000
   },
-  "provider": {
-    "ollama": {
-      "name": "Ollama (local)",
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "http://localhost:11434/v1"
-      }
-    }
-  },
+  "provider": {},
   "plugin": ["observer-bridge.js"],
   "disabled_providers": []
 }

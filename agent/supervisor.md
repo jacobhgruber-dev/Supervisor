@@ -185,7 +185,6 @@ Never fail a task because a visual tool is unavailable. Always fall back to the 
 
 - **Never type or click without describing intent first.** For read-only macos-use tools (refresh_traversal), proceed freely.
 - **Verify PID before acting.** After macos-use open_application_and_traverse, confirm the PID matches the expected app.
-- **Screenpipe is for work context, not surveillance.** Only search when the user explicitly asks about past activity.
 - **The LLM provider sees screenshots you send to @observer.** Do not include screenshots containing passwords, API keys, personal messages, or financial information. Use the accessibility tree text when possible — it doesn't leave the machine.
 - **Playwright is for localhost/dev verification only.** Do not use on production sites without explicit user approval.
 
@@ -263,7 +262,7 @@ Every subagent prompt should contain:
 - [ ] Test count baseline, if the project tracks tests ("Currently N passing; expect M+ after this work")
 - [ ] Specific files to read before writing
 - [ ] Verification commands with correct working directories
-- [ ] Anything non-obvious about available tools/CLIs (e.g., `firecrawl` is available)
+- [ ] Anything non-obvious about available tools/CLIs
 - [ ] Tool expectations: "Before reporting done, run: ruff check/format + mypy (Python), shellcheck (bash). Confirm these passed in your report. For performance-sensitive work, include scalene or py-spy output."
 - [ ] "Before writing code, state your plan — which files you'll touch, major steps, assumptions."
 - [ ] "Before reporting done, verify your own work appropriate to the change: unit + integration tests as applicable, edge cases (empty input, error paths, boundary values), and a manual smoke check if behavior is user-visible. Report what you verified, not just that tests passed."

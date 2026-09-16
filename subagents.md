@@ -1,10 +1,10 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Subagents — Quick Reference
 
-47 subagent files across 9 roles at 4 tiers (48 agents total with the Supervisor primary)  •  junior: DeepSeek Flash  •  mid: Claude Sonnet 5  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
+45 subagent files across 9 roles at 4 tiers (46 agents total with the Supervisor primary)  •  junior: DeepSeek Flash  •  mid: Claude Sonnet 5  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
 
 For full tier specifications, see [tier-system-reference.md](tier-system-reference.md).
-For the full system reference including modes, local agents, and commands, see [reference.md](reference.md).
+For the full system reference including modes and commands, see [reference.md](reference.md).
 
 ---
 
@@ -20,7 +20,7 @@ Key principle: **Delegate everything.** The Supervisor reads docs for orientatio
 
 ### How tiers work
 
-This repo ships with all 4 tiers of agents already configured — 47 subagent files across 9 roles (plus designer / designer-mule and alternative model workers; 48 agents total with the Supervisor). The junior tier (`junior-*`) runs on DeepSeek Flash and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models and permissions per role per tier.
+This repo ships with all 4 tiers of agents already configured — 45 subagent files across 9 roles (plus designer / designer-mule and alternative model workers; 46 agents total with the Supervisor). The junior tier (`junior-*`) runs on DeepSeek Flash and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models and permissions per role per tier.
 
 ---
 
@@ -42,7 +42,7 @@ Takes a design and sequences the work. Complements architect (what → how → w
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `planner` | Claude Sonnet 5 | `#C4B5FD` | Read-only |
+| `planner` | Claude Sonnet 5 | `#A78BFA` | Read-only + web |
 
 **When to use**: Task breakdown, dependency mapping, milestone planning, effort estimation.
 
@@ -56,7 +56,7 @@ Finds bugs, logic errors, style issues, and security concerns in code. Runs auto
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `reviewer` | Claude Sonnet 5 | `#FCA5A5` | Read-only + bash |
+| `reviewer` | Claude Sonnet 5 | `#F87171` | Read-only + bash + web |
 
 **When to use**: Pre-merge review, PR feedback, catching edge cases and logic flaws.
 
@@ -68,7 +68,7 @@ Chases bugs that are happening right now — error messages, stack traces, produ
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `debugger` | Claude Sonnet 5 | `#FB7185` | Full (edit, bash, web, playwright) |
+| `debugger` | Claude Sonnet 5 | `#EF4444` | Full (edit, bash, web, playwright) |
 
 **When to use**: Something broke. Error logs, crash reports, mysterious behavior.
 
@@ -96,7 +96,7 @@ Improves writing — structure, clarity, tone, grammar.
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `editor` | Claude Sonnet 5 | `#FDE68A` | Read + edit |
+| `editor` | Claude Sonnet 5 | `#FDE68A` | Read + edit + web |
 
 **When to use**: Blog posts, documentation, transcripts, any written content that needs polish.
 
@@ -120,7 +120,7 @@ Verifies that quotes match their sources exactly. Detects paraphrasing disguised
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `quote-auditor` | Claude Sonnet 5 | `#FDBA74` | Read-only |
+| `quote-auditor` | Claude Sonnet 5 | `#FDBA74` | Read-only + web |
 
 **When to use**: Verifying transcript quotes, fact-checking article claims, legal/journalistic accuracy.
 
@@ -132,7 +132,7 @@ The go-to for any task that doesn't fit a specialized role. Full access to edit 
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `worker` | Claude Sonnet 5 | `#A5B4FC` | Full |
+| `worker` | Claude Sonnet 5 | `#818CF8` | Full |
 
 **When to use**: Implementation, feature building, test writing, migrations, any general task.
 
@@ -156,7 +156,7 @@ Specialized design agents with native image vision. The supervisor prefers `@des
 
 | Agent | Model | Permissions |
 |-------|-------|-------------|
-| `designer` | Grok 4.6 (xAI) | Full + design MCPs (twenty-first, open-design, a11y-color-contrast) |
+| `designer` | Grok 4.6 (xAI) | Full + design MCPs (chrome-devtools, twenty-first, a11y-color-contrast) |
 | `designer-mule` | Grok 4.6 (xAI) | Same tools; leaf node (`task: deny`) |
 
 **When to use**: UI/UX styling, component design, wireframes, mockups, layout, animation, accessibility styling. Spawn `designer` from the supervisor; `designer` may spawn `designer-mule` for bounded sub-tasks.
@@ -242,7 +242,7 @@ These slash commands change the main agent's behavior for a single request. Most
 
 ## Key Design Decisions
 
-- **Edit permissions by role:** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`) — they analyze and recommend. For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
+- **Edit permissions by role:** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`) — they analyze and recommend. For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): every role has full web access. Tiers differ only in model, description, and color — never in permissions.
 - **Architect vs Planner**: Architect invents new approaches. Planner sequences existing designs into action steps.
 - **Reviewer vs Debugger**: Reviewer finds bugs in code you're about to merge. Debugger investigates bugs that are already happening.
 - **Reviewer vs Security**: Reviewer cares about correctness. Security only cares about exploits.

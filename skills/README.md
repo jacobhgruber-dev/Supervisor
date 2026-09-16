@@ -42,7 +42,7 @@ Skills are specialized instruction sets that extend agent capabilities. In openc
 
 ## Exclusion Policy (Strict)
 
-- Private/local OSINT skills are NEVER bundled: `people-osint`, `people-search`, `image-osint` — they are personal investigation tooling with local credentials/workflows; they stay in the user's `~/.opencode/skills/` only.
+- Private/local OSINT skills are NEVER bundled: `people-osint`, `people-search`, `image-osint` — they are personal investigation tooling with local credentials/workflows; they stay in the user's `~/.config/opencode/skills/` only.
 - Complex skills with broken absolute-path dependencies are excluded: `banner-design`, `brand`, `design`, `slides`, `ui-ux-pro-max` — they carry hardcoded local paths and are not portable.
 - Portability rule: a skill is bundled only if its tree is self-contained (no absolute paths, no symlinks) and it loads correctly on any machine.
 

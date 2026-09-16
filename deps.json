@@ -34,9 +34,9 @@
         "opencode": {
           "detect": { "commands": ["opencode"] },
           "install": {
-            "windows": { "npm": ["npm", "install", "-g", "opencode"] },
-            "darwin": { "npm": ["npm", "install", "-g", "opencode"] },
-            "linux": { "npm": ["npm", "install", "-g", "opencode"] }
+            "windows": { "npm": ["npm", "install", "-g", "opencode-ai"] },
+            "darwin": { "npm": ["npm", "install", "-g", "opencode-ai"] },
+            "linux": { "npm": ["npm", "install", "-g", "opencode-ai"] }
           },
           "notes": "The OpenCode app itself. Then run: opencode auth login"
         },

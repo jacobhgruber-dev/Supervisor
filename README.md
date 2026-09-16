@@ -21,12 +21,12 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **47 subagents across 4 tiers (junior, mid, senior, mule)** — 48 agents total with the Supervisor primary. 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek Flash), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
+- **45 subagents across 4 tiers (junior, mid, senior, mule)** — 46 agents total with the Supervisor primary. 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek Flash), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **22 bundled skills (19 motion/design + 3 utility)** — a self-contained skill library in `skills/` that installs with everything else: 19 motion/design skills (animate, framer-motion ×5, gsap-core, motion-design, design-system, ui-styling, apple-design, and more) plus 3 utility skills (`agent-reach` for web research, `anna` for book/article downloads, `use-railway` for Railway infrastructure). See [skills/README.md](skills/README.md).
 - **Grok worker** — an alternative-model worker on xAI's Grok 4.6. Ships in `agents/grok-worker.md` with notes in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
-- **Full 4-tier system built in** — all 47 subagents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
+- **Full 4-tier system built in** — all 45 subagents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
 - **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 3.8 Flash — with automatic fallback to Claude Sonnet 5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
@@ -34,12 +34,12 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 
 ### Fastest path: the one-line installers
 
-Clone the repo, then run one command. The installer copies the Supervisor agent, all 47 subagents, the 22 bundled skills, the Observer plugin, and AGENTS.md into your OpenCode config — and safely **merges** the config instead of overwriting it (your existing `opencode.json` is backed up first, and your settings always win).
+Clone the repo, then run one command. The installer copies the Supervisor agent, all 45 subagents, the 22 bundled skills, the Observer plugin, and AGENTS.md into your OpenCode config. On a fresh machine, pass `--with-config` to also install `opencode.json` (that's what adds `default_agent: supervisor`, `subagent_depth: 3`, and the MCP servers). If an `opencode.json` already exists, it's always safely **merged** instead of overwritten (backed up first, and your settings always win).
 
 | Platform | Install | Update later |
 |----------|---------|--------------|
-| macOS / Linux | `./install.sh` | `./update.sh` |
-| Windows (PowerShell) | `.\setup.ps1` | `.\update.ps1` |
+| macOS / Linux | `./install.sh --with-config` | `./update.sh` |
+| Windows (PowerShell) | `.\setup.ps1 -WithConfig` (if the execution policy blocks it: `powershell -NoProfile -ExecutionPolicy Bypass -File setup.ps1 -WithConfig`) | `.\update.ps1` |
 
 Check what else your machine is missing:
 
@@ -59,16 +59,19 @@ For a full list of recommended CLI tools, Python packages, and optional services
 
 ### 2. Configure OpenCode
 
-**If you configured providers through OpenCode Desktop (Settings → Providers):** you don't need to touch `opencode.json` at all — your provider config is already set. Just copy the agent files, plugin, and AGENTS.md:
+**If you configured providers through OpenCode Desktop (Settings → Providers):** you don't need to touch `opencode.json` at all — your provider config is already set. Just copy the agent files, skills, plugin, and AGENTS.md:
 
 ```bash
-# Supervisor → agent/ ; subagents → agents/
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
+# Make sure the config folders exist
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
 cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
 cp agents/*.md         ~/.config/opencode/agents/
 
+# Copy the bundled skills
+cp -R skills/.         ~/.config/opencode/skills/
+
 # Copy the Observer plugin (lets you paste screenshots into chat)
-cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
+cp plugin/observer-bridge.js ~/.config/opencode/plugin/observer-bridge.js
 
 # Copy behavioral guidelines (merge if you already have AGENTS.md)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
@@ -77,16 +80,21 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 **If this is your first opencode setup** (and you haven't configured providers yet)**:** copy the full config too — it gives you MCP servers, `default_agent`, and `"subagent_depth": 3` (required for mule chains):
 
 ```bash
+# Make sure the config folders exist
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
+
 # Copy config (no API keys live in here — see step 3)
 cp opencode.template.json ~/.config/opencode/opencode.json
 
 # Supervisor → agent/ ; subagents → agents/
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
 cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
 cp agents/*.md         ~/.config/opencode/agents/
 
+# Copy the bundled skills
+cp -R skills/.         ~/.config/opencode/skills/
+
 # Copy the Observer plugin (lets you paste screenshots into chat)
-cp plugin/observer-bridge.js ~/.config/opencode/observer-bridge.js
+cp plugin/observer-bridge.js ~/.config/opencode/plugin/observer-bridge.js
 
 # Copy behavioral guidelines (merge if you already have AGENTS.md)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
@@ -132,7 +140,7 @@ The Supervisor handles the rest — planning, spawning subagents, reviewing, fix
 ### Troubleshooting
 
 **"Model not found" or API errors on restart:**
-Make sure you've added your DeepSeek API key through OpenCode Desktop (Settings → Providers) or `opencode auth login`. If you modified `opencode.json` to add a `provider` block for a cloud provider, remove it — you don't need one; built-in providers (DeepSeek, Anthropic, Google, xAI) are handled natively. (Blocks are only required for custom providers like ollama, or to intentionally override `options` such as `baseURL`.)
+Make sure you've added your DeepSeek API key through OpenCode Desktop (Settings → Providers) or `opencode auth login`. If you modified `opencode.json` to add a `provider` block for a cloud provider, remove it — you don't need one; built-in providers (DeepSeek, Anthropic, Google, xAI) are handled natively. (Blocks are only required for custom/local providers, or to intentionally override `options` such as `baseURL`.)
 
 **"Agent not found" when the Supervisor tries to spawn a subagent:**
 Make sure the agent `.md` files are in `~/.config/opencode/agents/` — not in a subdirectory. Run:
@@ -167,7 +175,7 @@ Supervisor Agent (primary, DeepSeek Flash)
         +---> observer        (visual analysis, multimodal, read-only)
 ```
 
-(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.6). Local Ollama placeholders: `local-coder`, `local-reasoner`.)
+(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.6).)
 No agent sets a `steps` cap — every tier (DeepSeek junior, Claude mid/senior, and all mules) runs uncapped.
 
 ## How It Works
@@ -200,14 +208,14 @@ Supervisor/
 ├── update.ps1                     # Safe updater (Windows PowerShell)
 ├── deps.json                      # Dependency Doctor manifest
 ├── agent/supervisor.md   # Primary Supervisor agent (source — install to ~/.config/opencode/agent/)
-├── opencode.template.json         # Template config with MCP servers, Ollama provider, subagent_depth: 3
+├── opencode.template.json         # Template config with MCP servers, subagent_depth: 3
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── subagents.md                   # Quick reference for the 9 base subagents
 ├── tier-system-reference.md       # Complete 4-tier agent specs and naming conventions
 ├── AGENTS.md                      # Behavioral guidelines (-> ~/.config/opencode/)
 ├── scripts/                       # Installer helpers (config merge, template validation)
-├── agents/                        # All 47 subagents (-> ~/.config/opencode/agents/)
+├── agents/                        # All 45 subagents (-> ~/.config/opencode/agents/)
 │   ├── worker.md                  # General-purpose implementation agent
 │   ├── architect.md               # System design and tradeoff analysis
 │   ├── planner.md                 # Task breakdown and sequencing
@@ -223,11 +231,9 @@ Supervisor/
 │   ├── gemini-worker.md           # High-powered worker (Gemini 3.8 Flash)
 │   ├── grok-worker.md             # High-powered worker (Grok 4.6)
 │   ├── designer.md                # UI/UX design (Grok 4.6, native image vision)
-│   ├── designer-mule.md           # Bounded design leaf (Grok 4.6)
-│   ├── local-coder.md             # Ollama placeholder (configure before use)
-│   └── local-reasoner.md          # Ollama placeholder (configure before use)
+│   └── designer-mule.md           # Bounded design leaf (Grok 4.6)
 ├── plugin/
-│   └── observer-bridge.js         # Paste-a-screenshot interception — deploys to config root: ~/.config/opencode/observer-bridge.js (not a plugin/ subdirectory)
+│   └── observer-bridge.js         # Paste-a-screenshot interception — deploys to ~/.config/opencode/plugin/observer-bridge.js
 ├── addons/
 │   ├── README.md                  # Addon overview
 │   ├── grok-worker/               # Grok worker notes (grok-worker.md itself now ships in agents/)
@@ -242,7 +248,7 @@ Supervisor/
 ## Requirements
 
 - [OpenCode](https://opencode.ai) installed
-- A [DeepSeek API key](https://platform.deepseek.com/api_keys) (free tier available)
+- A [DeepSeek API key](https://platform.deepseek.com/api_keys) (add $2–$5 of credit to start)
 - Node.js (for provider packages and MCP servers)
 - See [DEPENDENCIES.md](DEPENDENCIES.md) for recommended CLI tools and optional services
 
@@ -252,9 +258,9 @@ Supervisor/
 
 **One model, many roles (junior tier default).** All junior-tier subagents use the same model (DeepSeek Flash) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain. Mid and senior tiers use different models (Claude Sonnet 5, Claude Opus 5) for tasks needing deeper reasoning.
 
-**Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): worker, researcher, debugger, architect, and security have full web access; reviewer, editor, planner, and quote auditor do not. Tiers differ only in model, never in permissions.
+**Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): every role has full web access. Tiers differ only in model, description, and color — never in permissions.
 
-**Tiers scale with your needs.** All 4 tiers (junior, mid, senior, mule) ship in the repo. DeepSeek handles 95% of work on its own. Mid and senior agents (Claude Sonnet/Opus) are already configured and activate when you add an Anthropic API key (see `tier-system-reference.md`). No architectural changes needed.
+**Tiers scale with your needs.** All 4 tiers (junior, mid, senior, mule) ship in the repo. DeepSeek handles ~80% of work on its own. Mid and senior agents (Claude Sonnet/Opus) are already configured and activate when you add an Anthropic API key (see `tier-system-reference.md`). No architectural changes needed.
 
 ## Credits
 

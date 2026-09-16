@@ -125,9 +125,9 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 
 When you connect a key through OpenCode Desktop or `opencode auth login`, the key is stored in a secure internal file (`~/.local/share/opencode/auth.json`). OpenCode handles the provider wiring internally.
 
-A `"provider"` block for a cloud provider is **deep-merged into the built-in (models.dev) definition** — it never removes the credentials stored in `~/.local/share/opencode/auth.json`. The real risks of adding one: `options.apiKey` shadows your stored key, `options.baseURL` overrides the endpoint and can break calls, and `blacklist`/`whitelist` hide models. Since none of that is ever needed for a plain cloud connection, the template config in this repo intentionally includes **no provider blocks for cloud providers** (DeepSeek, Anthropic, Google, xAI). It includes exactly one provider block — `ollama`, a local custom provider — because local/custom providers are the legitimate exception: they require a provider block since they are not built into OpenCode.
+A `"provider"` block for a cloud provider is **deep-merged into the built-in (models.dev) definition** — it never removes the credentials stored in `~/.local/share/opencode/auth.json`. The real risks of adding one: `options.apiKey` shadows your stored key, `options.baseURL` overrides the endpoint and can break calls, and `blacklist`/`whitelist` hide models. Since none of that is ever needed for a plain cloud connection, the template config in this repo intentionally includes **no provider blocks for cloud providers** (DeepSeek, Anthropic, Google, xAI). Local/custom providers are the legitimate exception — they require a provider block since they are not built into OpenCode — but the template defines none; add your own if you use them.
 
-If you see a `"provider"` block for a cloud provider in any config template, delete it — you don't need it. (The one exception: blocks for local/custom providers like ollama, which are required.) A provider block is also the legitimate way to intentionally customize a built-in provider — e.g. a `baseURL` override — but you never need one just to connect a key.
+If you see a `"provider"` block for a cloud provider in any config template, delete it — you don't need it. (The one exception: blocks for local/custom providers, which are required.) A provider block is also the legitimate way to intentionally customize a built-in provider — e.g. a `baseURL` override — but you never need one just to connect a key.
 
 ---
 
@@ -145,8 +145,8 @@ When configuring providers manually or writing agent frontmatter:
 
 | Provider | Model ID | Agent Files |
 |----------|----------|-------------|
-| DeepSeek | `deepseek/deepseek-flash` | `supervisor.md`, all `junior-*.md` |
-| Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc., `observer-claude.md` |
+| DeepSeek | `deepseek/deepseek-flash` | `supervisor.md`, all `junior-*.md`, the 9 DeepSeek `*-mule.md` agents |
+| Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc., `observer-claude.md`, `claude-mule.md` |
 | Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
 | Google | `google/gemini-3.8-flash` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |
 | xAI (Grok) | `xai/grok-4.6` | `grok-worker.md`, `grok-mule.md`, `designer.md`, `designer-mule.md` |

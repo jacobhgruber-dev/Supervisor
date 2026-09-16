@@ -13,7 +13,6 @@ permission:
   webfetch: allow
   websearch: allow
   playwright_*: allow
-  screenpipe_search-content: allow
   chrome-devtools_*: allow
 ---
 

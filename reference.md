@@ -17,7 +17,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek Flash | Orchestration — plans, delegates, reviews, commits |
-| **47 agents** (4 tiers) | DeepSeek Flash / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.8 Flash / Grok 4.6 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
+| **45 agents** (4 tiers) | DeepSeek Flash / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.8 Flash / Grok 4.6 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
 | **Observer** (built in) | Gemini 3.8 Flash (primary), Claude Sonnet 5 fallback (`observer-claude`) | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
@@ -25,7 +25,7 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 
 ## Subagent Tiers
 
-The Supervisor ships with 47 subagent files across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers (48 agents total including the Supervisor itself). The junior tier (DeepSeek Flash) is the default workhorse. Mid (Claude Sonnet 5) and senior (Claude Opus 5) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
+The Supervisor ships with 45 subagent files across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers (46 agents total including the Supervisor itself). The junior tier (DeepSeek Flash) is the default workhorse. Mid (Claude Sonnet 5) and senior (Claude Opus 5) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
 | Subagent | Use For | Permissions |
 |----------|---------|-------------|
@@ -33,11 +33,11 @@ The Supervisor ships with 47 subagent files across 4 tiers — 9 roles at each t
 | `researcher` | Web research, multi-source synthesis, API/library docs | Full |
 | `debugger` | Runtime errors, test failures, root cause analysis | Full (edit, bash, web, playwright) |
 | `architect` | Design questions, refactoring plans, tradeoff analysis | Edit + web + playwright (no bash) |
-| `reviewer` | Code review — quality, bugs, style, pre-commit pass | Read-only + bash |
+| `reviewer` | Code review — quality, bugs, style, pre-commit pass | Read-only + bash + web |
 | `security` | Vulnerability scanning — secrets, injections, unsafe patterns | Read-only + bash + web + playwright |
-| `planner` | Task breakdown, sequencing, milestone planning | Read-only |
-| `editor` | Grammar, spelling, punctuation, readability | Read + edit |
-| `quote-auditor` | Quotation verification against sources | Read-only |
+| `planner` | Task breakdown, sequencing, milestone planning | Read-only + web |
+| `editor` | Grammar, spelling, punctuation, readability | Read + edit + web |
+| `quote-auditor` | Quotation verification against sources | Read-only + web |
 
 All nine mid-tier agents run Claude Sonnet 5 and are uncapped, like every agent in the template — no agent sets a `steps` cap. See [tier-system-reference.md](tier-system-reference.md).
 
@@ -68,7 +68,7 @@ The 4-tier system is fully configured in the repo. The naming convention:
 | Senior | Claude Opus 5 | `senior-worker`, etc. | Highest stakes only |
 | Mule | DeepSeek Flash (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
 
-This gives you 47 subagent files across 9 roles at 4 tiers (plus designer / designer-mule and alternative model workers). See `tier-system-reference.md` for the complete spec table and agent specifications.
+This gives you 45 subagent files across 9 roles at 4 tiers (plus designer / designer-mule and alternative model workers). See `tier-system-reference.md` for the complete spec table and agent specifications.
 
 ### Quick Cost Guide
 
@@ -95,7 +95,7 @@ See [subagents.md](subagents.md) and [tier-system-reference.md](tier-system-refe
 
 ## Behavioral Modes (Addon)
 
-Slash commands that change how the agent thinks for a single request. Modes don't change the model — they change the behavior. Works with any agent (supervisor or subagent). Most reinforce the Karpathy principles; `/architect` sometimes overrides them for fresh first-principles design.
+Slash commands that change how the agent thinks for a single request. Modes don't change the model — they change the behavior. Works with the Supervisor primary agent — the modes are defined in `agent/supervisor.md`, which subagents don't load. Most reinforce the Karpathy principles; `/architect` sometimes overrides them for fresh first-principles design.
 
 | Mode | Trigger | What It Does |
 |------|---------|--------------|
@@ -127,7 +127,7 @@ Include any slash command anywhere in your message. The agent shifts behavior fo
 /explain How does the auth middleware work in this Express app?
 ```
 
-Mode switching is built into the root `AGENTS.md`. No separate copy needed.
+Mode switching is built into the Supervisor primary agent (`agent/supervisor.md`). No separate copy needed.
 
 ---
 

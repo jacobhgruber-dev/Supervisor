@@ -1,9 +1,9 @@
 ---
 description: Multimodal visual analysis subagent (Claude Sonnet 5 fallback) — read and analyze screenshots, design drafts, log images, UI states.
 mode: subagent
+hidden: true
 model: anthropic/claude-sonnet-5
 temperature: 0.1
-hidden: true
 permission:
   write: deny
   edit: deny
@@ -33,7 +33,6 @@ Scan the current conversation context for image file paths. Any path matching th
 - A path wrapped in `[Image saved to: ...]` (user-pasted image)
 - A path in `/tmp/opencode/` or a screenshot path returned by a macos-use traversal (desktop screenshot)
 - An image path the main agent explicitly tells you to read
-- A path referenced in a screenpipe search result
 
 ### Reading Method
 

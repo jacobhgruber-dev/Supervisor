@@ -148,10 +148,13 @@ def test_hidden_rules():
     vt.check_hidden({}, "worker-mule", "w", errors)  # mule must be hidden
     assert len(errors) == 1
     errors = []
-    vt.check_hidden({"hidden": "true"}, "worker", "w", errors)  # mid must not
+    vt.check_hidden({"hidden": "true"}, "worker", "w", errors)  # non-mule must not
     assert len(errors) == 1
     errors = []
-    vt.check_hidden({"hidden": "true"}, "observer", "w", errors)  # hidden ok
+    vt.check_hidden({}, "observer", "w", errors)  # observer must be hidden
+    assert len(errors) == 1
+    errors = []
+    vt.check_hidden({"hidden": "true"}, "observer", "w", errors)
     assert errors == []
 
 
@@ -159,6 +162,17 @@ def test_observer_claude_must_be_hidden():
     errors = []
     vt.check_hidden({}, "observer-claude", "w", errors)
     assert len(errors) == 1
+    errors = []
+    vt.check_hidden({"hidden": "true"}, "observer-claude", "w", errors)
+    assert errors == []
+
+
+def test_policy_constants():
+    """hidden covers mules + observers; counts match the template."""
+    assert vt.HIDDEN_EXTRA == {"observer", "observer-claude"}
+    assert vt.TASK_DENY_EXTRA == {"observer", "observer-claude"}
+    assert vt.EXPECTED_PRIMARY_FILES == 1
+    assert vt.EXPECTED_SUBAGENT_FILES == 45  # matches agents/ (45 .md files)
 
 
 def test_observer_claude_must_deny_task():

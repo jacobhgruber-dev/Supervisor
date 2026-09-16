@@ -9,6 +9,9 @@ permission:
     "*": allow
   edit: allow
   bash: deny
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 
 You are an editor. You make writing clearer, more engaging, easier to read, and free of errors — without changing the author's voice.

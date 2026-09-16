@@ -25,9 +25,9 @@ try {
   }
 } catch {}
 
-// Text-only providers that need the observer bridge. Override with
-// OBSERVER_BRIDGE_PROVIDERS="providerA,providerB".
-const bridgeProviders = (process.env.OBSERVER_BRIDGE_PROVIDERS || "deepseek,ollama")
+// Text-only providers that need the observer bridge. Defaults to "deepseek";
+// override with OBSERVER_BRIDGE_PROVIDERS="providerA,providerB".
+const bridgeProviders = (process.env.OBSERVER_BRIDGE_PROVIDERS || "deepseek")
   .split(",")
   .map((name) => name.trim().toLowerCase())
   .filter(Boolean)
@@ -93,7 +93,6 @@ export default async function () {
       `### When to use ${agent}\n` +
       "- A message contains `[Image saved to: <path>]` — the user pasted an image. Call it immediately.\n" +
       "- A macos-use tool response contains a screenshot path — call it to understand the UI state.\n" +
-      "- A screenpipe search result references screenshots — call it to interpret them.\n" +
       "- You need to compare two screenshots (e.g., before/after a UI change) — pass both paths to it.\n\n" +
       `### How to call ${agent}\n` +
       `Spawn ${agent} as a subagent with a message like:\n` +

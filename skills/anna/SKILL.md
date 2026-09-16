@@ -14,12 +14,14 @@ allowed-tools: Bash(git:*), Bash(go:*), Bash(cd:*), Bash(./annas-mcp:*), Bash(mk
 
 # Anna's Archive — Book and Article Search/Download
 
-Source repo: https://github.com/jacobhgruber-dev/anna-archive-cli
-API key already configured in `.env` — no setup needed unless binary is missing.
+Source repo: https://github.com/jacobhgruber-dev/anna-archive-cli — not publicly accessible (GitHub returns 404 as of 2026-09-16), so the repo must be made available to the user before this skill can work.
+This skill requires the `annas-mcp` binary and a user-supplied Anna's Archive API key. Nothing is pre-configured: a new user must clone/build the tool and set the key themselves (see Setup).
 
 ## Setup (run once if binary missing)
 
 Install dir: `$HOME/.local/share/anna` (~/.local/share/anna). Override with the `ANNA_HOME` env var if you keep it elsewhere.
+
+Prerequisite: the user must have access to the tool repo. If `https://github.com/jacobhgruber-dev/anna-archive-cli` is not shared with them, stop and say so — the clone will 404.
 
 If `$HOME/.local/share/anna/annas-mcp` does not exist:
 
@@ -28,7 +30,7 @@ git clone https://github.com/jacobhgruber-dev/anna-archive-cli.git $HOME/.local/
 cd $HOME/.local/share/anna && go build -o annas-mcp ./cmd/annas-mcp
 cp .env.example .env
 mkdir -p $HOME/.local/share/anna/downloads
-# Then: nano .env to set ANNAS_SECRET_KEY (user already has this)
+# Then: nano .env to set ANNAS_SECRET_KEY (your own Anna's Archive API key)
 ```
 
 ## Book Search
@@ -80,4 +82,4 @@ Keep results concise: numbered table, basic metadata. Only show download command
 2. **"Download the PDF of [book]"** → search first, then `book-download` with the hash
 3. **"Find papers about [topic]"** → `article-search` with keywords
 4. **"Get this paper: [DOI]"** → `article-search` with the DOI string, then `article-download`
-5. **"Parse this PDF I just downloaded"** → use `firecrawl_parse` or `pdftotext` on the downloaded file
+5. **"Parse this PDF I just downloaded"** → use `pdftotext` on the downloaded file

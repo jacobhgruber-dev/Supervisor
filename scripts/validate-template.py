@@ -3,19 +3,18 @@
 
 Validates, using only the Python standard library:
 
-* All 48 agent files (1 in ``agent/``, 47 in ``agents/``):
+* All 46 agent files (1 in ``agent/``, 45 in ``agents/``):
   - valid YAML frontmatter, non-empty description, correct mode
     (``primary`` for supervisor, ``subagent`` for everyone else),
     and a valid model.
-  - ``hidden: true`` on all 13 mules (``*-mule.md``), ``observer``,
-    ``observer-claude``, ``local-coder``, and ``local-reasoner``; and NOT on
-    junior/mid/senior role agents, ``designer``, ``grok-worker``,
-    ``gemini-worker``, or ``supervisor``.
+  - ``hidden: true`` on all 13 mules (``*-mule.md``) plus ``observer``
+    and ``observer-claude``; NOT on any other agent (role agents,
+    ``designer``, the addon workers ``grok-worker`` / ``gemini-worker``,
+    and ``supervisor`` stay @-mentionable).
   - NO ``steps`` key on any agent: step caps are no longer used anywhere
     in the template — every agent runs uncapped.
   - ``task: {"*": "deny"}`` (or ``task: deny``) on all mules,
-    ``observer``, ``observer-claude``, ``local-coder``, and
-    ``local-reasoner``.
+    ``observer``, and ``observer-claude``.
   - model per tier: junior → ``deepseek/deepseek-flash``, mid →
     ``anthropic/claude-sonnet-5``, senior → ``anthropic/claude-opus-5``,
     Grok agents → ``xai/grok-4.6``; Gemini agents (``gemini-worker``,
@@ -49,7 +48,7 @@ from typing import Any, Dict, List, Optional, Tuple
 # ---------------------------------------------------------------------------
 
 EXPECTED_PRIMARY_FILES = 1  # agent/ must contain exactly one file
-EXPECTED_SUBAGENT_FILES = 47  # agents/ must contain exactly 47 files
+EXPECTED_SUBAGENT_FILES = 45  # agents/ must contain exactly 45 files
 PRIMARY_AGENT_NAME = "supervisor"
 
 # Mid-tier role agents (bare names). ``designer`` and the addon workers are
@@ -78,12 +77,13 @@ OBSERVER_CLAUDE_NAME = "observer-claude"  # Claude Sonnet 5 fallback observer
 # multimodal observer.
 GEMINI_AGENTS = {"gemini-worker", "gemini-mule", "observer"}
 
-# Agents that must be hidden (in addition to every *-mule).
-HIDDEN_EXTRA = {"observer", "observer-claude", "local-coder", "local-reasoner"}
+# Agents that must be hidden in addition to every *-mule: the two
+# observer leaves (``observer``, ``observer-claude``).
+HIDDEN_EXTRA: set[str] = {"observer", "observer-claude"}
 
 # Agents that must be denied the ability to spawn further agents
-# (in addition to every *-mule).
-TASK_DENY_EXTRA = {"observer", "observer-claude", "local-coder", "local-reasoner"}
+# (in addition to every *-mule): the observer leaves.
+TASK_DENY_EXTRA = {"observer", "observer-claude"}
 
 # Config keys/values that look like hardcoded secrets.
 KEY_NAME_RE = re.compile(

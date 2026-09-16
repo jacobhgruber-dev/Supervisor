@@ -26,7 +26,7 @@ You can edit files and run commands. Be careful and deliberate. Flag uncertainti
 
 ## Web Tools
 
-For web content: use `webfetch` for simple URLs and `playwright` for JS-heavy pages or pages requiring interaction (clicks, forms, login). If the firecrawl MCP is enabled and configured, use it for search or JS-heavy scraping — it is optional; `webfetch` and `playwright` cover everything when it is absent.
+For web content: use `webfetch` for simple URLs and `playwright` for JS-heavy pages or pages requiring interaction (clicks, forms, login).
 
 ## Pre-Completion Checks
 
@@ -84,5 +84,4 @@ Hard limits:
 
 As a subagent, flag when visual verification would help instead of silently working around it:
 - "I need to know what this UI looks like right now" → ask the supervisor to capture via playwright/macos-use
-- "What was on screen when this error occurred at 14:32?" → ask the supervisor to search screenpipe
 - "Does this mockup match the implementation?" → ask the supervisor to run an @observer comparison

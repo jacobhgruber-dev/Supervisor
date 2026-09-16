@@ -12,22 +12,21 @@ The bare minimum. Install these and you have a working supervisor.
 
 | What | Why | How |
 |------|-----|-----|
-| **OpenCode** | The app itself | `npm install -g opencode` |
+| **OpenCode** | The app itself | `npm install -g opencode-ai` |
 | **DeepSeek API key** | Powers the supervisor, all junior-tier agents, and most mules | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) |
 | **Node.js** | Provider packages, MCP servers via npx | `brew install node` |
 
 ---
 
-## Tier 2: Plugins (optional, 4 items)
+## Tier 2: Plugins (optional, 3 items)
 
-The base config ships with the Observer plugin already configured: `"plugin": ["observer-bridge.js"]`. Copy `plugin/observer-bridge.js` to your config root (already done in the main setup). Additional optional plugins are available:
+The base config ships with the Observer plugin already configured: `"plugin": ["observer-bridge.js"]`. Copy `plugin/observer-bridge.js` to `~/.config/opencode/plugin/observer-bridge.js` (already done in the main setup). Additional optional plugins are available:
 
 ```json
 "plugin": [
   "opencode-wakelock",
   "opencode-pty",
-  "opencode-websearch-cited",
-  "opencode-notificator"
+  "opencode-websearch-cited"
 ]
 ```
 
@@ -36,7 +35,6 @@ The base config ships with the Observer plugin already configured: `"plugin": ["
 | `opencode-wakelock` | Keeps screen awake during long agent runs |
 | `opencode-pty` | Terminal integration |
 | `opencode-websearch-cited` | Web search with source citations |
-| `opencode-notificator` | Desktop notifications when tasks complete |
 
 ---
 
@@ -112,14 +110,13 @@ The config ships with **two MCP servers enabled by default** — no keys needed,
 | `playwright` | Drive a real browser — clicks, forms, login flows |
 | `a11y-color-contrast` | WCAG color-contrast checks for design and accessibility work |
 
-It also includes **thirteen optional MCP servers, disabled by default.** Each needs a key or an extra install, so you opt in only when you want it. To turn one on: set its `"enabled": true` in the `"mcp"` block **and** make sure the `"permission"` block allows it (`"<name>_*": "allow"` — `twenty-first` ships as `"deny"` and must be changed).
+It also includes **eleven optional MCP servers, disabled by default.** Each needs a key or an extra install, so you opt in only when you want it. To turn one on: set its `"enabled": true` in the `"mcp"` block **and** make sure the `"permission"` block allows it (`"<name>_*": "allow"` — `twenty-first` ships as `"deny"` and must be changed).
 
 | MCP | What it adds | Setup |
 |-----|--------------|-------|
 | `chrome-devtools` | Inspect pages, console, and network for web debugging | Just flip `"enabled": true` — no key needed, already pre-allowed in the permission block |
 | `elevenlabs` | Text-to-speech / voice generation | Key from [elevenlabs.io](https://elevenlabs.io) → `YOUR_ELEVENLABS_KEY`; needs [`uv`](https://docs.astral.sh/uv/) installed |
 | `railway` | Deploy & manage apps on Railway | Install the [Railway CLI](https://docs.railway.com/guides/cli), then `railway login` |
-| `screenpipe` | Search 24/7 screen + audio history | Install & run the [screenpipe](https://screenpi.pe) app (records locally). Cross-platform. |
 | `macos-automator` | Control native **macOS** apps via AppleScript/JXA | macOS only. Node 24+, plus Automation + Accessibility permission. |
 | `yt-dlp` | Download audio/video from YouTube and other sites for transcription/analysis | `brew install yt-dlp` or `pip install yt-dlp` |
 | `vercel` | Deploy & manage apps on Vercel | Key from [vercel.com/account/tokens](https://vercel.com/account/tokens) → `YOUR_VERCEL_TOKEN` |
@@ -127,12 +124,11 @@ It also includes **thirteen optional MCP servers, disabled by default.** Each ne
 | `context7` | Live, version-accurate library/API docs | Works keyless; optional free key from [context7.com](https://context7.com) for higher limits. |
 | `github` | Manage GitHub issues, PRs, repos | [Docker](https://www.docker.com) + a [GitHub token](https://github.com/settings/tokens) → `YOUR_GITHUB_TOKEN`. |
 | `macos-use` | Native macOS GUI control — mouse, keyboard, accessibility automation | macOS only. Needs the `mcp-server-macos-use` binary at `/usr/local/bin`. |
-| `firecrawl` | Web scrape/search for JS-heavy pages (optional worker tool) | Free tier key at [firecrawl.dev](https://www.firecrawl.dev). Set `FIRECRAWL_API_KEY`. |
 | `twenty-first` | UI component search & generation (21st.dev) | Flip `"enabled": true` and change its permission from `"deny"` to `"allow"`. |
 
 > ℹ️ `open-design` appears in the config only as a **permission key** (gating the designer agent) — there is no `open-design` MCP server entry in the template. If you want that service, add a server entry to the `"mcp"` block yourself and set its permission to `"allow"`.
 
-**Windows desktop control:** `macos-automator` and `macos-use` are macOS-only. On Windows, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) (follow its repo setup) and add it to `"mcp"` the same opt-in way. The Windows installer (`setup.ps1`) drops the macOS-only entries automatically. `screenpipe` runs on Windows already.
+**Windows desktop control:** `macos-automator` and `macos-use` are macOS-only. On Windows, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) (follow its repo setup) and add it to `"mcp"` the same opt-in way. The Windows installer (`setup.ps1`) drops the macOS-only entries automatically.
 
 Example — enabling Context7:
 

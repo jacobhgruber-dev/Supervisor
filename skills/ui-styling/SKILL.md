@@ -2,9 +2,10 @@
 name: ui-styling
 description: Create beautiful, accessible user interfaces with shadcn/ui components (built on Radix UI + Tailwind), Tailwind CSS utility-first styling, and canvas-based visual designs. Use when building user interfaces, implementing design systems, creating responsive layouts, adding accessible components (dialogs, dropdowns, forms, tables), customizing themes and colors, implementing dark mode, generating visual designs and posters, or establishing consistent styling patterns across applications.
 argument-hint: "[component or layout]"
-license: MIT
+license: Apache-2.0
 metadata:
   author: claudekit
+  source: https://github.com/mrgoonie/claudekit-skills
   version: "1.0.0"
 ---
 
@@ -322,3 +323,8 @@ export function LoginForm() {
 - Tailwind UI: https://tailwindui.com
 - Headless UI: https://headlessui.com
 - v0 (AI UI Generator): https://v0.dev
+
+## License & Attribution
+
+- **License:** Apache License 2.0 — see the bundled `LICENSE.txt`. (This bundle's frontmatter previously said `MIT`; the bundled licence file is authoritative.)
+- **Upstream:** adapted from ClaudeKit's `ui-styling` skill — https://github.com/mrgoonie/claudekit-skills (`.claude/skills/ui-styling/`). The bundled `LICENSE.txt` is byte-identical (SHA-256 verified) to the upstream licence file.

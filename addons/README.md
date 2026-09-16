@@ -1,6 +1,6 @@
 # Addons — Optional Extras
 
-The Supervisor repo ships with everything you need out of the box: one API key, one model, nine specialized subagent roles (47 subagent files across 4 tiers — 48 agents total with the Supervisor — including designer / designer-mule). Addons layer on additional capabilities for a more complete setup.
+The Supervisor repo ships with everything you need out of the box: one API key, one model, nine specialized subagent roles (45 subagent files across 4 tiers — 46 agents total with the Supervisor — including designer / designer-mule). Addons layer on additional capabilities for a more complete setup.
 
 ## Available Addons
 
@@ -18,10 +18,10 @@ The Supervisor repo ships with everything you need out of the box: one API key, 
 
 ## How Addons Work
 
-Each addon is self-contained. Pick the ones you want, follow the README inside, and copy the files into your opencode config directory. Nothing conflicts with the base setup or with each other.
+Each addon is self-contained. Pick the ones you want and follow the README inside — both current addons (OpenCode Modes and Grok Worker) are already built into the base setup, so there is nothing to copy. Their folders keep notes and background only. Nothing conflicts with the base setup or with each other.
 
 ## Recommended Path
 
-1. **Start with base** — supervisor + 9 subagents, DeepSeek only. Use it for a week.
+1. **Start with base** — supervisor + 9 junior subagents + 9 DeepSeek mules, DeepSeek only. Use it for a week.
 2. **Use OpenCode Modes** — gives you trigger-word control over the agent's behavior. Built into the Supervisor — nothing to install.
 3. **Read the Reference** — the catalog at the repo root explains every agent, subagent, mode, and command. Copy it to your Desktop for quick access: `cp reference.md ~/Desktop/opencode-reference.md`.

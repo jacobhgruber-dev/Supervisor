@@ -33,7 +33,6 @@ Scan the current conversation context for image file paths. Any path matching th
 - A path wrapped in `[Image saved to: ...]` (user-pasted image)
 - A path in `/tmp/opencode/` or a screenshot path returned by a macos-use traversal (desktop screenshot)
 - An image path the main agent explicitly tells you to read
-- A path referenced in a screenpipe search result
 
 ### Reading Method
 

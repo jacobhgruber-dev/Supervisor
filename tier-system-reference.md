@@ -4,7 +4,7 @@
 The Supervisor ships with a complete 3-tier escalation system (plus a built-in mule tier — see [Mule Tier](#mule-tier-built-in) below). All 9 roles are available at every escalation tier out of the box.
 
 For the quick-reference guide to the 9 base subagents, see [subagents.md](subagents.md).
-For the complete catalog including modes, commands, and local agents, see [reference.md](reference.md).
+For the complete catalog including modes and commands, see [reference.md](reference.md).
 
 | Tier | Model | Role | Naming Convention |
 |------|-------|------|-------------------|
@@ -24,7 +24,7 @@ The Supervisor's default policy is to spawn junior-tier agents automatically and
 
 ## Agent Specifications by Tier
 
-These are the frontmatter specs for each agent. The prompt content (the body of each `.md` file) is the same across tiers — only the model and description change.
+These are the frontmatter specs for each agent. The prompt content (the body of each `.md` file) is the same across tiers — only the model, description, and color change.
 
 ### Mid-Tier Agents (Claude Sonnet)
 
@@ -32,12 +32,14 @@ These are the frontmatter specs for each agent. The prompt content (the body of 
 
 ```
 ---
-description: General-purpose subagent powered by Claude Sonnet 5. Mid-tier worker for tasks needing deeper reasoning than DeepSeek. Full edit and bash access.
+description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Sonnet 5.
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
 color: "#818CF8"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -54,8 +56,10 @@ description: Software architect for design decisions, refactoring plans, and sys
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-color: "#7B61FF"
+color: "#3B82F6"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: deny
   webfetch: allow
@@ -68,14 +72,19 @@ permission:
 
 ```
 ---
-description: Planner for breaking down tasks into ordered steps, identifying dependencies, and estimating effort. Powered by Claude Sonnet 5.
+description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Sonnet 5.
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
 color: "#A78BFA"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: deny
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -83,14 +92,19 @@ permission:
 
 ```
 ---
-description: Code reviewer for bugs, logic errors, and code quality. Powered by Claude Sonnet 5.
+description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Sonnet 5.
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
 color: "#F87171"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: allow
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -98,12 +112,14 @@ permission:
 
 ```
 ---
-description: Debugger for runtime errors, stack traces, and unexpected behavior. Powered by Claude Sonnet 5.
+description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Sonnet 5.
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
 color: "#EF4444"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -120,8 +136,10 @@ description: Security auditor for vulnerability scanning — secrets, injections
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-color: "#B91C1C"
+color: "#DC2626"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: allow
   webfetch: allow
@@ -140,8 +158,13 @@ model: anthropic/claude-sonnet-5
 variant: max
 color: "#FDE68A"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: deny
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -153,8 +176,10 @@ description: Researcher for topic exploration, source gathering, and structured 
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-color: "#34D399"
+color: "#6EE7B7"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -171,10 +196,15 @@ description: Quote auditor for verifying quotations against their sources. Power
 mode: subagent
 model: anthropic/claude-sonnet-5
 variant: max
-color: "#FB923C"
+color: "#FDBA74"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: deny
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -184,12 +214,14 @@ permission:
 
 ```
 ---
-description: Senior general-purpose subagent powered by Claude Opus 5. The most capable model available — use for the hardest problems.
+description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#6366F1"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -202,16 +234,19 @@ permission:
 
 ```
 ---
-description: Senior-level system architect. Deep architectural reasoning, complex tradeoff analysis, and high-stakes design decisions. Use ONLY for the hardest problems.
+description: Architecture subagent for design decisions, tradeoff analysis, refactor scoping, cross-cutting concerns, API design, and fresh first-principles thinking. Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#B026FF"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: deny
   webfetch: allow
   websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -219,14 +254,19 @@ permission:
 
 ```
 ---
-description: Senior planner for complex multi-phase execution strategy, dependency mapping, risk assessment, and milestone planning.
+description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#8B5CF6"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: deny
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -234,14 +274,19 @@ permission:
 
 ```
 ---
-description: Senior code reviewer. Deep bug detection, architectural misuse, and subtle logic flaws. Use for critical code before deployment.
+description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#FF4444"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: allow
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -249,12 +294,14 @@ permission:
 
 ```
 ---
-description: Senior debugger for the hardest bugs — race conditions, memory leaks, distributed system failures, heisenbugs.
+description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#DC2626"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -267,12 +314,14 @@ permission:
 
 ```
 ---
-description: Senior security auditor for comprehensive vulnerability assessment — injection attacks, auth flaws, secret exposure, supply chain risks, and zero-day patterns.
+description: Security auditor subagent — comprehensive vulnerability assessment across injection, auth, secrets, dependencies, crypto, configuration, and business logic. Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#991B1B"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: allow
   webfetch: allow
@@ -285,14 +334,19 @@ permission:
 
 ```
 ---
-description: Senior editor for content strategy, structural revision, and high-stakes writing. Final polish before publication.
+description: Editor subagent — structural revision, clarity, flow, voice, audience awareness, and mechanical proofreading (grammar/spelling/punctuation/formatting). Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#EAB308"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: deny
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -300,12 +354,14 @@ permission:
 
 ```
 ---
-description: Senior researcher for deep multi-source investigation, complex topic synthesis, and strategic recommendations.
+description: Researcher subagent — multi-source investigation, synthesis, contradiction-mapping, gap identification, and actionable recommendations. Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#10B981"
 permission:
+  task:
+    "*": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -318,14 +374,19 @@ permission:
 
 ```
 ---
-description: Senior quotation auditor for line-by-line source verification, paraphrasing detection, and attribution accuracy. Use for critical content — legal, academic, journalistic, or public-facing writing.
+description: Quote auditor subagent — line-by-line source verification, paraphrasing detection, attribution accuracy, flagging every uncertainty. Powered by Claude Opus 5.
 mode: subagent
 model: anthropic/claude-opus-5
 variant: max
 color: "#F97316"
 permission:
+  task:
+    "*": allow
   edit: deny
   bash: deny
+  webfetch: allow
+  websearch: allow
+  playwright_*: allow
 ---
 ```
 
@@ -341,27 +402,27 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 | **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-flash` | ✅ | ❌ | ✅ |
 | | Mid | `architect.md` | `anthropic/claude-sonnet-5` | ✅ | ❌ | ✅ |
 | | Senior | `senior-architect.md` | `anthropic/claude-opus-5` | ✅ | ❌ | ✅ |
-| **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-flash` | ❌ | ❌ | ❌ |
-| | Mid | `planner.md` | `anthropic/claude-sonnet-5` | ❌ | ❌ | ❌ |
-| | Senior | `senior-planner.md` | `anthropic/claude-opus-5` | ❌ | ❌ | ❌ |
-| **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-flash` | ❌ | ✅ | ❌ |
-| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5` | ❌ | ✅ | ❌ |
-| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-5` | ❌ | ✅ | ❌ |
+| **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-flash` | ❌ | ❌ | ✅ |
+| | Mid | `planner.md` | `anthropic/claude-sonnet-5` | ❌ | ❌ | ✅ |
+| | Senior | `senior-planner.md` | `anthropic/claude-opus-5` | ❌ | ❌ | ✅ |
+| **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-flash` | ❌ | ✅ | ✅ |
+| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5` | ❌ | ✅ | ✅ |
+| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-5` | ❌ | ✅ | ✅ |
 | **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-flash` | ✅ | ✅ | ✅ |
 | | Mid | `debugger.md` | `anthropic/claude-sonnet-5` | ✅ | ✅ | ✅ |
 | | Senior | `senior-debugger.md` | `anthropic/claude-opus-5` | ✅ | ✅ | ✅ |
 | **Security** | Junior | `junior-security.md` | `deepseek/deepseek-flash` | ❌ | ✅ | ✅ |
 | | Mid | `security.md` | `anthropic/claude-sonnet-5` | ❌ | ✅ | ✅ |
 | | Senior | `senior-security.md` | `anthropic/claude-opus-5` | ❌ | ✅ | ✅ |
-| **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-flash` | ✅ | ❌ | ❌ |
-| | Mid | `editor.md` | `anthropic/claude-sonnet-5` | ✅ | ❌ | ❌ |
-| | Senior | `senior-editor.md` | `anthropic/claude-opus-5` | ✅ | ❌ | ❌ |
+| **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-flash` | ✅ | ❌ | ✅ |
+| | Mid | `editor.md` | `anthropic/claude-sonnet-5` | ✅ | ❌ | ✅ |
+| | Senior | `senior-editor.md` | `anthropic/claude-opus-5` | ✅ | ❌ | ✅ |
 | **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-flash` | ✅ | ✅ | ✅ |
 | | Mid | `researcher.md` | `anthropic/claude-sonnet-5` | ✅ | ✅ | ✅ |
 | | Senior | `senior-researcher.md` | `anthropic/claude-opus-5` | ✅ | ✅ | ✅ |
-| **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-flash` | ❌ | ❌ | ❌ |
-| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5` | ❌ | ❌ | ❌ |
-| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-5` | ❌ | ❌ | ❌ |
+| **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-flash` | ❌ | ❌ | ✅ |
+| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5` | ❌ | ❌ | ✅ |
+| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-5` | ❌ | ❌ | ✅ |
 
 No agent sets a `steps` cap — every tier runs uncapped, so no step counts appear above.
 
@@ -437,12 +498,10 @@ OpenCode loads agent markdown from both `~/.config/opencode/agent/` and `~/.conf
     │
     ├── gemini-worker.md      # Alternative-model worker (Gemini 3.8 Flash)
     ├── grok-worker.md        # Alternative-model worker (Grok 4.6)
-    ├── designer.md           # UI/UX design (Grok 4.6, native image vision)
-    ├── local-coder.md        # Ollama placeholder (configure before use)
-    └── local-reasoner.md     # Ollama placeholder (configure before use)
+    └── designer.md           # UI/UX design (Grok 4.6, native image vision)
 ```
 
-(`grok-worker.md` ships in `agents/` — the copy OpenCode loads. The `addons/grok-worker/` folder keeps activation notes only. `local-coder` and `local-reasoner` are Ollama placeholders, not production-ready.)
+(`grok-worker.md` ships in `agents/` — the copy OpenCode loads. The `addons/grok-worker/` folder keeps activation notes only.)
 
 ## Config Requirement: `subagent_depth: 3`
 
@@ -468,13 +527,13 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 
 ## Starting Simple
 
-The repo ships with all 4 tiers already configured — 47 agent files in `agents/` (plus the Supervisor primary agent — 48 total) across 9 roles. Scaling down is just about which API keys you configure:
+The repo ships with all 4 tiers already configured — 45 agent files in `agents/` (plus the Supervisor primary agent — 46 total) across 9 roles. Scaling down is just about which API keys you configure:
 
 1. **DeepSeek only (junior tier + most mules)** — one key, one model, works for everything. The mid and senior agent files sit unused until you add their API keys.
 2. **Add Anthropic (mid + senior tiers + claude-mule)** — connect your Anthropic key with `opencode auth login` and the bare-name agents (`worker`, `architect`, etc.) + all `senior-*` agents + `claude-mule` become available.
 3. **Add Google (Observer + Gemini)** — connect your Google key and `observer` + `gemini-mule` + `gemini-worker` activate.
 4. **Add xAI (Grok)** — connect your xAI key and `grok-mule` + `grok-worker` + `designer` + `designer-mule` activate.
-5. **Full 4-tier, all providers** — all 47 subagents active (48 agents with the Supervisor), automatic escalation from junior to mid/senior when warranted.
+5. **Full 4-tier, all providers** — all 45 subagents active (46 agents with the Supervisor), automatic escalation from junior to mid/senior when warranted.
 
 ---
 

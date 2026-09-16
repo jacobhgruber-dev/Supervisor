@@ -106,5 +106,4 @@ Hard limits:
 
 As a subagent, flag when visual verification would help instead of silently working around it:
 - "I need to know what this UI looks like right now" → ask the supervisor to capture via playwright/macos-use
-- "What was on screen when this error occurred at 14:32?" → ask the supervisor to search screenpipe
 - "Does this mockup match the implementation?" → ask the supervisor to run an @observer comparison

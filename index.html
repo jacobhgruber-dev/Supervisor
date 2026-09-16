@@ -181,14 +181,14 @@
   <div class="wrap">
     <span class="badge-pill">★ Beginner-friendly · ~15 minutes · ~$1 to start</span>
     <h1>Build your own AI<br>coding team.</h1>
-    <p class="sub">The <b>Supervisor</b> turns OpenCode into a manager that plans your work, delegates to 47 specialist agents, reviews their output, and reports back. You talk to one agent — it runs the whole team.</p>
+    <p class="sub">The <b>Supervisor</b> turns OpenCode into a manager that plans your work, delegates to 45 specialist agents, reviews their output, and reports back. You talk to one agent — it runs the whole team.</p>
     <div class="cta-row">
       <a class="btn btn-primary" href="GETTING_STARTED.md">📖 Read the Zero-to-Hero Guide</a>
       <a class="btn btn-ghost" href="#start">⚡ Quick Start</a>
     </div>
     <div class="stat-row">
       <span><b>1</b> API key to start</span>
-      <span><b>47</b> specialist agents</span>
+      <span><b>45</b> specialist agents</span>
       <span><b>4</b> power tiers</span>
       <span><b>$0</b> for the software</span>
     </div>
@@ -241,7 +241,7 @@
         <div>
           <h3>Install OpenCode</h3>
           <p>Needs <a href="https://nodejs.org">Node.js</a> first (check with <code>node --version</code>).</p>
-          <div class="code"><button class="copy">Copy</button>npm install -g opencode</div>
+          <div class="code"><button class="copy">Copy</button>npm install -g opencode-ai</div>
         </div>
       </div>
 
@@ -257,19 +257,23 @@
         <div class="num">3</div>
         <div>
           <h3>Copy the files into place</h3>
-          <p>Download the repo, then run the one-liner installer. It copies everything into OpenCode's config folder — and safely <b>merges</b> the config instead of overwriting it (your existing settings always win).</p>
+          <p>Download the repo, then run the one-liner installer. It copies everything into OpenCode's config folder. On a fresh machine, add <b>--with-config</b> — that's what installs <code>opencode.json</code> (default agent, <code>subagent_depth: 3</code>, MCP servers). If you already have a config, it's safely <b>merged</b> instead of overwritten (your existing settings always win).</p>
           <div class="code"><button class="copy">Copy</button>git clone https://github.com/jacobhgruber-dev/Supervisor.git
 cd Supervisor
-./install.sh        <span class="cmt"># macOS / Linux — or run: .\setup.ps1 (Windows PowerShell)</span></div>
+./install.sh --with-config        <span class="cmt"># macOS / Linux</span>
+.\setup.ps1 -WithConfig           <span class="cmt"># Windows PowerShell</span>
+# Windows fallback if a policy blocks the script:
+powershell -NoProfile -ExecutionPolicy Bypass -File setup.ps1 -WithConfig</div>
           <p style="margin-top:10px;">New machine? Run the <b>Dependency Doctor</b> first — it scans your system and prints a tailored install command for every missing tool:</p>
           <div class="code"><button class="copy">Copy</button>./install.sh --doctor   <span class="cmt"># never fails, writes nothing — just tells you what's missing</span></div>
-          <p style="margin-top:10px;"><b>Prefer to do it by hand?</b> The manual copy below is the reference — same result, one file at a time.</p>
-          <div class="code"><button class="copy">Copy</button>mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
-# If you already configured providers in Desktop (Settings → Providers), skip the opencode.template.json copy — you only need the agents, plugin, and AGENTS.md.
+          <p style="margin-top:10px;"><b>Prefer to do it by hand?</b> The manual copy below is the reference — same files, one file at a time.</p>
+          <div class="code"><button class="copy">Copy</button>mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
+# If you already configured providers in Desktop (Settings → Providers), skip the opencode.template.json copy — you only need the agents, skills, plugin, and AGENTS.md.
 cp opencode.template.json ~/.config/opencode/opencode.json
 cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md  <span class="cmt"># Supervisor → agent/</span>
 cp agents/*.md         ~/.config/opencode/agents/              <span class="cmt"># subagents → agents/</span>
-cp plugin/observer-bridge.js   ~/.config/opencode/
+cp -R skills/.         ~/.config/opencode/skills/              <span class="cmt"># bundled skills</span>
+cp plugin/observer-bridge.js   ~/.config/opencode/plugin/      <span class="cmt"># Observer plugin</span>
 cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
           <div class="callout trap" style="margin-top:14px;">
             <b>📌 Where agents go:</b> OpenCode loads both <code>agent/</code> and <code>agents/</code>. This install puts the Supervisor in <code>agent/</code> and subagents in <code>agents/</code>. What makes the Supervisor primary is <code>mode: primary</code> in its frontmatter. Don't drop non-agent docs into either folder (phantom agents).
@@ -315,7 +319,7 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
 <section>
   <div class="wrap">
     <div class="eyebrow">When you want more power</div>
-    <h2>Three tiers, one naming trick</h2>
+    <h2>Four tiers, one naming trick</h2>
     <p class="lede">Everything above runs on cheap DeepSeek. Add an <a href="https://console.anthropic.com">Anthropic (Claude)</a> key and the mid + senior agents wake up automatically — no extra setup. The Supervisor escalates only when it's worth it.</p>
     <table class="tier-table">
       <thead>
@@ -329,7 +333,7 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
       </tbody>
     </table>
     <div class="callout warn" style="margin-top:18px;">
-      All 47 agent files already ship in the repo. The Claude- and Grok-powered ones simply sit unused until you connect their keys with <code>opencode auth login</code>. Full details in the <a href="GETTING_STARTED.md">guide</a>.
+      All 45 agent files already ship in the repo. The Claude- and Grok-powered ones simply sit unused until you connect their keys with <code>opencode auth login</code>. Full details in the <a href="GETTING_STARTED.md">guide</a>.
     </div>
   </div>
 </section>
@@ -366,7 +370,7 @@ cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
     </details>
     <details>
       <summary>What are the “mcp” entries in the config? Do I need them?</summary>
-      <p>Two tools ship <b>enabled</b> and need no keys: <code>playwright</code> (drives a real browser — clicks, forms, login flows) and <code>a11y-color-contrast</code> (WCAG color-contrast checks for design work). Thirteen more are optional nice-to-haves, <b>disabled by default</b> — <code>chrome-devtools</code>, <code>elevenlabs</code>, <code>railway</code>, <code>screenpipe</code> (screen history), <code>macos-automator</code> (native Mac control), <code>yt-dlp</code>, <code>vercel</code>, <code>gemini-api-docs</code>, <code>context7</code> (live library docs), <code>github</code> (issues/PRs), <code>macos-use</code> (Mac GUI control), <code>firecrawl</code>, and <code>twenty-first</code> — turn one on only if you want it. (On Windows, the installer drops the macOS-only ones — swap in <a href="https://github.com/CursorTouch/Windows-MCP">Windows-MCP</a> for native desktop control.) The Supervisor runs perfectly without any of them. See the <a href="GETTING_STARTED.md">guide</a> for how to enable one.</p>
+      <p>Two tools ship <b>enabled</b> and need no keys: <code>playwright</code> (drives a real browser — clicks, forms, login flows) and <code>a11y-color-contrast</code> (WCAG color-contrast checks for design work). Eleven more are optional nice-to-haves, <b>disabled by default</b> — <code>chrome-devtools</code>, <code>elevenlabs</code>, <code>railway</code>, <code>macos-automator</code> (native Mac control), <code>yt-dlp</code>, <code>vercel</code>, <code>gemini-api-docs</code>, <code>context7</code> (live library docs), <code>github</code> (issues/PRs), <code>macos-use</code> (Mac GUI control), and <code>twenty-first</code> — turn one on only if you want it. (On Windows, the installer drops the macOS-only ones — swap in <a href="https://github.com/CursorTouch/Windows-MCP">Windows-MCP</a> for native desktop control.) The Supervisor runs perfectly without any of them. See the <a href="GETTING_STARTED.md">guide</a> for how to enable one.</p>
     </details>
     <details>
       <summary>I already have an OpenCode config — will this overwrite it?</summary>

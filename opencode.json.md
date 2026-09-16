@@ -1,14 +1,16 @@
 # opencode.template.json — Setup Instructions
 
-This file is the template for your opencode configuration. It ships with an Ollama provider for local models — no cloud provider keys are needed in the config. Add DeepSeek, Anthropic, Google, and xAI through OpenCode Desktop's UI or `opencode auth login` instead. Copy `opencode.template.json` to your opencode config directory:
+This file is the template for your opencode configuration. It ships with no providers configured — no cloud provider keys are needed in the config. Add DeepSeek, Anthropic, Google, and xAI through OpenCode Desktop's UI or `opencode auth login` instead. Copy `opencode.template.json` to your opencode config directory:
 
 **macOS/Linux:**
 ```
+mkdir -p ~/.config/opencode
 cp opencode.template.json ~/.config/opencode/opencode.json
 ```
 
 **Windows:**
 ```
+mkdir %USERPROFILE%\.config\opencode
 copy opencode.template.json %USERPROFILE%\.config\opencode\opencode.json
 ```
 
@@ -26,7 +28,7 @@ Once a provider is configured this way, OpenCode handles everything internally �
 
 | Provider | Key URL | Notes |
 |----------|---------|-------|
-| DeepSeek | https://platform.deepseek.com/api_keys | $2 new-user credit; extremely cheap |
+| DeepSeek | https://platform.deepseek.com/api_keys | Add $2–$5 of credit; extremely cheap |
 | Anthropic | https://console.anthropic.com | $5 credit recommended; lights up mid/senior tiers |
 | Google (Gemini) | https://aistudio.google.com/apikey | Free tier available; lights up Observer + Gemini workers |
 | xAI (Grok) | https://console.x.ai | Powers grok-worker + designer / designer-mule |
@@ -56,11 +58,11 @@ Keys are stored in `~/.local/share/opencode/auth.json`, not in this config file.
 
 For reference, `npm` and `models` do **not** replace the built-in wiring: provider-level `npm` is only a per-model fallback, and `models` entries merge per-field with fallbacks to the models.dev definition — a partial entry preserves built-in fields.
 
-**A `provider` block is required for custom providers** — local models (Ollama, LM Studio), proxies, or custom endpoints that OpenCode doesn't know about natively — and it's the legitimate way to intentionally customize a built-in (e.g. a `baseURL` override). The template already includes Ollama. For the four cloud providers, use Desktop auth or env vars instead.
+**A `provider` block is required for custom providers** — local models (LM Studio), proxies, or custom endpoints that OpenCode doesn't know about natively — and it's the legitimate way to intentionally customize a built-in (e.g. a `baseURL` override). The template configures no providers; add one if you use a local/custom provider. For the four cloud providers, use Desktop auth or env vars instead.
 
 ## What's in This Config File
 
-The shipped `opencode.template.json` contains only an Ollama provider for local models. It defines:
+The shipped `opencode.template.json` configures no providers. It defines:
 
 | Field | Value | What it does |
 |-------|-------|--------------|
@@ -88,10 +90,8 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 | MCP | Adds | Setup |
 |-----|------|-------|
 | `chrome-devtools` | Inspect pages, console, network, performance traces | Just flip `"enabled": true` — already pre-allowed in the `permission` block |
-| `firecrawl` | Web scrape/search for JS-heavy pages | Key from https://firecrawl.dev; set `FIRECRAWL_API_KEY` — already pre-allowed in the `permission` block |
 | `elevenlabs` | Text-to-speech / voice | Key from https://elevenlabs.io; needs `uv` (`uvx`) |
 | `railway` | Deploy & manage apps | Railway CLI + `railway login` |
-| `screenpipe` | Search 24/7 screen + audio history | Run the screenpipe app (https://screenpi.pe); cross-platform |
 | `macos-automator` | Control native macOS apps (AppleScript/JXA) | macOS only; Node 24+, Automation + Accessibility permission |
 | `yt-dlp` | Download audio/video for transcription | `brew install yt-dlp` or `pip install yt-dlp` |
 | `vercel` | Deploy & manage apps on Vercel | Vercel token — already pre-allowed in the `permission` block |
@@ -101,13 +101,13 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 | `macos-use` | Native macOS GUI control | macOS only; binary at `/usr/local/bin` — already pre-allowed in `permission` block |
 | `twenty-first` | 21st.dev component search/retrieval for UI work | Flip `"enabled": true`; **design MCP gating** — denied globally and for supervisor; allowed only on the `designer` agent |
 
-> **Windows note:** `macos-automator` is macOS-only. For native Windows control, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) and add it to `"mcp"` the same opt-in way. `screenpipe` works on Windows.
+> **Windows note:** `macos-automator` is macOS-only. For native Windows control, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) and add it to `"mcp"` the same opt-in way.
 
 > **Design MCP gating:** `twenty-first_*` and `open-design_*` are denied at top-level `permission` and on `agent.supervisor`. The `agent.designer` block allows `twenty-first_*`, `open-design_*`, and `a11y-color-contrast_*`. The template does not ship an `open-design` MCP server definition (it is path-local); add your own server entry if you use open-design, and keep the permission keys.
 
 ## Permission Block
 
-The `permission` block controls which MCP tools agents are allowed to call. The template pre-approves four servers (`chrome-devtools`, `firecrawl`, `macos-use`, `vercel`) with `"allow"` entries, plus `a11y-color-contrast_*`. Design tools (`twenty-first_*`, `open-design_*`) are explicitly `"deny"` at the top level and for the supervisor — only the `designer` agent is allowed them. All other disabled MCPs have no entry in the `permission` block — to enable one, you need **both** changes:
+The `permission` block controls which MCP tools agents are allowed to call. The template pre-approves three servers (`chrome-devtools`, `macos-use`, `vercel`) with `"allow"` entries, plus `a11y-color-contrast_*`. Design tools (`twenty-first_*`, `open-design_*`) are explicitly `"deny"` at the top level and for the supervisor — only the `designer` agent is allowed them. All other disabled MCPs have no entry in the `permission` block — to enable one, you need **both** changes:
 
 1. Set `"enabled": true` inside that MCP's entry in the `mcp` block
 2. Add a corresponding `"<name>_*": "allow"` entry to the `permission` block (or rely on agent-scoped allow for gated design tools)
@@ -120,10 +120,11 @@ Once your `opencode.json` is in place, copy the agent files to your opencode con
 
 **macOS/Linux:**
 ```
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
 cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
 cp agents/*.md         ~/.config/opencode/agents/
-cp plugin/*.js         ~/.config/opencode/
+cp -R skills/.         ~/.config/opencode/skills/
+cp plugin/*.js         ~/.config/opencode/plugin/
 cp AGENTS.md           ~/.config/opencode/AGENTS.md
 ```
 
@@ -131,9 +132,12 @@ cp AGENTS.md           ~/.config/opencode/AGENTS.md
 ```
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\agent"
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\agents"
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\plugin"
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\skills"
 Copy-Item agent\supervisor.md -Destination "$env:USERPROFILE\.config\opencode\agent\supervisor.md"
 Copy-Item agents\*.md    -Destination "$env:USERPROFILE\.config\opencode\agents\"
-Copy-Item plugin\*.js    -Destination "$env:USERPROFILE\.config\opencode\"
+Copy-Item skills\* -Destination "$env:USERPROFILE\.config\opencode\skills\" -Recurse
+Copy-Item plugin\*.js    -Destination "$env:USERPROFILE\.config\opencode\plugin\"
 Copy-Item AGENTS.md      -Destination "$env:USERPROFILE\.config\opencode\AGENTS.md"
 ```
 
@@ -143,7 +147,7 @@ Restart opencode. Check that everything is wired up correctly:
 
 1. **Supervisor is the default agent** — when opencode starts, the agent selector should show "supervisor" as the active primary agent (not "general" or any other agent).
 2. **Clean agent selector** — you should see your configured agents in the dropdown. No missing providers, no broken model listings.
-3. **Provider check (Desktop)** — open Settings → Providers. Providers you configured through the UI should show as connected. If you added a **cloud** `provider` block (DeepSeek/Anthropic/Google/xAI) with `options.apiKey` or `options.baseURL` overrides, remove those overrides (or the whole block — you don't need it) and restart. The template's Ollama-only `provider` entry is fine to keep for local models.
+3. **Provider check (Desktop)** — open Settings → Providers. Providers you configured through the UI should show as connected. If you added a **cloud** `provider` block (DeepSeek/Anthropic/Google/xAI) with `options.apiKey` or `options.baseURL` overrides, remove those overrides (or the whole block — you don't need it) and restart.
 4. **Model variants (Desktop)** — if you added DeepSeek through Settings, the "Max" toggle should appear in the model selector. If it's missing, you may have `blacklist`/`whitelist` entries in a cloud `provider` block hiding it — remove them. Partial `provider.models` entries merge with the built-in definition, so they don't strip variants on their own.
 5. **`subagent_depth`** — confirm `"subagent_depth": 3` is present so supervisor → subagent → mule chains work.
 
