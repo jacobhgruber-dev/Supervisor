@@ -1,9 +1,8 @@
 ---
-description: "Grok-powered leaf agent — coding, reasoning, creative exploration. Mule tier: cheapest broadly-available Grok model (4.5), structurally cannot spawn subagents. Use for coding or creative reasoning tasks where Grok's strengths apply. Costlier than worker-mule (3x) — justify the choice."
+description: "Grok-powered leaf agent — coding, reasoning, creative exploration. Mule tier: cheapest broadly-available Grok model (4.6), structurally cannot spawn subagents. Use for coding or creative reasoning tasks where Grok's strengths apply. Costlier than worker-mule (3x) — justify the choice."
 mode: subagent
 hidden: true
 model: xai/grok-4.6
-steps: 30
 color: "#FBBF24"
 permission:
   task:

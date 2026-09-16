@@ -180,74 +180,39 @@ def test_observer_claude_model_enforced():
     assert errors == []
 
 
-def test_anthropic_agent_rejects_steps():
+def test_agent_with_steps_rejected():
     errors = []
-    vt.check_steps(
-        {"model": "anthropic/claude-sonnet-5", "steps": 50}, "worker", "w", errors
+    vt.check_steps({"steps": 30}, "agents/worker-mule.md", errors)
+    assert errors == [
+        "agents/worker-mule.md: agents must not declare 'steps' — "
+        "step caps are no longer used"
+    ]
+
+
+def test_agent_without_steps_passes():
+    errors = []
+    vt.check_steps({}, "agents/worker-mule.md", errors)
+    assert errors == []
+
+
+def test_validate_agent_flags_steps_end_to_end(tmp_path):
+    path = tmp_path / "worker-mule.md"
+    path.write_text(
+        "---\n"
+        "description: Bounded leaf agent.\n"
+        "mode: subagent\n"
+        "hidden: true\n"
+        "model: deepseek/deepseek-flash\n"
+        "steps: 30\n"
+        "permission:\n"
+        "  task: deny\n"
+        "---\n",
+        encoding="utf-8",
     )
+    errors = []
+    vt.validate_agent("worker-mule", "agents/worker-mule.md", path, errors)
     assert len(errors) == 1
-    assert "must NOT have 'steps'" in errors[0]
-    errors = []
-    vt.check_steps(
-        {"model": "anthropic/claude-opus-5", "steps": 25}, "senior-worker", "w", errors
-    )
-    assert len(errors) == 1
-
-
-def test_anthropic_agent_accepts_no_steps():
-    errors = []
-    vt.check_steps({"model": "anthropic/claude-sonnet-5"}, "worker", "w", errors)
-    assert errors == []
-    errors = []
-    vt.check_steps({"model": "anthropic/claude-opus-5"}, "senior-worker", "w", errors)
-    assert errors == []
-
-
-def test_claude_mule_is_uncapped():
-    errors = []
-    vt.check_steps({"model": "anthropic/claude-sonnet-5"}, "claude-mule", "w", errors)
-    assert errors == []
-    errors = []
-    vt.check_steps(
-        {"model": "anthropic/claude-sonnet-5", "steps": 30}, "claude-mule", "w", errors
-    )
-    assert len(errors) == 1
-
-
-def test_observer_claude_is_uncapped():
-    errors = []
-    vt.check_steps(
-        {"model": "anthropic/claude-sonnet-5"}, "observer-claude", "w", errors
-    )
-    assert errors == []
-    errors = []
-    vt.check_steps(
-        {"model": "anthropic/claude-sonnet-5", "steps": 30},
-        "observer-claude",
-        "w",
-        errors,
-    )
-    assert len(errors) == 1
-
-
-def test_deepseek_mule_still_requires_30_steps():
-    errors = []
-    vt.check_steps({"steps": 30}, "worker-mule", "w", errors)
-    assert errors == []
-    errors = []
-    vt.check_steps({"steps": 25}, "worker-mule", "w", errors)
-    assert len(errors) == 1
-
-
-def test_gemini_mule_still_exempt():
-    errors = []
-    vt.check_steps({"model": "google/gemini-3.8-flash"}, "gemini-mule", "w", errors)
-    assert errors == []
-    errors = []
-    vt.check_steps(
-        {"model": "google/gemini-3.8-flash", "steps": 30}, "gemini-mule", "w", errors
-    )
-    assert errors == []
+    assert "must not declare 'steps'" in errors[0]
 
 
 # ---------------------------------------------------------------------------
@@ -260,7 +225,7 @@ def test_real_worker_agent_passes():
     fm = vt.extract_frontmatter(path)
     assert fm["mode"] == "subagent"
     assert fm["model"] == "anthropic/claude-sonnet-5"
-    assert "steps" not in fm  # Anthropic agents must be uncapped
+    assert "steps" not in fm  # step caps are no longer used
     errors = []
     vt.validate_agent("worker", "agents/worker.md", path, errors)
     assert errors == []
@@ -270,7 +235,7 @@ def test_real_claude_mule_passes():
     path = Path(__file__).resolve().parent.parent / "agents" / "claude-mule.md"
     fm = vt.extract_frontmatter(path)
     assert fm["model"] == "anthropic/claude-sonnet-5"
-    assert "steps" not in fm  # Anthropic agents must be uncapped
+    assert "steps" not in fm  # step caps are no longer used
     errors = []
     vt.validate_agent("claude-mule", "agents/claude-mule.md", path, errors)
     assert errors == []

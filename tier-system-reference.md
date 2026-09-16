@@ -333,37 +333,37 @@ permission:
 
 Complete configuration for all 9 roles across all 3 escalation tiers:
 
-| Role | Tier | File Name | Model | Steps | Edit | Bash | Web/Playwright |
-|------|------|-----------|-------|-------|------|------|-----|
-| **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-flash` | 50 | ✅ | ✅ | ✅ |
-| | Mid | `worker.md` | `anthropic/claude-sonnet-5` | — | ✅ | ✅ | ✅ |
-| | Senior | `senior-worker.md` | `anthropic/claude-opus-5` | — | ✅ | ✅ | ✅ |
-| **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-flash` | 25 | ✅ | ❌ | ✅ |
-| | Mid | `architect.md` | `anthropic/claude-sonnet-5` | — | ✅ | ❌ | ✅ |
-| | Senior | `senior-architect.md` | `anthropic/claude-opus-5` | — | ✅ | ❌ | ✅ |
-| **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-flash` | 25 | ❌ | ❌ | ❌ |
-| | Mid | `planner.md` | `anthropic/claude-sonnet-5` | — | ❌ | ❌ | ❌ |
-| | Senior | `senior-planner.md` | `anthropic/claude-opus-5` | — | ❌ | ❌ | ❌ |
-| **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-flash` | 30 | ❌ | ✅ | ❌ |
-| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5` | — | ❌ | ✅ | ❌ |
-| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-5` | — | ❌ | ✅ | ❌ |
-| **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-flash` | 35 | ✅ | ✅ | ✅ |
-| | Mid | `debugger.md` | `anthropic/claude-sonnet-5` | — | ✅ | ✅ | ✅ |
-| | Senior | `senior-debugger.md` | `anthropic/claude-opus-5` | — | ✅ | ✅ | ✅ |
-| **Security** | Junior | `junior-security.md` | `deepseek/deepseek-flash` | 30 | ❌ | ✅ | ✅ |
-| | Mid | `security.md` | `anthropic/claude-sonnet-5` | — | ❌ | ✅ | ✅ |
-| | Senior | `senior-security.md` | `anthropic/claude-opus-5` | — | ❌ | ✅ | ✅ |
-| **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-flash` | 25 | ✅ | ❌ | ❌ |
-| | Mid | `editor.md` | `anthropic/claude-sonnet-5` | — | ✅ | ❌ | ❌ |
-| | Senior | `senior-editor.md` | `anthropic/claude-opus-5` | — | ✅ | ❌ | ❌ |
-| **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-flash` | 40 | ✅ | ✅ | ✅ |
-| | Mid | `researcher.md` | `anthropic/claude-sonnet-5` | — | ✅ | ✅ | ✅ |
-| | Senior | `senior-researcher.md` | `anthropic/claude-opus-5` | — | ✅ | ✅ | ✅ |
-| **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-flash` | 25 | ❌ | ❌ | ❌ |
-| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5` | — | ❌ | ❌ | ❌ |
-| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-5` | — | ❌ | ❌ | ❌ |
+| Role | Tier | File Name | Model | Edit | Bash | Web/Playwright |
+|------|------|-----------|-------|------|------|-----|
+| **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-flash` | ✅ | ✅ | ✅ |
+| | Mid | `worker.md` | `anthropic/claude-sonnet-5` | ✅ | ✅ | ✅ |
+| | Senior | `senior-worker.md` | `anthropic/claude-opus-5` | ✅ | ✅ | ✅ |
+| **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-flash` | ✅ | ❌ | ✅ |
+| | Mid | `architect.md` | `anthropic/claude-sonnet-5` | ✅ | ❌ | ✅ |
+| | Senior | `senior-architect.md` | `anthropic/claude-opus-5` | ✅ | ❌ | ✅ |
+| **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-flash` | ❌ | ❌ | ❌ |
+| | Mid | `planner.md` | `anthropic/claude-sonnet-5` | ❌ | ❌ | ❌ |
+| | Senior | `senior-planner.md` | `anthropic/claude-opus-5` | ❌ | ❌ | ❌ |
+| **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-flash` | ❌ | ✅ | ❌ |
+| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5` | ❌ | ✅ | ❌ |
+| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-5` | ❌ | ✅ | ❌ |
+| **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-flash` | ✅ | ✅ | ✅ |
+| | Mid | `debugger.md` | `anthropic/claude-sonnet-5` | ✅ | ✅ | ✅ |
+| | Senior | `senior-debugger.md` | `anthropic/claude-opus-5` | ✅ | ✅ | ✅ |
+| **Security** | Junior | `junior-security.md` | `deepseek/deepseek-flash` | ❌ | ✅ | ✅ |
+| | Mid | `security.md` | `anthropic/claude-sonnet-5` | ❌ | ✅ | ✅ |
+| | Senior | `senior-security.md` | `anthropic/claude-opus-5` | ❌ | ✅ | ✅ |
+| **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-flash` | ✅ | ❌ | ❌ |
+| | Mid | `editor.md` | `anthropic/claude-sonnet-5` | ✅ | ❌ | ❌ |
+| | Senior | `senior-editor.md` | `anthropic/claude-opus-5` | ✅ | ❌ | ❌ |
+| **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-flash` | ✅ | ✅ | ✅ |
+| | Mid | `researcher.md` | `anthropic/claude-sonnet-5` | ✅ | ✅ | ✅ |
+| | Senior | `senior-researcher.md` | `anthropic/claude-opus-5` | ✅ | ✅ | ✅ |
+| **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-flash` | ❌ | ❌ | ❌ |
+| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5` | ❌ | ❌ | ❌ |
+| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-5` | ❌ | ❌ | ❌ |
 
-Mid and senior agents (Anthropic models) are uncapped (`—`): Anthropic rejects the max-steps wrap-up (assistant-role prefill), so those agents must not set `steps`. Junior DeepSeek agents keep their step caps.
+No agent sets a `steps` cap — every tier runs uncapped, so no step counts appear above.
 
 ## Model IDs Quick Reference
 
@@ -403,7 +403,6 @@ OpenCode loads agent markdown from both `~/.config/opencode/agent/` and `~/.conf
      ├── planner.md
      ├── reviewer.md
      ├── debugger.md
-     ├── designer.md
      ├── security.md
      ├── editor.md
      ├── researcher.md
@@ -485,6 +484,6 @@ Beyond the 3 escalation tiers, the repo also ships with **13 mule-tier agents** 
 
 Mules are subagent infrastructure. The supervisor never spawns mules directly — they exist for architects, workers, debuggers, and reviewers to spawn internally for bounded sub-tasks.
 
-All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}`. Eleven use 30-step limits; `gemini-mule` and `claude-mule` are uncapped — Google's and Anthropic's APIs reject the max-steps wrap-up request (an assistant-role prefill), so those caps must never trigger. Nine are DeepSeek Flash (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 3.8 Flash), `grok-mule` (Grok 4.6), `claude-mule` (Claude Sonnet 5), and `designer-mule` (Grok 4.6).
+All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}`. Like every agent in the template, mules run uncapped — none declares a `steps` cap. Nine are DeepSeek Flash (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 3.8 Flash), `grok-mule` (Grok 4.6), `claude-mule` (Claude Sonnet 5), and `designer-mule` (Grok 4.6).
 
 > ⚠️ **Mules require `subagent_depth >= 3`.** The Supervisor spawns a subagent (depth 2), which spawns a mule (depth 3). Without `"subagent_depth": 3` in `opencode.json`, the mule spawn will be silently blocked.

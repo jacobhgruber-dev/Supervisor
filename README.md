@@ -26,7 +26,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **22 bundled skills (19 motion/design + 3 utility)** — a self-contained skill library in `skills/` that installs with everything else: 19 motion/design skills (animate, framer-motion ×5, gsap-core, motion-design, design-system, ui-styling, apple-design, and more) plus 3 utility skills (`agent-reach` for web research, `anna` for book/article downloads, `use-railway` for Railway infrastructure). See [skills/README.md](skills/README.md).
 - **Grok worker** — an alternative-model worker on xAI's Grok 4.6. Ships in `agents/grok-worker.md` with notes in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
-- **Full 4-tier system built in** — all 47 subagents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, steps, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
+- **Full 4-tier system built in** — all 47 subagents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
 - **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 3.8 Flash — with automatic fallback to Claude Sonnet 5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
@@ -168,7 +168,7 @@ Supervisor Agent (primary, DeepSeek Flash)
 ```
 
 (Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.6). Local Ollama placeholders: `local-coder`, `local-reasoner`.)
-Mid and senior tiers (Claude Sonnet 5 / Opus 5) and `claude-mule` are uncapped — Anthropic rejects the max-steps wrap-up (assistant prefill); the DeepSeek junior tier and DeepSeek/Grok mules keep per-role step caps.
+No agent sets a `steps` cap — every tier (DeepSeek junior, Claude mid/senior, and all mules) runs uncapped.
 
 ## How It Works
 
@@ -233,7 +233,6 @@ Supervisor/
 │   ├── grok-worker/               # Grok worker notes (grok-worker.md itself now ships in agents/)
 │   └── open-code-modes/           # 9 behavioral modes (trigger words)
 │       ├── README.md
-│       ├── AGENTS.md              # Mode switching rules — ⚠️ WARNING: merge with existing root AGENTS.md; do NOT overwrite (-> ~/.config/opencode/)
 │       └── modes/                 # Individual mode files
 └── skills/
     ├── README.md                  # The 22 bundled skills (19 motion/design + 3 utility)

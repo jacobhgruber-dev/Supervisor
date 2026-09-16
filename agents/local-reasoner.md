@@ -3,7 +3,6 @@ description: Local reasoning agent via Ollama. Placeholder — configure before 
 mode: subagent
 hidden: true
 model: ollama/gemma3:12b
-steps: 14
 permission:
   task:
     "*": deny

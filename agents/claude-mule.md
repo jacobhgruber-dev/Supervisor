@@ -34,7 +34,7 @@ Before reporting done:
 
 ## Closing Report (MANDATORY)
 
-Your final message is the ONLY thing the agent that spawned you receives — everything you did lives or dies by it. Never end without a concise report, even if you hit your step limit or the task exceeds your scope: report what you completed and what remains.
+Your final message is the ONLY thing the agent that spawned you receives — everything you did lives or dies by it. Never end without a concise report, even if the task exceeds your scope: report what you completed and what remains.
 
 Always include:
 - **What you did** — one sentence summary

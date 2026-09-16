@@ -4,7 +4,6 @@ mode: subagent
 hidden: true
 model: deepseek/deepseek-flash
 variant: max
-steps: 30
 color: "#C7D2FE"
 permission:
   task:

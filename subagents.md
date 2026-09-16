@@ -20,7 +20,7 @@ Key principle: **Delegate everything.** The Supervisor reads docs for orientatio
 
 ### How tiers work
 
-This repo ships with all 4 tiers of agents already configured — 47 subagent files across 9 roles (plus designer / designer-mule and alternative model workers; 48 agents total with the Supervisor). The junior tier (`junior-*`) runs on DeepSeek Flash and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models, step counts, and permissions per role per tier.
+This repo ships with all 4 tiers of agents already configured — 47 subagent files across 9 roles (plus designer / designer-mule and alternative model workers; 48 agents total with the Supervisor). The junior tier (`junior-*`) runs on DeepSeek Flash and is the default workhorse. The mid tier (bare names like `worker`, `architect`) and senior tier (`senior-*`) run on Claude Sonnet and Opus respectively. These files are already present in the repo — they activate as soon as you connect an Anthropic key with `opencode auth login`. See `tier-system-reference.md` for the complete spec table with exact models and permissions per role per tier.
 
 ---
 
@@ -28,9 +28,9 @@ This repo ships with all 4 tiers of agents already configured — 47 subagent fi
 
 Designs new ways to do things. Greenfield thinking, tradeoff analysis.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `architect` | Claude Sonnet 5 | 25 | `#3B82F6` | Edit + web + playwright (no bash) |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `architect` | Claude Sonnet 5 | `#3B82F6` | Edit + web + playwright (no bash) |
 
 **When to use**: Designing new systems, choosing between approaches, refactoring strategy, pattern selection.
 
@@ -40,9 +40,9 @@ Designs new ways to do things. Greenfield thinking, tradeoff analysis.
 
 Takes a design and sequences the work. Complements architect (what → how → when). Includes quality tooling steps in estimates (ruff, mypy, shellcheck, hypothesis, radon).
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `planner` | Claude Sonnet 5 | 25 | `#C4B5FD` | Read-only |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `planner` | Claude Sonnet 5 | `#C4B5FD` | Read-only |
 
 **When to use**: Task breakdown, dependency mapping, milestone planning, effort estimation.
 
@@ -54,9 +54,9 @@ Takes a design and sequences the work. Complements architect (what → how → w
 
 Finds bugs, logic errors, style issues, and security concerns in code. Runs automated analysis: ruff, mypy, shellcheck, radon, lizard, trivy. Suggests hypothesis and coverage for test quality. Knows when cosmic-ray is warranted.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `reviewer` | Claude Sonnet 5 | 30 | `#FCA5A5` | Read-only + bash |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `reviewer` | Claude Sonnet 5 | `#FCA5A5` | Read-only + bash |
 
 **When to use**: Pre-merge review, PR feedback, catching edge cases and logic flaws.
 
@@ -66,9 +66,9 @@ Finds bugs, logic errors, style issues, and security concerns in code. Runs auto
 
 Chases bugs that are happening right now — error messages, stack traces, production issues. Uses diagnostic tools: mypy for type errors, py-spy/scalene for performance, trivy for dependency CVEs, shellcheck for bash bugs, rg for fast code search.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `debugger` | Claude Sonnet 5 | 35 | `#FB7185` | Full (edit, bash, web, playwright) |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `debugger` | Claude Sonnet 5 | `#FB7185` | Full (edit, bash, web, playwright) |
 
 **When to use**: Something broke. Error logs, crash reports, mysterious behavior.
 
@@ -80,9 +80,9 @@ Chases bugs that are happening right now — error messages, stack traces, produ
 
 Finds security holes — injections, exposed secrets, unsafe configs, supply chain risks.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `security` | Claude Sonnet 5 | 30 | `#DC2626` | Read-only + bash + web + playwright |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `security` | Claude Sonnet 5 | `#DC2626` | Read-only + bash + web + playwright |
 
 **When to use**: Security review before deployment, scanning for exposed secrets, hardening.
 
@@ -94,9 +94,9 @@ Finds security holes — injections, exposed secrets, unsafe configs, supply cha
 
 Improves writing — structure, clarity, tone, grammar.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `editor` | Claude Sonnet 5 | 25 | `#FDE68A` | Read + edit |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `editor` | Claude Sonnet 5 | `#FDE68A` | Read + edit |
 
 **When to use**: Blog posts, documentation, transcripts, any written content that needs polish.
 
@@ -106,9 +106,9 @@ Improves writing — structure, clarity, tone, grammar.
 
 Finds, verifies, and synthesizes information from multiple sources.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `researcher` | Claude Sonnet 5 | 40 | `#6EE7B7` | Full |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `researcher` | Claude Sonnet 5 | `#6EE7B7` | Full |
 
 **When to use**: "Research how X works," "compare Y and Z," "find best practices for W."
 
@@ -118,9 +118,9 @@ Finds, verifies, and synthesizes information from multiple sources.
 
 Verifies that quotes match their sources exactly. Detects paraphrasing disguised as quotation.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `quote-auditor` | Claude Sonnet 5 | 25 | `#FDBA74` | Read-only |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `quote-auditor` | Claude Sonnet 5 | `#FDBA74` | Read-only |
 
 **When to use**: Verifying transcript quotes, fact-checking article claims, legal/journalistic accuracy.
 
@@ -130,9 +130,9 @@ Verifies that quotes match their sources exactly. Detects paraphrasing disguised
 
 The go-to for any task that doesn't fit a specialized role. Full access to edit files and run commands. Runs pre-completion checks: ruff, mypy, shellcheck, radon, coverage, trivy. Knows document parsing (pymupdf, python-docx, beautifulsoup4). Uses rg for search and gh for GitHub operations.
 
-| Agent | Model | Steps | Color | Permissions |
-|-------|-------|-------|-------|-------------|
-| `worker` | Claude Sonnet 5 | 50 | `#A5B4FC` | Full |
+| Agent | Model | Color | Permissions |
+|-------|-------|-------|-------------|
+| `worker` | Claude Sonnet 5 | `#A5B4FC` | Full |
 
 **When to use**: Implementation, feature building, test writing, migrations, any general task.
 
@@ -154,10 +154,10 @@ See [`addons/grok-worker/README.md`](addons/grok-worker/README.md) for backgroun
 
 Specialized design agents with native image vision. The supervisor prefers `@designer` for ALL design work (styling, layout, components, mockups). Requires an xAI key.
 
-| Agent | Model | Steps | Permissions |
-|-------|-------|-------|-------------|
-| `designer` | Grok 4.6 (xAI) | 60 | Full + design MCPs (twenty-first, open-design, a11y-color-contrast) |
-| `designer-mule` | Grok 4.6 (xAI) | 30 | Same tools; leaf node (`task: deny`) |
+| Agent | Model | Permissions |
+|-------|-------|-------------|
+| `designer` | Grok 4.6 (xAI) | Full + design MCPs (twenty-first, open-design, a11y-color-contrast) |
+| `designer-mule` | Grok 4.6 (xAI) | Same tools; leaf node (`task: deny`) |
 
 **When to use**: UI/UX styling, component design, wireframes, mockups, layout, animation, accessibility styling. Spawn `designer` from the supervisor; `designer` may spawn `designer-mule` for bounded sub-tasks.
 

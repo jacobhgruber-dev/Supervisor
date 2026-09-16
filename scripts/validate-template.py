@@ -11,12 +11,8 @@ Validates, using only the Python standard library:
     ``observer-claude``, ``local-coder``, and ``local-reasoner``; and NOT on
     junior/mid/senior role agents, ``designer``, ``grok-worker``,
     ``gemini-worker``, or ``supervisor``.
-  - exact step counts per role (mules = 30 except ``gemini-mule`` and
-    ``claude-mule``; ``gemini-mule``/``gemini-worker``/``observer``/
-    ``supervisor`` exempt).
-  - NO ``steps`` on any agent whose model is ``anthropic/*`` (mid/senior
-    tiers, ``claude-mule``, ``observer-claude``): Anthropic rejects the
-    assistant-role max-steps wrap-up prefill, so those agents run uncapped.
+  - NO ``steps`` key on any agent: step caps are no longer used anywhere
+    in the template — every agent runs uncapped.
   - ``task: {"*": "deny"}`` (or ``task: deny``) on all mules,
     ``observer``, ``observer-claude``, ``local-coder``, and
     ``local-reasoner``.
@@ -73,35 +69,6 @@ MID_MODEL = "anthropic/claude-sonnet-5"
 SENIOR_MODEL = "anthropic/claude-opus-5"
 GROK_MODEL = "xai/grok-4.6"
 OBSERVER_CLAUDE_NAME = "observer-claude"  # Claude Sonnet 5 fallback observer
-
-STEP_COUNTS = {
-    "worker": 50,
-    "researcher": 40,
-    "debugger": 35,
-    "reviewer": 30,
-    "security": 30,
-    "architect": 25,
-    "editor": 25,
-    "planner": 25,
-    "quote-auditor": 25,
-    "designer": 60,
-    "grok-worker": 50,
-    "local-coder": 16,
-    "local-reasoner": 14,
-}
-MULE_STEPS = (
-    30  # applies to DeepSeek/Grok mules; claude-mule and gemini-mule are exempt
-)
-STEP_EXEMPT = {
-    "gemini-mule",
-    "gemini-worker",
-    "observer",
-    "supervisor",
-}
-# NOTE: every agent with an ``anthropic/*`` model is also step-exempt, and
-# must NOT set ``steps`` — Anthropic rejects the assistant-role max-steps
-# wrap-up prefill. ``observer-claude`` is covered by that rule (see
-# check_steps).
 
 # Agents that must be hidden (in addition to every *-mule).
 HIDDEN_EXTRA = {"observer", "observer-claude", "local-coder", "local-reasoner"}
@@ -222,16 +189,6 @@ def extract_frontmatter(path: Path) -> Dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def as_int(value: Any) -> Optional[int]:
-    if isinstance(value, bool):
-        return None
-    if isinstance(value, int):
-        return value
-    if isinstance(value, str) and value.strip().isdigit():
-        return int(value.strip())
-    return None
-
-
 def as_bool(value: Any) -> bool:
     if isinstance(value, bool):
         return value
@@ -312,51 +269,12 @@ def check_hidden(fm: Dict[str, Any], name: str, rel: str, errors: List[str]) -> 
         errors.append(f"{rel}: must NOT have 'hidden: true'")
 
 
-def is_anthropic_agent(fm: Dict[str, Any]) -> bool:
-    """True if the agent runs on an Anthropic model."""
-    model = fm.get("model")
-    return isinstance(model, str) and model.startswith("anthropic/")
-
-
-def check_anthropic_steps(fm: Dict[str, Any], rel: str, errors: List[str]) -> None:
-    """Anthropic agents must run uncapped: a ``steps`` cap is forbidden."""
+def check_steps(fm: Dict[str, Any], rel: str, errors: List[str]) -> None:
+    """No agent may declare ``steps``: step caps are no longer used."""
     if "steps" in fm:
         errors.append(
-            f"{rel}: anthropic agents must NOT have 'steps' "
-            "(Anthropic rejects the max-steps wrap-up / assistant prefill)"
+            f"{rel}: agents must not declare 'steps' — step caps are no longer used"
         )
-
-
-def check_counted_steps(
-    fm: Dict[str, Any], name: str, rel: str, errors: List[str]
-) -> None:
-    """Enforce exact step counts for non-exempt, non-Anthropic agents."""
-    steps = as_int(fm.get("steps"))
-    if steps is None:
-        errors.append(f"{rel}: missing or invalid 'steps' (must be an integer)")
-        return
-    if is_mule(name):
-        if steps != MULE_STEPS:
-            errors.append(f"{rel}: mule steps must be {MULE_STEPS}, got {steps}")
-        return
-    base = name
-    if base.startswith("junior-") or base.startswith("senior-"):
-        base = base.split("-", 1)[1]
-    expected = STEP_COUNTS.get(base)
-    if expected is None:
-        errors.append(f"{rel}: no step-count specification defined for '{name}'")
-    elif steps != expected:
-        errors.append(f"{rel}: steps must be {expected}, got {steps}")
-
-
-def check_steps(fm: Dict[str, Any], name: str, rel: str, errors: List[str]) -> None:
-    if is_anthropic_agent(fm):
-        # Anthropic models (Claude Sonnet 5 / Opus 5) reject the
-        # assistant-role max-steps wrap-up prefill, so these agents must
-        # run uncapped.
-        check_anthropic_steps(fm, rel, errors)
-    elif name not in STEP_EXEMPT:
-        check_counted_steps(fm, name, rel, errors)
 
 
 def check_task_deny(fm: Dict[str, Any], name: str, rel: str, errors: List[str]) -> None:
@@ -381,7 +299,7 @@ def validate_agent(name: str, rel: str, path: Path, errors: List[str]) -> None:
     check_mode(fm, name, rel, errors)
     check_model(fm, name, rel, errors)
     check_hidden(fm, name, rel, errors)
-    check_steps(fm, name, rel, errors)
+    check_steps(fm, rel, errors)
     check_task_deny(fm, name, rel, errors)
 
 

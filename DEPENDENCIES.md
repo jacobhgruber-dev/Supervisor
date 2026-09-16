@@ -13,7 +13,7 @@ The bare minimum. Install these and you have a working supervisor.
 | What | Why | How |
 |------|-----|-----|
 | **OpenCode** | The app itself | `npm install -g opencode` |
-| **DeepSeek API key** | Powers the supervisor and all 9 subagents | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) |
+| **DeepSeek API key** | Powers the supervisor, all junior-tier agents, and most mules | [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) |
 | **Node.js** | Provider packages, MCP servers via npx | `brew install node` |
 
 ---

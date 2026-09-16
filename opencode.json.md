@@ -29,9 +29,9 @@ Once a provider is configured this way, OpenCode handles everything internally �
 | DeepSeek | https://platform.deepseek.com/api_keys | $2 new-user credit; extremely cheap |
 | Anthropic | https://console.anthropic.com | $5 credit recommended; lights up mid/senior tiers |
 | Google (Gemini) | https://aistudio.google.com/apikey | Free tier available; lights up Observer + Gemini workers |
-| xAI (Grok) | https://console.x.ai | Powers optional grok-worker addon + designer / designer-mule |
+| xAI (Grok) | https://console.x.ai | Powers grok-worker + designer / designer-mule |
 
-DeepSeek alone runs the supervisor + junior tier. Adding Anthropic enables the mid/senior tiers. Google enables Observer. xAI is an optional add-on.
+DeepSeek alone runs the supervisor + junior tier. Adding Anthropic enables the mid/senior tiers. Google enables Observer. xAI is optional.
 
 ## Connecting Your API Keys (CLI)
 
@@ -72,13 +72,14 @@ The shipped `opencode.template.json` contains only an Ollama provider for local 
 
 ## MCP Servers
 
-The `mcp` block gives agents extra capabilities. One is enabled by default; the rest are disabled.
+The `mcp` block gives agents extra capabilities. Two are enabled by default; the rest are disabled.
 
 ### Enabled by default
 
-Browser/automation tool, run via `npx` on first use:
+Two tools, ready to use with no setup (run via `npx` on first use):
 
 - **`playwright`** — drive a real browser (clicks, forms, login, screenshots)
+- **`a11y-color-contrast`** — WCAG color-contrast checks for design and accessibility work
 
 ### Disabled by default
 
@@ -87,6 +88,7 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 | MCP | Adds | Setup |
 |-----|------|-------|
 | `chrome-devtools` | Inspect pages, console, network, performance traces | Just flip `"enabled": true` — already pre-allowed in the `permission` block |
+| `firecrawl` | Web scrape/search for JS-heavy pages | Key from https://firecrawl.dev; set `FIRECRAWL_API_KEY` — already pre-allowed in the `permission` block |
 | `elevenlabs` | Text-to-speech / voice | Key from https://elevenlabs.io; needs `uv` (`uvx`) |
 | `railway` | Deploy & manage apps | Railway CLI + `railway login` |
 | `screenpipe` | Search 24/7 screen + audio history | Run the screenpipe app (https://screenpi.pe); cross-platform |
@@ -98,7 +100,6 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 | `github` | Manage GitHub issues, PRs, repos | Docker + GitHub token in `GITHUB_PERSONAL_ACCESS_TOKEN` |
 | `macos-use` | Native macOS GUI control | macOS only; binary at `/usr/local/bin` — already pre-allowed in `permission` block |
 | `twenty-first` | 21st.dev component search/retrieval for UI work | Flip `"enabled": true`; **design MCP gating** — denied globally and for supervisor; allowed only on the `designer` agent |
-| `a11y-color-contrast` | WCAG color-contrast checks | Flip `"enabled": true`; allowed globally (and on `designer`) |
 
 > **Windows note:** `macos-automator` is macOS-only. For native Windows control, use [CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP) and add it to `"mcp"` the same opt-in way. `screenpipe` works on Windows.
 
@@ -106,7 +107,7 @@ Each needs a key or extra install. To enable one, set `"enabled": true` in the `
 
 ## Permission Block
 
-The `permission` block controls which MCP tools agents are allowed to call. The template pre-approves three servers (`chrome-devtools`, `macos-use`, `vercel`) with `"allow"` entries, plus `a11y-color-contrast_*`. Design tools (`twenty-first_*`, `open-design_*`) are explicitly `"deny"` at the top level and for the supervisor — only the `designer` agent is allowed them. All other disabled MCPs have no entry in the `permission` block — to enable one, you need **both** changes:
+The `permission` block controls which MCP tools agents are allowed to call. The template pre-approves four servers (`chrome-devtools`, `firecrawl`, `macos-use`, `vercel`) with `"allow"` entries, plus `a11y-color-contrast_*`. Design tools (`twenty-first_*`, `open-design_*`) are explicitly `"deny"` at the top level and for the supervisor — only the `designer` agent is allowed them. All other disabled MCPs have no entry in the `permission` block — to enable one, you need **both** changes:
 
 1. Set `"enabled": true` inside that MCP's entry in the `mcp` block
 2. Add a corresponding `"<name>_*": "allow"` entry to the `permission` block (or rely on agent-scoped allow for gated design tools)

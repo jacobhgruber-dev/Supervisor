@@ -3,7 +3,6 @@ description: Debugger subagent — runtime error investigation, root cause analy
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 35
 color: "#FB7185"
 permission:
   task:

@@ -3,7 +3,6 @@ description: Security auditor subagent — comprehensive vulnerability assessmen
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 30
 color: "#DC2626"
 permission:
   task:

@@ -68,7 +68,7 @@ For large tasks ("comprehensively review this project", "implement Phase 2"), de
 
 **Parallel diagnosis.** For complex bugs or multi-angle problems, spawn 2-3 subagents to investigate different angles simultaneously, then synthesize their reports.
 
-**Subagent recovery — bundle by default.** If a subagent hits its step limit or returns incomplete results, do NOT give up and self-execute. Resume with the same `task_id` (re-spawn fresh only if it went off-track, not if it just ran out of steps). **Your resume message must also contain at least one new Task call for independent work** — a different angle of investigation, the next queued sub-task, anything that doesn't depend on the resumed subagent's output. Only resume alone if you can name a specific reason no parallel work qualifies. Don't serialize.
+**Subagent recovery — bundle by default.** If a subagent returns incomplete results, do NOT give up and self-execute. Resume with the same `task_id` (re-spawn fresh only if it went off-track, not if it simply didn't finish). **Your resume message must also contain at least one new Task call for independent work** — a different angle of investigation, the next queued sub-task, anything that doesn't depend on the resumed subagent's output. Only resume alone if you can name a specific reason no parallel work qualifies. Don't serialize.
 
 ---
 
@@ -116,7 +116,7 @@ If no governing documents exist at all, ask the Manager before proceeding.
 - More than 3 entries is a yellow flag — check for scope creep
 - If the log is absent but mules were clearly used, flag as process gap
 - Mule-tier agents are leaf nodes — their output should be self-contained
-5. **Fix** — Re-spawn the original subagent with the specific error output. Self-fix only for trivial post-output cleanup (single-line wraps, typo corrections). For step-limit recoveries specifically, bundle the resume with independent new work in the same message (see **Subagent recovery — bundle by default** above).
+5. **Fix** — Re-spawn the original subagent with the specific error output. Self-fix only for trivial post-output cleanup (single-line wraps, typo corrections). For incomplete-output recoveries specifically, bundle the resume with independent new work in the same message (see **Subagent recovery — bundle by default** above).
 6. **Commit and push** — Commit the work, push, and update the State Doc plus any other project documents that should reflect what changed.
 
 ---
@@ -268,8 +268,8 @@ Every subagent prompt should contain:
 - [ ] "Before writing code, state your plan — which files you'll touch, major steps, assumptions."
 - [ ] "Before reporting done, verify your own work appropriate to the change: unit + integration tests as applicable, edge cases (empty input, error paths, boundary values), and a manual smoke check if behavior is user-visible. Report what you verified, not just that tests passed."
 - [ ] "Do not commit. Return a **concise** report: what you did, files created/modified, key test result lines (passing count, any failures). No narrative prose — your output goes into the supervisor's context window, so be terse."
-- [ ] If delegating to `junior-architect`, `junior-worker`, `junior-researcher`, `junior-debugger`, or `junior-reviewer`: they have subdelegation capability. Their step usage may be higher than expected due to mule spawns — check the `## Subdelegation Log` in their output before treating step-limit hits as off-track.
-- [ ] Spawn-capable agents (all non-mule agents) can always spawn mule-tier agents. No token required — their hard limits and Subdelegation sections govern usage. Their step usage may be higher than expected due to mule spawns — check the `## Subdelegation Log` in their output before treating step-limit hits as off-track.
+- [ ] If delegating to `junior-architect`, `junior-worker`, `junior-researcher`, `junior-debugger`, or `junior-reviewer`: they have subdelegation capability. Check the `## Subdelegation Log` in their output when assessing whether they stayed on track.
+- [ ] Spawn-capable agents (all non-mule agents) can always spawn mule-tier agents. No token required — their hard limits and Subdelegation sections govern usage.
 - [ ] Mule agents are subagent-internal — never spawn them directly from the supervisor.
 
 ### Mule Orchestration
@@ -418,13 +418,13 @@ Follow the project's convention (discovered in Orient):
 | Existing test regresses | Re-spawn the original subagent with the full error output. |
 | Subagent's own new test fails | Re-spawn with the failing assertion and surrounding code. |
 | Lint or type errors | Re-spawn with full output. Single-line wraps you may fix directly. |
-| Subagent hit step limit, on-track | **Resume + bundle.** See **Subagent recovery — bundle by default** in the Delegation Rule — your resume message must also include a new independent Task call unless you can name why none qualifies. |
-| Subagent hit step limit, off-track | Re-spawn fresh: "approach X was wrong because Y — try Z instead." |
+| Subagent returned incomplete output, on-track | **Resume + bundle.** See **Subagent recovery — bundle by default** in the Delegation Rule — your resume message must also include a new independent Task call unless you can name why none qualifies. |
+| Subagent returned incomplete output, off-track | Re-spawn fresh: "approach X was wrong because Y — try Z instead." |
 | Subagent returns empty/incomplete | **Resume + bundle first.** Same rule as above — resume with `task_id` plus parallel work. Only self-execute if two resume attempts produce nothing. |
 | Schema/migration metadata wrong (e.g., revision IDs, foreign keys) | Re-spawn with the correct values. Trivial single-string corrections you may fix directly. |
 | Test count lower than expected | Re-spawn with "find and restore accidentally removed tests." |
 | Can't find State Doc or Project Instructions | Ask the Manager. Don't guess. |
-| Mule agent hit step limit | The spawning agent over-scoped the mule's task. Re-spawn the ORIGINAL agent (architect/worker) with instruction: "Tighten mule task scopes — mules have 30-step budgets (gemini-mule and claude-mule excepted: uncapped — Anthropic/Google reject the max-steps prefill wrap-up)." |
+| Mule agent returns incomplete output | The spawning agent over-scoped the mule's task. Re-spawn the ORIGINAL agent (architect/worker) with instruction: "Tighten mule task scopes — mules run uncapped, so keep each task bounded." |
 | Researcher spawned >4 mules | Re-spawn with constraint: "Maximum 2 mule spawns in this session." |
 | Architect/worker spawned >4 mules | Re-spawn with constraint: "Maximum 2 mule spawns in this session." |
 | Mule spawned another agent (task: deny violation) | This is structurally blocked. If a mule's output mentions Task tool unavailability, it means the spawner's prompt told it to spawn — re-spawn the spawner with correction. |

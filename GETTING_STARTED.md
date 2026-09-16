@@ -320,7 +320,7 @@ It also includes **thirteen optional** MCP servers that are **disabled by defaul
 
 > 🧠 **Pairs well with Observer.** `screenpipe` and `macos-automator` capture what's on screen; the built-in **Observer** agent (dual-provider vision — Gemini 3.8 Flash primary, Claude Sonnet 5 fallback — see the Observer section above) then *reads* those screenshots and explains them to your text-only Supervisor.
 
-**How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`. For a few servers (`chrome-devtools`, `macos-use`, `vercel`), the template already has a matching `"allow"` entry in the `"permission"` block — just flip `enabled`. For the others (elevenlabs, railway, screenpipe, macos-automator, yt-dlp, gemini-api-docs, context7, github), you'll also need to add a corresponding `"<name>_*": "allow"` line to the `"permission"` block. `twenty-first` ships with a `"deny"` permission entry — change it to `"allow"` too. For example, to enable railway:
+**How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`. For a few servers (`chrome-devtools`, `firecrawl`, `macos-use`, `vercel`), the template already has a matching `"allow"` entry in the `"permission"` block — just flip `enabled`. For the others (elevenlabs, railway, screenpipe, macos-automator, yt-dlp, gemini-api-docs, context7, github), you'll also need to add a corresponding `"<name>_*": "allow"` line to the `"permission"` block. `twenty-first` ships with a `"deny"` permission entry — change it to `"allow"` too. For example, to enable railway:
 
 ```json
 "mcp": { "railway": { "enabled": true, ... } },

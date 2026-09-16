@@ -3,7 +3,6 @@ description: Researcher subagent — multi-source investigation, synthesis, cont
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 40
 color: "#6EE7B7"
 permission:
   task:

@@ -3,7 +3,6 @@ description: Code reviewer subagent — bug detection, logic flaws, edge cases, 
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 30
 color: "#FCA5A5"
 permission:
   task:

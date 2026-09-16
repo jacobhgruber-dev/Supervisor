@@ -3,7 +3,6 @@ description: General-purpose worker subagent — handles any task that doesn't f
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 50
 color: "#A5B4FC"
 permission:
   task:

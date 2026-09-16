@@ -3,7 +3,6 @@ description: Planner subagent for task breakdown, dependency mapping, sequencing
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 25
 color: "#C4B5FD"
 permission:
   task:

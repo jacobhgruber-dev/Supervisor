@@ -39,7 +39,7 @@ The Supervisor ships with 47 subagent files across 4 tiers — 9 roles at each t
 | `editor` | Grammar, spelling, punctuation, readability | Read + edit |
 | `quote-auditor` | Quotation verification against sources | Read-only |
 
-All nine mid-tier agents run Claude Sonnet 5 and are uncapped — Anthropic rejects the max-steps wrap-up (assistant-role prefill), so no `steps` is set. The DeepSeek junior tier keeps per-role step caps; see [tier-system-reference.md](tier-system-reference.md).
+All nine mid-tier agents run Claude Sonnet 5 and are uncapped, like every agent in the template — no agent sets a `steps` cap. See [tier-system-reference.md](tier-system-reference.md).
 
 ### When to Use
 

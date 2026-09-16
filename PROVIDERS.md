@@ -88,7 +88,7 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 - `designer` — UI/UX design agent on Grok 4.6 with native image vision (ships in `agents/`)
 - `designer-mule` — bounded design leaf on Grok 4.6 (ships in `agents/`)
 
-**Cost:** Moderate. The Grok worker addon is optional and independent of the core system.
+**Cost:** Moderate. The Grok worker is optional and independent of the core system.
 
 **Sign up:** [console.x.ai](https://console.x.ai)
 
@@ -112,7 +112,7 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 
 | Provider | What It Unlocks | Cost Tier | Setup Time |
 |----------|----------------|-----------|------------|
-| **DeepSeek** | Supervisor + 9 junior subagents (the whole system) | $ (cheapest) | ~2 min |
+| **DeepSeek** | Supervisor + 9 junior subagents + 9 DeepSeek mules | $ (cheapest) | ~2 min |
 | **Anthropic** | 9 mid + 9 senior subagents | $$$ (priciest) | ~3 min |
 | **Google** | gemini-worker + gemini-mule + Observer vision | $$ (moderate) | ~2 min |
 | **xAI** | grok-worker + grok-mule + designer + designer-mule | $$ (moderate) | ~3 min |
@@ -133,7 +133,7 @@ If you see a `"provider"` block for a cloud provider in any config template, del
 
 ## One-Key Minimum
 
-**You only need DeepSeek to start.** The entire system — Supervisor + all 9 junior agents — runs on DeepSeek alone. That one key (and $2 of credit) gets you a fully functional AI agent team.
+**You only need DeepSeek to start.** The base setup — Supervisor + all 9 junior agents + 9 DeepSeek mules — runs on DeepSeek alone. That one key (and $2 of credit) gets you a fully functional AI agent team.
 
 Add Anthropic, Google, or xAI keys later at your own pace. The agent files are already in place; they simply activate when the key appears. No rewiring, no config edits.
 

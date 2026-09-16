@@ -3,7 +3,6 @@ description: Quote auditor subagent — line-by-line source verification, paraph
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 25
 color: "#FDBA74"
 permission:
   task:

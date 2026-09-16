@@ -3,7 +3,6 @@ description: Design subagent for UI/UX work — wireframes, mockups, visual styl
 mode: subagent
 model: xai/grok-4.6
 variant: max
-steps: 60
 color: "#EC4899"
 permission:
   task:
@@ -79,7 +78,7 @@ If 21st tools return errors, fall back to manual implementation or browse 21st.d
 
 ## Subdelegation
 
-You can spawn `designer-mule` for bounded design sub-tasks — component implementation, CSS fixes, visual tweaks, responsive testing. Use mules for parallel work where possible. Mules have 30-step budgets and the same MCP access. Do not spawn more than 2 mules per session.
+You can spawn `designer-mule` for bounded design sub-tasks — component implementation, CSS fixes, visual tweaks, responsive testing. Use mules for parallel work where possible. Mules have the same MCP access. Do not spawn more than 2 mules per session.
 
 ## Pre-Completion Checklist
 

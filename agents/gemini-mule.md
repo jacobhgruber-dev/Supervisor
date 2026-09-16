@@ -1,5 +1,5 @@
 ---
-description: "Gemini-powered leaf agent — long-context, multimodal, web research, coding. Mule tier: cheapest Gemini model (3.7 Flash), structurally cannot spawn subagents. Use for tasks benefiting from 1M context, multimodal understanding, or agentic web work."
+description: "Gemini-powered leaf agent — long-context, multimodal, web research, coding. Mule tier: cheapest Gemini model (3.8 Flash), structurally cannot spawn subagents. Use for tasks benefiting from 1M context, multimodal understanding, or agentic web work."
 mode: subagent
 hidden: true
 model: google/gemini-3.8-flash

@@ -3,7 +3,6 @@ description: Editor subagent — structural revision, clarity, flow, voice, audi
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 25
 color: "#FDE68A"
 permission:
   task:

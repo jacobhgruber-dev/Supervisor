@@ -3,7 +3,6 @@ description: Local coding agent via Ollama. Placeholder — configure before use
 mode: subagent
 hidden: true
 model: ollama/qwen2.5-coder:14b
-steps: 16
 permission:
   task:
     "*": deny

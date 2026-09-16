@@ -3,7 +3,6 @@ description: Architecture subagent for design decisions, tradeoff analysis, refa
 mode: subagent
 model: deepseek/deepseek-flash
 variant: max
-steps: 25
 color: "#3B82F6"
 permission:
   task:
