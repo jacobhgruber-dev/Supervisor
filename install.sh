@@ -374,10 +374,10 @@ else
   error "verify FAIL: agents/ has $AGENTS_ACTUAL files, expected $EXPECTED_AGENTS"
   FAILS=$((FAILS + 1))
 fi
-if [ "$SKILLS_ACTUAL" -eq "$EXPECTED_SKILL_DIRS" ]; then
-  info "verify OK: skills/ contains $SKILLS_ACTUAL skill dirs"
+if [ "$SKILLS_ACTUAL" -ge "$EXPECTED_SKILL_DIRS" ]; then
+  info "verify OK: skills/ contains $SKILLS_ACTUAL dirs (>= $EXPECTED_SKILL_DIRS bundled)"
 else
-  error "verify FAIL: skills/ has $SKILLS_ACTUAL dirs, expected $EXPECTED_SKILL_DIRS"
+  error "verify FAIL: skills/ has $SKILLS_ACTUAL dirs, expected at least $EXPECTED_SKILL_DIRS"
   FAILS=$((FAILS + 1))
 fi
 if [ -f "$CONFIG_DIR/plugin/observer-bridge.js" ]; then
