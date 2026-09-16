@@ -18,8 +18,10 @@ Validates, using only the Python standard library:
     ``local-reasoner``.
   - model per tier: junior → ``deepseek/deepseek-flash``, mid →
     ``anthropic/claude-sonnet-5``, senior → ``anthropic/claude-opus-5``,
-    Grok agents → ``xai/grok-4.6``; ``observer-claude`` →
-    ``anthropic/claude-sonnet-5``.
+    Grok agents → ``xai/grok-4.6``; Gemini agents (``gemini-worker``,
+    ``gemini-mule``, ``observer``) → ``google/gemini-3.8-flash``;
+    ``observer-claude`` → ``anthropic/claude-sonnet-5``; ``supervisor`` →
+    ``deepseek/deepseek-flash``.
 * ``opencode.template.json`` (or ``opencode.json`` with ``--installed``):
   valid JSON, ``default_agent: supervisor``, ``subagent_depth: 3``, and
   no hardcoded API keys.
@@ -68,7 +70,13 @@ JUNIOR_MODEL = "deepseek/deepseek-flash"
 MID_MODEL = "anthropic/claude-sonnet-5"
 SENIOR_MODEL = "anthropic/claude-opus-5"
 GROK_MODEL = "xai/grok-4.6"
+GEMINI_MODEL = "google/gemini-3.8-flash"
+SUPERVISOR_MODEL = "deepseek/deepseek-flash"
 OBSERVER_CLAUDE_NAME = "observer-claude"  # Claude Sonnet 5 fallback observer
+
+# Gemini-modeled agents (bare names): the Gemini workers and the
+# multimodal observer.
+GEMINI_AGENTS = {"gemini-worker", "gemini-mule", "observer"}
 
 # Agents that must be hidden (in addition to every *-mule).
 HIDDEN_EXTRA = {"observer", "observer-claude", "local-coder", "local-reasoner"}
@@ -250,6 +258,19 @@ def check_model(fm: Dict[str, Any], name: str, rel: str, errors: List[str]) -> N
         if model != MID_MODEL:
             errors.append(
                 f"{rel}: '{OBSERVER_CLAUDE_NAME}' must use '{MID_MODEL}', got '{model}'"
+            )
+        return
+    if name in GEMINI_AGENTS:
+        if model != GEMINI_MODEL:
+            errors.append(
+                f"{rel}: Gemini agents must use '{GEMINI_MODEL}', got '{model}'"
+            )
+        return
+    if name == PRIMARY_AGENT_NAME:
+        if model != SUPERVISOR_MODEL:
+            errors.append(
+                f"{rel}: '{PRIMARY_AGENT_NAME}' must use "
+                f"'{SUPERVISOR_MODEL}', got '{model}'"
             )
         return
     tier = expected_model(name)

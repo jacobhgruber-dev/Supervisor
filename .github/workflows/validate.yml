@@ -16,3 +16,9 @@ jobs:
 
       - name: Run template validator
         run: python3 scripts/validate-template.py
+
+      - name: Install test dependencies
+        run: python3 -m pip install pytest hypothesis
+
+      - name: Run template validator tests
+        run: python3 -m pytest scripts/test_validate_template.py -q

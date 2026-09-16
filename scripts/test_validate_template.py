@@ -180,6 +180,25 @@ def test_observer_claude_model_enforced():
     assert errors == []
 
 
+def test_gemini_agents_model_enforced():
+    for name in ("gemini-worker", "gemini-mule", "observer"):
+        errors = []
+        vt.check_model({"model": "deepseek/deepseek-flash"}, name, "w", errors)
+        assert len(errors) == 1
+        errors = []
+        vt.check_model({"model": "google/gemini-3.8-flash"}, name, "w", errors)
+        assert errors == []
+
+
+def test_supervisor_model_enforced():
+    errors = []
+    vt.check_model({"model": "anthropic/claude-opus-5"}, "supervisor", "w", errors)
+    assert len(errors) == 1
+    errors = []
+    vt.check_model({"model": "deepseek/deepseek-flash"}, "supervisor", "w", errors)
+    assert errors == []
+
+
 def test_agent_with_steps_rejected():
     errors = []
     vt.check_steps({"steps": 30}, "agents/worker-mule.md", errors)
@@ -256,3 +275,34 @@ def test_real_observer_claude_passes():
     errors = []
     vt.validate_agent("observer-claude", "agents/observer-claude.md", path, errors)
     assert errors == []
+
+
+def test_real_supervisor_passes():
+    path = Path(__file__).resolve().parent.parent / "agent" / "supervisor.md"
+    fm = vt.extract_frontmatter(path)
+    assert fm["mode"] == "primary"
+    assert fm["model"] == "deepseek/deepseek-flash"
+    errors = []
+    vt.validate_agent("supervisor", "agent/supervisor.md", path, errors)
+    assert errors == []
+
+
+def test_real_observer_passes():
+    path = Path(__file__).resolve().parent.parent / "agents" / "observer.md"
+    fm = vt.extract_frontmatter(path)
+    assert fm["mode"] == "subagent"
+    assert fm["model"] == "google/gemini-3.8-flash"
+    errors = []
+    vt.validate_agent("observer", "agents/observer.md", path, errors)
+    assert errors == []
+
+
+def test_real_gemini_agents_pass():
+    base = Path(__file__).resolve().parent.parent / "agents"
+    for name in ("gemini-worker", "gemini-mule"):
+        path = base / f"{name}.md"
+        fm = vt.extract_frontmatter(path)
+        assert fm["model"] == "google/gemini-3.8-flash"
+        errors = []
+        vt.validate_agent(name, f"agents/{name}.md", path, errors)
+        assert errors == []
