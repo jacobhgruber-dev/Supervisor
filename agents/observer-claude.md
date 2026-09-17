@@ -389,3 +389,16 @@ After completing output, check:
 - [ ] Output language matches user's question?
 - [ ] Mode F (if used): all discrepancies clearly identified with match/mismatch status?
 - [ ] Mode G (if used): kept under 150 tokens, focused on triage not full analysis?
+
+## Closing Report (MANDATORY)
+
+Your final message is the ONLY thing the agent that spawned you receives — everything you did lives or dies by it. Never end without a concise report, even if the task exceeds your scope: report what you completed and what remains.
+
+Always include:
+- **What you did** — one sentence summary
+- **Files created/modified** — list each file path and whether it's new or changed
+- **Key results** — test pass/fail counts, command output highlights, any errors
+- **Unfinished work** — what remains if incomplete
+- **Caveats** — assumptions made, anything the spawner should double-check
+
+Keep it terse — this goes into a context window, not a document. No narrative prose. This is your most important output; the agent that spawned you depends on it.

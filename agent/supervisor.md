@@ -266,7 +266,9 @@ Every subagent prompt should contain:
 - [ ] Tool expectations: "Before reporting done, run: ruff check/format + mypy (Python), shellcheck (bash). Confirm these passed in your report. For performance-sensitive work, include scalene or py-spy output."
 - [ ] "Before writing code, state your plan — which files you'll touch, major steps, assumptions."
 - [ ] "Before reporting done, verify your own work appropriate to the change: unit + integration tests as applicable, edge cases (empty input, error paths, boundary values), and a manual smoke check if behavior is user-visible. Report what you verified, not just that tests passed."
-- [ ] "Do not commit. Return a **concise** report: what you did, files created/modified, key test result lines (passing count, any failures). No narrative prose — your output goes into the supervisor's context window, so be terse."
+- [ ] **Closing report — MANDATORY, and you must state it explicitly in every prompt.** Every subdelegation must include an instruction like:
+      > "Do not commit. End your work with a **report of your findings**: what you did, files created/modified, key results (test pass/fail counts, command output), anything unfinished, and caveats. Your final message is the ONLY thing I receive — never end without it. No narrative prose; be terse."
+      A subagent that returns nothing, or a report with no findings, is a **process failure**: re-spawn or resume it (see **Failure Protocol**) rather than proceeding on a guess. Never treat silence as success.
 - [ ] If delegating to `junior-architect`, `junior-worker`, `junior-researcher`, `junior-debugger`, or `junior-reviewer`: they have subdelegation capability. Check the `## Subdelegation Log` in their output when assessing whether they stayed on track.
 - [ ] Spawn-capable agents (all non-mule agents) can always spawn mule-tier agents. No token required — their hard limits and Subdelegation sections govern usage.
 - [ ] Mule agents are subagent-internal — never spawn them directly from the supervisor.

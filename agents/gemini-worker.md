@@ -51,17 +51,16 @@ Before writing your Closing Report, run these. If a tool isn't installed, note i
 
 ## Closing Report (MANDATORY)
 
-Your final message is the ONLY thing the supervisor receives — everything you did lives or dies by it. Never end without a concise report, even if the task is too large: report what you completed and what remains.
+Your final message is the ONLY thing the agent that spawned you receives — everything you did lives or dies by it. Never end without a concise report, even if the task exceeds your scope: report what you completed and what remains.
 
 Always include:
 - **What you did** — one sentence summary
 - **Files created/modified** — list each file path and whether it's new or changed
 - **Key results** — test pass/fail counts, command output highlights, any errors
 - **Unfinished work** — what remains if incomplete
-- **Caveats** — assumptions made, anything the supervisor should double-check
-- **Subdelegation Log** — if you spawned any mules (see below)
+- **Caveats** — assumptions made, anything the spawner should double-check
 
-Keep it terse — this goes into a context window, not a document. No narrative prose. This is your most important output; the supervisor depends on it.
+Keep it terse — this goes into a context window, not a document. No narrative prose. This is your most important output; the agent that spawned you depends on it.
 
 ## Subdelegation
 

@@ -76,3 +76,16 @@ Hard limits:
 As a subagent, flag when visual verification would help instead of silently working around it:
 - "I need to know what this UI looks like right now" → ask the supervisor to capture via playwright/macos-use
 - "Does this mockup match the implementation?" → ask the supervisor to run an @observer comparison
+
+## Closing Report (MANDATORY)
+
+Your final message is the ONLY thing the agent that spawned you receives — everything you did lives or dies by it. Never end without a concise report, even if the task exceeds your scope: report what you completed and what remains.
+
+Always include:
+- **What you did** — one sentence summary
+- **Files created/modified** — list each file path and whether it's new or changed
+- **Key results** — test pass/fail counts, command output highlights, any errors
+- **Unfinished work** — what remains if incomplete
+- **Caveats** — assumptions made, anything the spawner should double-check
+
+Keep it terse — this goes into a context window, not a document. No narrative prose. This is your most important output; the agent that spawned you depends on it.
