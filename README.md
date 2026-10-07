@@ -187,7 +187,7 @@ The Supervisor follows a strict workflow for every request:
 3. **Triage** — if the path isn't clear, spawns a researcher/debugger/architect first
 4. **Delegate** — spawns subagents with specific, actionable prompts
 5. **Review** — runs verification, reads diffs for quality, spawns reviewer for complex changes
-6. **Fix** — re-spawns subagents for failures (never self-fixes)
+6. **Fix** — resumes or re-spawns subagents for failures (never self-fixes)
 7. **Commit** — commits in logical units, pushes, updates docs
 
 Key principle: **Always delegate.** The Supervisor self-executes only mechanical operations (commits, pushes, updating docs). All substantive work goes to subagents.
