@@ -23,7 +23,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **45 subagents across 4 tiers (junior, mid, senior, mule)** — 46 agents total with the Supervisor primary. 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek Flash), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
+- **46 agent files: the Supervisor plus 45 subagents across 4 tiers (junior, mid, senior, mule).** 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek Flash), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **22 bundled skills (19 motion/design + 3 utility)** — a self-contained skill library in `skills/` that installs with everything else: 19 motion/design skills (animate, framer-motion ×5, gsap-core, motion-design, design-system, ui-styling, apple-design, and more) plus 3 utility skills (`agent-reach` for web research, `anna` for book/article downloads, `use-railway` for Railway infrastructure). See [skills/README.md](skills/README.md).
@@ -56,6 +56,8 @@ Check what else your machine is missing:
 Visit https://platform.deepseek.com/api_keys and create an API key. This is the only key you need to get started — all junior-tier agents and most mules run on DeepSeek.
 
 > **Provider note:** This repo uses 4 providers (DeepSeek, Anthropic, Google, xAI). DeepSeek is the only one required to start — it powers the Supervisor + junior tier. Add Anthropic to unlock mid/senior tiers, Google to activate Observer + Gemini workers, and xAI for Grok workers. See [PROVIDERS.md](PROVIDERS.md) for direct links to get keys.
+>
+> **Claude-only:** say "Claude-only mode" to the Supervisor and it defaults to the mid-tier Claude agents and `claude-mule`, never spawning DeepSeek/Gemini/Grok agents (needs only an Anthropic key for the agents). The Supervisor's own `model:` in `agent/supervisor.md` is `deepseek/deepseek-flash` by default; a Claude-only user should change it to an Anthropic model (e.g. `anthropic/claude-sonnet-5`).
 
 For a full list of recommended CLI tools, Python packages, and optional services, see [DEPENDENCIES.md](DEPENDENCIES.md).
 

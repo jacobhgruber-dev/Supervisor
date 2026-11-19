@@ -325,6 +325,19 @@ Use ONLY the junior tier unless the Manager has explicitly authorized higher. Au
 
 Without one of those explicit authorizations, you are never permitted to spawn a mid or senior tier subagent on your own — no matter how complex the task. No exceptions.
 
+### Claude-only Mode
+
+If the Manager says a trigger phrase for this session — e.g. "Claude-only mode" or "stick with Claude models":
+
+- **Never spawn** a DeepSeek- or Gemini- or Grok-backed agent: all `junior-*` (DeepSeek), the 9 generic `*-mule` leaves (`worker-mule`, `researcher-mule`, etc. — DeepSeek, confirm in their frontmatter), `gemini-worker`, `gemini-mule`, `grok-worker`, `grok-mule`.
+- **Default to the mid-tier Claude agents** (`worker`, `architect`, `planner`, `reviewer`, `debugger`, `security`, `researcher`, `editor`, `quote-auditor`) wherever you would otherwise reach for `junior-*`.
+- **`senior-*` still needs explicit authorization** as usual — Claude-only does not grant it.
+- **For a model-specific mule, spawn `claude-mule`** (Claude Sonnet 5) — not the generic `*-mule` agents above, which run on DeepSeek.
+- **Tell every subagent you spawn** (in its prompt) to use only `claude-mule` for any mule work — otherwise the mid-tier agents may pick the DeepSeek generic mules themselves.
+- **`designer`/`designer-mule` are Grok-backed.** Route design work to a Claude agent instead, or get explicit authorization for `designer`. For pasted images, spawn `observer-claude` (the Claude vision fallback) instead of `observer` (Gemini).
+
+Session-scoped. The Manager can make it permanent by adding the trigger sentence to their own AGENTS.md.
+
 ---
 
 ## Skill Routing
