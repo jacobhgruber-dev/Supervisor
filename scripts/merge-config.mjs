@@ -3,11 +3,22 @@
  * merge-config.mjs - safely merge Supervisor defaults into an existing
  * opencode.json. Zero npm dependencies; Node 18+.
  *
- * Only four keys are ever touched:
- *   - subagent_depth      -> set to 3 if missing or < 3 (left alone if >= 3)
+ * Only these keys are ever touched:
+ *   - experimental.subagent_depth -> set to max(existing, 2) (V2: default 1
+ *     means a subagent cannot spawn a subagent; 2 enables
+ *     supervisor -> role agent -> mule)
+ *   - experimental.todo   -> set to true only if not already set explicitly
+ *     (enables the todowrite tool)
+ *   - subagent_depth (top-level) -> removed if present (OpenCode V2 ignores
+ *     it with a warning; superseded by experimental.subagent_depth)
+ *   - compaction.prune    -> removed if present (dead in V2, ignored with a
+ *     warning)
  *   - default_agent       -> set to "supervisor"
  *   - plugin              -> ensure "observer-bridge.js" is included
  *   - mcp.a11y-color-contrast -> added (enabled) if absent, enabled if present
+ *
+ * experimental.* is labeled experimental by OpenCode and may change without
+ * notice.
  *
  * Everything else (provider, model, custom MCPs, custom keys, ...) is
  * preserved byte-for-byte in value, including ordering of existing keys.
@@ -34,6 +45,11 @@ const A11Y_ENTRY = {
   command: ["npx", "-y", "a11y-color-contrast-mcp"],
   enabled: true,
 };
+
+// V2: default experimental.subagent_depth is 1 (a subagent cannot spawn a
+// subagent). 2 enables supervisor -> role agent -> mule (mules are leaf
+// nodes and never spawn further).
+const MIN_SUBAGENT_DEPTH = 2;
 
 function usage() {
   console.log(`merge-config: safely merge Supervisor defaults into opencode.json
@@ -122,14 +138,44 @@ function isPlainObject(value) {
 function merge(cfg) {
   const changes = [];
 
-  // subagent_depth: set only when missing or too shallow.
-  if (typeof cfg.subagent_depth !== "number" || !Number.isFinite(cfg.subagent_depth)) {
-    cfg.subagent_depth = 3;
-    changes.push("subagent_depth: set to 3 (was unset)");
-  } else if (cfg.subagent_depth < 3) {
+  // experimental.subagent_depth: set to max(existing, MIN_SUBAGENT_DEPTH).
+  if (cfg.experimental === undefined || cfg.experimental === null) {
+    cfg.experimental = {};
+  }
+  if (!isPlainObject(cfg.experimental)) {
+    fail(`"experimental" must be an object, got ${typeof cfg.experimental}`);
+  }
+  {
+    const current = cfg.experimental.subagent_depth;
+    const hasValidCurrent = typeof current === "number" && Number.isFinite(current);
+    const next = Math.max(hasValidCurrent ? current : MIN_SUBAGENT_DEPTH, MIN_SUBAGENT_DEPTH);
+    if (!hasValidCurrent) {
+      cfg.experimental.subagent_depth = next;
+      changes.push(`experimental.subagent_depth: set to ${next} (was unset)`);
+    } else if (current !== next) {
+      cfg.experimental.subagent_depth = next;
+      changes.push(`experimental.subagent_depth: ${current} -> ${next}`);
+    }
+  }
+
+  // experimental.todo: only set if the user hasn't set it explicitly.
+  if (cfg.experimental.todo === undefined) {
+    cfg.experimental.todo = true;
+    changes.push("experimental.todo: set to true (was unset)");
+  }
+
+  // subagent_depth (top-level): stale, ignored by OpenCode V2 with a
+  // warning. Remove it now that experimental.subagent_depth is in place.
+  if (Object.prototype.hasOwnProperty.call(cfg, "subagent_depth")) {
     const old = cfg.subagent_depth;
-    cfg.subagent_depth = 3;
-    changes.push(`subagent_depth: ${old} -> 3`);
+    delete cfg.subagent_depth;
+    changes.push(`subagent_depth: removed stale top-level key (was ${JSON.stringify(old)}; ignored by V2 — see experimental.subagent_depth)`);
+  }
+
+  // compaction.prune: dead in V2 (ignored with a warning) - drop if present.
+  if (isPlainObject(cfg.compaction) && Object.prototype.hasOwnProperty.call(cfg.compaction, "prune")) {
+    delete cfg.compaction.prune;
+    changes.push("compaction.prune: removed (ignored by V2)");
   }
 
   // default_agent: always ensure supervisor.

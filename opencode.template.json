@@ -3,7 +3,10 @@
   "model": "deepseek/deepseek-flash",
   "small_model": "deepseek/deepseek-flash",
   "default_agent": "supervisor",
-  "subagent_depth": 3,
+  "experimental": {
+    "subagent_depth": 2,
+    "todo": true
+  },
   "agent": {
     "supervisor": {
       "permission": {
@@ -111,7 +114,6 @@
   },
   "compaction": {
     "auto": true,
-    "prune": true,
     "reserved": 20000
   },
   "provider": {},

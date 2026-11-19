@@ -279,9 +279,10 @@ function Show-FileDiff {
 
 function Invoke-ConfigMerge {
     # Runs the canonical node merge helper: node scripts/merge-config.mjs
-    # [--dry-run] <target>. It only ever touches four keys (subagent_depth,
-    # default_agent, plugin, mcp.a11y-color-contrast); everything else is
-    # preserved. Returns the captured output lines (array of strings) or
+    # [--dry-run] <target>. It only ever touches experimental.subagent_depth/
+    # todo, default_agent, plugin, mcp.a11y-color-contrast (added/updated), and
+    # removes a stale top-level subagent_depth plus compaction.prune; everything
+    # else is preserved. Returns the captured output lines (array of strings) or
     # $null when the invocation could not even start.
     param([string]$RepoRoot, [string]$ConfigDir, [switch]$Dry)
     $nodeCmd = Get-Command node -ErrorAction SilentlyContinue

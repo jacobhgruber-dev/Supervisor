@@ -22,8 +22,10 @@
       - missing      -> created from opencode.template.json (macOS-only MCP
                         entries dropped on Windows)
       - managed      -> merged via node scripts/merge-config.mjs (only
-                        subagent_depth, default_agent, plugin and the
-                        a11y-color-contrast MCP are ever touched)
+                        experimental.subagent_depth/todo, default_agent, plugin
+                        and the a11y-color-contrast MCP are added/updated; a
+                        stale top-level subagent_depth and compaction.prune
+                        are removed)
       - modified     -> skipped unless -Interactive (merge preserves user edits,
                         but the file is still snapshotted first)
     On Windows, macOS-only MCP servers (macos-use, macos-automator) are never

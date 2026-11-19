@@ -19,8 +19,9 @@
 #
 # opencode.json is handled separately: missing -> created from
 # opencode.template.json; managed -> merged via scripts/merge-config.mjs
-# (only subagent_depth, default_agent, plugin and the a11y-color-contrast MCP
-# are ever touched); modified -> skipped unless --interactive.
+# (only experimental.subagent_depth/todo, default_agent, plugin, and the
+# a11y-color-contrast MCP are added/updated; a stale top-level subagent_depth
+# and compaction.prune are removed); modified -> skipped unless --interactive.
 #
 # Usage:
 #   ./update.sh                          # update everything (safe defaults)

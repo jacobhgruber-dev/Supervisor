@@ -22,8 +22,11 @@ Validates, using only the Python standard library:
     ``observer-claude`` → ``anthropic/claude-sonnet-5``; ``supervisor`` →
     ``deepseek/deepseek-flash``.
 * ``opencode.template.json`` (or ``opencode.json`` with ``--installed``):
-  valid JSON, ``default_agent: supervisor``, ``subagent_depth: 3``, and
-  no hardcoded API keys.
+  valid JSON, ``default_agent: supervisor``, ``experimental.subagent_depth``
+  >= 2, ``experimental.todo: true``, no stray top-level ``subagent_depth``
+  (OpenCode V2 ignores it with a warning), and no hardcoded API keys.
+  ``experimental.*`` is labeled experimental by OpenCode and may change
+  without notice.
 * No private/OSINT skills (anything matching ``*osint*``) under
   ``skills/``.
 
@@ -50,6 +53,12 @@ from typing import Any, Dict, List, Optional, Tuple
 EXPECTED_PRIMARY_FILES = 1  # agent/ must contain exactly one file
 EXPECTED_SUBAGENT_FILES = 45  # agents/ must contain exactly 45 files
 PRIMARY_AGENT_NAME = "supervisor"
+
+# V2 semantics: default is 1 (a subagent cannot spawn a subagent). 2 allows
+# supervisor -> role agent -> mule (mules are leaf nodes and never spawn
+# further). This lives under "experimental" — a bare top-level
+# "subagent_depth" is ignored by OpenCode V2 with a warning.
+MIN_SUBAGENT_DEPTH = 2
 
 # Mid-tier role agents (bare names). ``designer`` and the addon workers are
 # NOT mid-tier roles: they run on other providers.
@@ -410,10 +419,26 @@ def validate_config(config_path: Path, errors: List[str]) -> None:
             f"{config_path.name}: 'default_agent' must be "
             f"'{PRIMARY_AGENT_NAME}', got {data.get('default_agent')!r}"
         )
-    if data.get("subagent_depth") != 3:
+    if "subagent_depth" in data:
         errors.append(
-            f"{config_path.name}: 'subagent_depth' must be 3, "
-            f"got {data.get('subagent_depth')!r}"
+            f"{config_path.name}: top-level 'subagent_depth' is ignored by "
+            "OpenCode V2 (with a warning) and must be removed — use "
+            "'experimental.subagent_depth' instead"
+        )
+    experimental = data.get("experimental")
+    exp_depth = (
+        experimental.get("subagent_depth") if isinstance(experimental, dict) else None
+    )
+    if not isinstance(exp_depth, int) or isinstance(exp_depth, bool) or exp_depth < MIN_SUBAGENT_DEPTH:
+        errors.append(
+            f"{config_path.name}: 'experimental.subagent_depth' must be an "
+            f"int >= {MIN_SUBAGENT_DEPTH}, got {exp_depth!r}"
+        )
+    exp_todo = experimental.get("todo") if isinstance(experimental, dict) else None
+    if exp_todo is not True:
+        errors.append(
+            f"{config_path.name}: 'experimental.todo' must be true, "
+            f"got {exp_todo!r}"
         )
     for message in find_hardcoded_keys(data):
         errors.append(f"{config_path.name}: {message}")
@@ -564,7 +589,8 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     print(f"OK: {total} agent files validated")
     print(
-        f"OK: {config_path.name} (default_agent={PRIMARY_AGENT_NAME!r}, subagent_depth=3)"
+        f"OK: {config_path.name} (default_agent={PRIMARY_AGENT_NAME!r}, "
+        f"experimental.subagent_depth>={MIN_SUBAGENT_DEPTH}, experimental.todo=true)"
     )
     if skills_present:
         print("OK: skills/ contains no *osint* entries")

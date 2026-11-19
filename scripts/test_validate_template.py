@@ -8,6 +8,7 @@ smoke checks against the real ``agents/worker.md`` and
 """
 
 import importlib.util
+import json
 import string
 from pathlib import Path
 
@@ -246,6 +247,133 @@ def test_validate_agent_flags_steps_end_to_end(tmp_path):
     vt.validate_agent("worker-mule", "agents/worker-mule.md", path, errors)
     assert len(errors) == 1
     assert "must not declare 'steps'" in errors[0]
+
+
+# ---------------------------------------------------------------------------
+# Unit tests: opencode.json / opencode.template.json config validation
+# (V2: experimental.subagent_depth >= 2, experimental.todo: true, no stale
+# top-level subagent_depth)
+# ---------------------------------------------------------------------------
+
+
+def write_config(tmp_path, data):
+    path = tmp_path / "opencode.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    return path
+
+
+def test_validate_config_accepts_v2_depth_and_todo(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 2, "todo": True},
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert errors == []
+
+
+def test_validate_config_accepts_deeper_than_minimum(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 5, "todo": True},
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert errors == []
+
+
+def test_validate_config_rejects_stale_top_level_subagent_depth(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "subagent_depth": 2,
+            "experimental": {"subagent_depth": 2, "todo": True},
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert len(errors) == 1
+    assert "top-level 'subagent_depth'" in errors[0]
+
+
+def test_validate_config_rejects_low_experimental_depth(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 1, "todo": True},
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert len(errors) == 1
+    assert "experimental.subagent_depth" in errors[0]
+
+
+def test_validate_config_rejects_missing_experimental(tmp_path):
+    path = write_config(tmp_path, {"default_agent": "supervisor"})
+    errors: list = []
+    vt.validate_config(path, errors)
+    messages = " ".join(errors)
+    assert "experimental.subagent_depth" in messages
+    assert "experimental.todo" in messages
+
+
+def test_validate_config_rejects_todo_false(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 2, "todo": False},
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert len(errors) == 1
+    assert "experimental.todo" in errors[0]
+
+
+def test_validate_config_rejects_bool_as_depth(tmp_path):
+    """JSON ``true``/``false`` parse to Python ``bool``, an ``int`` subclass —
+    must not be accepted as a valid depth value."""
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": True, "todo": True},
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert len(errors) == 1
+    assert "experimental.subagent_depth" in errors[0]
+
+
+def test_validate_config_reports_both_depth_and_todo_problems(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 1, "todo": False},
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert len(errors) == 2
+
+
+def test_real_template_config_passes():
+    path = Path(__file__).resolve().parent.parent / "opencode.template.json"
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert errors == []
 
 
 # ---------------------------------------------------------------------------

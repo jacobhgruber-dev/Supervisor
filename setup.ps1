@@ -11,8 +11,9 @@
 
     opencode.json handling:
       - If an opencode.json already exists, it is ALWAYS safely merged via
-        `node scripts/merge-config.mjs` (only four keys are ever touched:
-        subagent_depth, default_agent, plugin, mcp.a11y-color-contrast).
+        `node scripts/merge-config.mjs` (only experimental.subagent_depth/todo,
+        default_agent, plugin, and mcp.a11y-color-contrast are added/updated;
+        a stale top-level subagent_depth and compaction.prune are removed).
         Everything else is preserved. A backup copy is made first.
       - If it does not exist, it is created from opencode.template.json only
         when -WithConfig is passed. On Windows the macOS-only MCP servers
@@ -299,7 +300,7 @@ if ($configExists) {
         Copy-Item -LiteralPath $configDest -Destination $bak
         Write-Host ''
         Write-Host "Backup: opencode.json -> $bak"
-        Write-Host 'Config: merging opencode.json (only subagent_depth, default_agent, plugin, a11y-color-contrast MCP are touched)'
+        Write-Host 'Config: merging opencode.json (experimental.subagent_depth/todo, default_agent, plugin, a11y-color-contrast MCP updated; stale top-level subagent_depth and compaction.prune removed)'
         $mergeOutput = Invoke-ConfigMerge -RepoRoot $RepoRoot -ConfigDir $ConfigDir
     }
     if ($null -ne $mergeOutput) {
