@@ -3,7 +3,6 @@ description: Multimodal visual analysis subagent (Claude Sonnet 5 fallback) — 
 mode: subagent
 hidden: true
 model: anthropic/claude-sonnet-5
-temperature: 0.1
 permission:
   write: deny
   edit: deny

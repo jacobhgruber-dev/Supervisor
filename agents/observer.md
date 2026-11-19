@@ -3,7 +3,6 @@ description: Multimodal visual analysis — read and analyze screenshots, design
 mode: subagent
 hidden: true
 model: google/gemini-3.8-flash
-temperature: 0.1
 permission:
   task:
     "*": deny
