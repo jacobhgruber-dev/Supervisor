@@ -17,13 +17,22 @@ function resolveTempDir() {
   return process.env.OBSERVER_BRIDGE_TMPDIR || join("/", "tmp", "opencode")
 }
 
-// Clean up stale pasted images older than one hour.
+// Clean up stale pasted images older than one hour. Only our own files
+// (pasted_*) are ever touched: /tmp/opencode is a shared convention also
+// used by macos-use/playwright screenshot capture and other tooling, and
+// this plugin must not delete files it didn't create.
 const MAX_AGE_MS = 3600_000
+const PASTED_PREFIX = "pasted_"
 
 function cleanupStale(tempDir) {
-  mkdirSync(tempDir, { recursive: true })
+  // mode: 0o700 only takes effect when mkdirSync actually creates the
+  // directory; if tempDir already exists, Node's recursive mkdir is a no-op
+  // and leaves its existing mode untouched (no chmod is issued here or
+  // anywhere else in this file).
+  mkdirSync(tempDir, { recursive: true, mode: 0o700 })
   try {
     for (const name of readdirSync(tempDir)) {
+      if (!name.startsWith(PASTED_PREFIX)) continue
       const filepath = join(tempDir, name)
       try {
         if (Date.now() - statSync(filepath).mtimeMs > MAX_AGE_MS) {
@@ -120,8 +129,12 @@ function visionPrompt(name) {
 // the hook input. V2's session hooks only carry {providerID, id, variant?}
 // for the model — no capabilities — so this cross-references ctx.model.list()
 // (Model.Info[], where capabilities.input is a string[] such as ["text",
-// "image"]). Matches on providerID plus either `id` or `modelID` since the
-// exact bare-vs-composite id convention isn't pinned down by the V2 docs.
+// "image"]). Provider id is compared case-insensitively, consistent with
+// isBridgeProvider, since the hook-supplied providerID and the catalog's
+// providerID are not guaranteed to share casing. Matches `id` or `modelID`
+// since the exact bare-vs-composite id convention isn't pinned down by the
+// V2 docs (Model.Info has both fields; Model.Ref only has `id`) — kept both
+// deliberately since this remains unconfirmed, not dead code.
 // Returns true, false, or undefined (unknown — e.g. model not in the catalog).
 async function isImageCapable(ctx, providerID, modelID) {
   if (!providerID || !modelID) return undefined
@@ -133,9 +146,36 @@ async function isImageCapable(ctx, providerID, modelID) {
     return undefined
   }
   if (!Array.isArray(models)) return undefined
-  const match = models.find((m) => m?.providerID === providerID && (m?.id === modelID || m?.modelID === modelID))
+  const normalizedProviderID = String(providerID).trim().toLowerCase()
+  const match = models.find(
+    (m) =>
+      typeof m?.providerID === "string" &&
+      m.providerID.trim().toLowerCase() === normalizedProviderID &&
+      (m?.id === modelID || m?.modelID === modelID),
+  )
   if (!match) return undefined
   return Array.isArray(match.capabilities?.input) && match.capabilities.input.includes("image")
+}
+
+// Allowlist mapping mime type -> safe file extension. The extension is never
+// derived by splitting/parsing the mime string: an attacker-controlled mime
+// such as "image/../../etc/passwd" or "image/x\..\..\evil" must not be able
+// to influence the filename beyond falling back to the default "png".
+const IMAGE_EXTENSIONS = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/gif": "gif",
+  "image/webp": "webp",
+  "image/bmp": "bmp",
+  "image/tiff": "tiff",
+  "image/svg+xml": "svg",
+  "image/heic": "heic",
+  "image/heif": "heif",
+  "image/avif": "avif",
+}
+
+function extensionForMime(mime) {
+  return IMAGE_EXTENSIONS[String(mime).toLowerCase()] ?? "png"
 }
 
 // Parse a base64 data: URI from a V2 prompt file attachment's `uri` field
@@ -161,9 +201,21 @@ export async function setup(ctx) {
   cleanupStale(tempDir)
 
   const bridgeProviders = resolveBridgeProviders()
-  const injectedSessions = new Set()
 
   // V1 "experimental.chat.system.transform" -> V2 "context" hook.
+  //
+  // No once-per-session gate: per the V2 server docs, "context" hook edits
+  // "affect only the outgoing model call, not persisted history or
+  // configuration" and "context runs for the agent loop, including
+  // tool-driven continuations" — i.e. it fires on every model request in a
+  // session, and nothing we push here carries over to the next request. A
+  // once-per-session gate (the V1 approach) would make the instruction
+  // appear in the first request's system prompt only and silently vanish
+  // from every later request in the same session. Injecting unconditionally
+  // on every qualifying call is therefore the correct V2 behavior, not a
+  // performance shortcut gone wrong — it's still idempotent in the sense
+  // that matters: each call pushes exactly one instruction into that call's
+  // own (fresh, non-accumulating) system array.
   const contextReg = await ctx.session.hook("context", async (event) => {
     const providerID = event.model?.providerID
     const modelID = event.model?.id
@@ -171,12 +223,8 @@ export async function setup(ctx) {
     if (capable === true) return
     if (!isBridgeProvider(providerID, bridgeProviders)) return
 
-    const sessionID = event.sessionID
-    if (sessionID && !injectedSessions.has(sessionID)) {
-      injectedSessions.add(sessionID)
-      const name = await resolveObserver(ctx)
-      event.system.push({ type: "text", text: visionPrompt(name) })
-    }
+    const name = await resolveObserver(ctx)
+    event.system.push({ type: "text", text: visionPrompt(name) })
   })
 
   // V1 "chat.message" -> V2 "prompt" hook. No model is resolved yet at
@@ -210,20 +258,24 @@ export async function setup(ctx) {
 
     const capable = await isImageCapable(ctx, providerID, modelID)
     if (capable === true) return
-    // Mirrors V1: if the provider is known and explicitly not a bridge
-    // provider, leave the prompt alone. Otherwise (unknown or bridge
-    // provider) proceed conservatively.
-    if (providerID !== undefined && !isBridgeProvider(providerID, bridgeProviders)) return
+    // Safe direction, symmetric with the context hook above: only bridge
+    // when the provider is both resolved AND explicitly listed as a bridge
+    // provider. isBridgeProvider(undefined, ...) is false, so if
+    // session.get() threw or the session has no model yet, we leave the
+    // prompt untouched rather than guessing — a possibly image-capable
+    // model keeps its image, and the native V2 "unsupported attachment"
+    // fallback applies if it turns out not to support it.
+    if (!isBridgeProvider(providerID, bridgeProviders)) return
 
     const name = await resolveObserver(ctx)
     const note = name ? "" : " (Note: No vision key configured for @observer)"
     const notes = []
     for (const parsed of imageFiles) {
-      const ext = parsed.mime.split("/")[1]?.replace("jpeg", "jpg") || "png"
-      const filename = `pasted_${randomUUID()}.${ext}`
+      const ext = extensionForMime(parsed.mime)
+      const filename = `${PASTED_PREFIX}${randomUUID()}.${ext}`
       const filepath = join(tempDir, filename)
       try {
-        writeFileSync(filepath, Buffer.from(parsed.data, "base64"))
+        writeFileSync(filepath, Buffer.from(parsed.data, "base64"), { mode: 0o600 })
         notes.push(`[Image saved to: ${filepath}]${note}`)
       } catch (err) {
         notes.push(`[Image saved error: ${err.message}]`)
@@ -242,7 +294,11 @@ export async function setup(ctx) {
   })
 
   return async () => {
-    await contextReg.dispose()
-    await promptReg.dispose()
+    const results = await Promise.allSettled([contextReg.dispose(), promptReg.dispose()])
+    for (const result of results) {
+      if (result.status === "rejected") {
+        console.error("[observer-bridge] hook dispose failed:", result.reason?.message || result.reason)
+      }
+    }
   }
 }
