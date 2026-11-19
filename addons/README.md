@@ -10,7 +10,7 @@ The Supervisor repo ships with everything you need out of the box: one API key, 
 
 > **Grok Worker is no longer an addon — it's built into the base setup.** The alternative-model worker subagent (`agents/grok-worker.md`) ships with the core repo, running on Grok 4.6 (`xai/grok-4.6`), and activates once an xAI API key is configured. See [grok-worker/](grok-worker/) for activation details.
 
-> **Observer is no longer an addon — it's built into the base setup.** The multimodal screenshot-reading subagent (`agents/observer.md`) and its paste-interception plugin (`plugin/observer-bridge.js`) ship with the core repo and activate once a Google (Gemini) key is configured. See [GETTING_STARTED.md](../GETTING_STARTED.md).
+> **Observer is no longer an addon — it's built into the base setup.** The multimodal screenshot-reading subagent (`agents/observer.md`) and its paste-interception plugin (`plugins/observer-bridge/`, an OpenCode V2 plugin) ship with the core repo and activate once a Google (Gemini) key is configured. See [GETTING_STARTED.md](../GETTING_STARTED.md).
 
 ## See Also
 

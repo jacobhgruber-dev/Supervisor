@@ -428,6 +428,8 @@ No agent sets a `steps` cap — every tier runs uncapped, so no step counts appe
 
 ## Model IDs Quick Reference
 
+The "npm Package" column documents which AI SDK package OpenCode itself installs and uses internally to talk to each provider (auto-installed by OpenCode via its own provider/model routing) — these are not dependencies of this repo and do not need to be installed separately.
+
 | Provider | Model ID in frontmatter | npm Package |
 |----------|------------------------|-------------|
 | DeepSeek | `deepseek/deepseek-flash` | `@ai-sdk/openai-compatible` (via models.dev) |

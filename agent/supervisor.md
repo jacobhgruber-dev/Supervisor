@@ -145,7 +145,7 @@ The supervisor has access to visual capabilities that work in concert:
 - **playwright** — browser screenshots and DOM inspection (already configured, no new permissions)
 - **macos-use** — desktop control for native macOS apps (Phase 3, requires Accessibility permission)
 
-<!-- Note: observer behavior is also injected by observer-bridge.js plugin -->
+<!-- Note: observer behavior is also injected by the plugins/observer-bridge plugin -->
 
 ### Decision Flow for Visual Tasks
 

@@ -267,13 +267,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File setup.ps1 -WithConfig</div>
           <p style="margin-top:10px;">New machine? Run the <b>Dependency Doctor</b> first — it scans your system and prints a tailored install command for every missing tool:</p>
           <div class="code"><button class="copy">Copy</button>./install.sh --doctor   <span class="cmt"># never fails, writes nothing — just tells you what's missing</span></div>
           <p style="margin-top:10px;"><b>Prefer to do it by hand?</b> The manual copy below is the reference — same files, one file at a time.</p>
-          <div class="code"><button class="copy">Copy</button>mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
+          <div class="code"><button class="copy">Copy</button>mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugins ~/.config/opencode/skills
 # If you already configured providers in Desktop (Settings → Providers), skip the opencode.template.json copy — you only need the agents, skills, plugin, and AGENTS.md.
 cp opencode.template.json ~/.config/opencode/opencode.json
 cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md  <span class="cmt"># Supervisor → agent/</span>
 cp agents/*.md         ~/.config/opencode/agents/              <span class="cmt"># subagents → agents/</span>
 cp -R skills/.         ~/.config/opencode/skills/              <span class="cmt"># bundled skills</span>
-cp plugin/observer-bridge.js   ~/.config/opencode/plugin/      <span class="cmt"># Observer plugin</span>
+cp -R plugins/observer-bridge   ~/.config/opencode/plugins/    <span class="cmt"># Observer plugin</span>
 cp AGENTS.md     ~/.config/opencode/AGENTS.md</div>
           <div class="callout trap" style="margin-top:14px;">
             <b>📌 Where agents go:</b> OpenCode loads both <code>agent/</code> and <code>agents/</code>. This install puts the Supervisor in <code>agent/</code> and subagents in <code>agents/</code>. What makes the Supervisor primary is <code>mode: primary</code> in its frontmatter. Don't drop non-agent docs into either folder (phantom agents).

@@ -123,11 +123,11 @@ Once your `opencode.json` is in place, copy the agent files to your opencode con
 
 **macOS/Linux:**
 ```
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugins ~/.config/opencode/skills
 cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
 cp agents/*.md         ~/.config/opencode/agents/
 cp -R skills/.         ~/.config/opencode/skills/
-cp plugin/*.js         ~/.config/opencode/plugin/
+cp -R plugins/observer-bridge ~/.config/opencode/plugins/
 cp AGENTS.md           ~/.config/opencode/AGENTS.md
 ```
 
@@ -135,12 +135,12 @@ cp AGENTS.md           ~/.config/opencode/AGENTS.md
 ```
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\agent"
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\agents"
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\plugin"
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\plugins"
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\skills"
 Copy-Item agent\supervisor.md -Destination "$env:USERPROFILE\.config\opencode\agent\supervisor.md"
 Copy-Item agents\*.md    -Destination "$env:USERPROFILE\.config\opencode\agents\"
 Copy-Item skills\* -Destination "$env:USERPROFILE\.config\opencode\skills\" -Recurse
-Copy-Item plugin\*.js    -Destination "$env:USERPROFILE\.config\opencode\plugin\"
+Copy-Item plugins\observer-bridge -Destination "$env:USERPROFILE\.config\opencode\plugins\" -Recurse
 Copy-Item AGENTS.md      -Destination "$env:USERPROFILE\.config\opencode\AGENTS.md"
 ```
 

@@ -20,15 +20,17 @@ The bare minimum. Install these and you have a working supervisor.
 
 ## Tier 2: Plugins (optional, 3 items)
 
-The base config ships with the Observer plugin already configured: `"plugin": ["observer-bridge.js"]`. Copy `plugin/observer-bridge.js` to `~/.config/opencode/plugin/observer-bridge.js` (already done in the main setup). Additional optional plugins are available:
+The base config ships with the Observer plugin already in place: `plugins/observer-bridge/` (an OpenCode V2 plugin, auto-discovered — no config entry needed). It's copied to `~/.config/opencode/plugins/observer-bridge/` as part of the main setup. Additional optional plugins are available via the V2 `"plugins"` config key (V1 used the singular `"plugin"` — see the [V1→V2 migration guide](https://opencode.ai/docs/migrate-v1)):
 
 ```json
-"plugin": [
+"plugins": [
   "opencode-wakelock",
   "opencode-pty",
   "opencode-websearch-cited"
 ]
 ```
+
+These must be ported to the OpenCode V2 plugin API to actually work — per the migration guide, "V1 plugin implementations do not run in V2," regardless of which config key references them.
 
 | Plugin | What it does |
 |--------|-------------|

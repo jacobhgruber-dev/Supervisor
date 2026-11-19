@@ -139,7 +139,7 @@ Prefer to do it by hand? The manual copy below mirrors the installer's file copi
 
 ```bash
 # 1. Make sure the config folders exist
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugins ~/.config/opencode/skills
 
 # 2. The main config file
 cp opencode.template.json ~/.config/opencode/opencode.json
@@ -152,7 +152,7 @@ cp agents/*.md         ~/.config/opencode/agents/
 cp -R skills/.         ~/.config/opencode/skills/
 
 # 5. The Observer plugin (lets you paste screenshots into chat)
-cp plugin/observer-bridge.js ~/.config/opencode/plugin/observer-bridge.js
+cp -R plugins/observer-bridge ~/.config/opencode/plugins/
 
 # 6. Behavioral guidelines (coding conventions for the agents)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
@@ -163,14 +163,14 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 > # ~/.config/opencode/ → %USERPROFILE%\.config\opencode\
 > mkdir $env:USERPROFILE\.config\opencode\agent
 > mkdir $env:USERPROFILE\.config\opencode\agents
-> mkdir $env:USERPROFILE\.config\opencode\plugin
+> mkdir $env:USERPROFILE\.config\opencode\plugins
 > mkdir $env:USERPROFILE\.config\opencode\skills
 >
 > copy opencode.template.json $env:USERPROFILE\.config\opencode\opencode.json
 > copy agent\supervisor.md $env:USERPROFILE\.config\opencode\agent\supervisor.md
 > copy agents\*.md $env:USERPROFILE\.config\opencode\agents\
 > copy -Recurse skills\* $env:USERPROFILE\.config\opencode\skills\
-> copy plugin\observer-bridge.js $env:USERPROFILE\.config\opencode\plugin\observer-bridge.js
+> copy -Recurse plugins\observer-bridge $env:USERPROFILE\.config\opencode\plugins\
 > copy AGENTS.md $env:USERPROFILE\.config\opencode\AGENTS.md
 > ```
 > (`mkdir` in PowerShell creates parent directories automatically — no `-p` flag needed. `copy` replaces `cp`.)

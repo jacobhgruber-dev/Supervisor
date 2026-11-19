@@ -29,7 +29,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 - **22 bundled skills (19 motion/design + 3 utility)** — a self-contained skill library in `skills/` that installs with everything else: 19 motion/design skills (animate, framer-motion ×5, gsap-core, motion-design, design-system, ui-styling, apple-design, and more) plus 3 utility skills (`agent-reach` for web research, `anna` for book/article downloads, `use-railway` for Railway infrastructure). See [skills/README.md](skills/README.md).
 - **Grok worker** — an alternative-model worker on xAI's Grok 4.6. Ships in `agents/grok-worker.md` with notes in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
 - **Full 4-tier system built in** — all 45 subagents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
-- **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 3.8 Flash — with automatic fallback to Claude Sonnet 5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image.
+- **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 3.8 Flash — with automatic fallback to Claude Sonnet 5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image. It's an OpenCode V2 plugin (`plugins/observer-bridge/`) whose automatic `prompt.agents` dispatch to `@observer` is unverified, backed by a system-prompt fallback that tells the supervisor to spawn @observer manually.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
@@ -65,7 +65,7 @@ For a full list of recommended CLI tools, Python packages, and optional services
 
 ```bash
 # Make sure the config folders exist
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugins ~/.config/opencode/skills
 cp agent/supervisor.md ~/.config/opencode/agent/supervisor.md
 cp agents/*.md         ~/.config/opencode/agents/
 
@@ -73,7 +73,7 @@ cp agents/*.md         ~/.config/opencode/agents/
 cp -R skills/.         ~/.config/opencode/skills/
 
 # Copy the Observer plugin (lets you paste screenshots into chat)
-cp plugin/observer-bridge.js ~/.config/opencode/plugin/observer-bridge.js
+cp -R plugins/observer-bridge ~/.config/opencode/plugins/
 
 # Copy behavioral guidelines (merge if you already have AGENTS.md)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
@@ -83,7 +83,7 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 
 ```bash
 # Make sure the config folders exist
-mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugin ~/.config/opencode/skills
+mkdir -p ~/.config/opencode/agent ~/.config/opencode/agents ~/.config/opencode/plugins ~/.config/opencode/skills
 
 # Copy config (no API keys live in here — see step 3)
 cp opencode.template.json ~/.config/opencode/opencode.json
@@ -96,7 +96,7 @@ cp agents/*.md         ~/.config/opencode/agents/
 cp -R skills/.         ~/.config/opencode/skills/
 
 # Copy the Observer plugin (lets you paste screenshots into chat)
-cp plugin/observer-bridge.js ~/.config/opencode/plugin/observer-bridge.js
+cp -R plugins/observer-bridge ~/.config/opencode/plugins/
 
 # Copy behavioral guidelines (merge if you already have AGENTS.md)
 cp AGENTS.md ~/.config/opencode/AGENTS.md
@@ -234,8 +234,10 @@ Supervisor/
 │   ├── grok-worker.md             # High-powered worker (Grok 4.6)
 │   ├── designer.md                # UI/UX design (Grok 4.6, native image vision)
 │   └── designer-mule.md           # Bounded design leaf (Grok 4.6)
-├── plugin/
-│   └── observer-bridge.js         # Paste-a-screenshot interception — deploys to ~/.config/opencode/plugin/observer-bridge.js
+├── plugins/
+│   └── observer-bridge/           # Paste-a-screenshot interception (V2 plugin) — deploys to ~/.config/opencode/plugins/observer-bridge/
+│       ├── index.js
+│       └── lib.mjs
 ├── addons/
 │   ├── README.md                  # Addon overview
 │   ├── grok-worker/               # Grok worker notes (grok-worker.md itself now ships in agents/)
