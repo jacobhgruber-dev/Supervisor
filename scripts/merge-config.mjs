@@ -27,13 +27,22 @@
  *
  * Everything else (provider, model, custom MCPs, custom keys, ...) is
  * preserved byte-for-byte in value, including ordering of existing keys.
- * If the target is not valid JSON, it is backed up (`.corrupt-<stamp>.bak`)
- * and the script exits non-zero without writing anything. If the content
- * merely looks like JSONC (comments or trailing commas — OpenCode V2 itself
- * accepts opencode.json(c) with both), no backup is made and the error
- * explains that this script's plain-JSON parser can't read it, nothing was
- * changed, and how to apply the defaults by hand. This script intentionally
- * has zero npm dependencies, so it never gains a JSONC parser.
+ *
+ * The target may be plain JSON or JSONC (OpenCode V2 itself accepts
+ * opencode.json(c) with line/block comments and/or trailing commas). A
+ * zero-dependency, string-aware reader strips both before parsing — text
+ * inside a JSON string (e.g. a "https://example.com//path" value) is never
+ * mistaken for a comment. A file with ONLY trailing commas (no comments) is
+ * merged and written exactly like plain JSON. A file that contains comments
+ * is never rewritten (that would delete them); instead the script computes
+ * the exact manual changes needed, prints them, and exits non-zero with no
+ * backup (nothing was wrong with the file). If the file still doesn't parse
+ * even after stripping, it is genuinely corrupt: it is backed up
+ * (`.corrupt-<stamp>.bak`) and the script exits non-zero without writing
+ * anything. This script intentionally has zero npm dependencies; the JSONC
+ * support above is a small hand-rolled reader, not a replacement for strict
+ * JSON.parse, so pathological input simply falls through to the corrupt-file
+ * path instead of silently producing the wrong result.
  *
  * Usage:
  *   node scripts/merge-config.mjs [path/to/opencode.json] [--dry-run]
@@ -117,29 +126,130 @@ function backupCorruptFile(target) {
   return backup;
 }
 
-// Heuristic only (no parser, no dependency): flags text that looks like it
-// uses JSONC syntax (// or /* */ comments, or a trailing comma before a
-// closing } or ]) so a JSON.parse failure can be reported honestly instead
-// of implying the file is corrupt. OpenCode V2 itself accepts JSONC in
-// opencode.json(c); this script's plain-JSON parser does not. A few false
-// positives/negatives are acceptable here since this only affects wording,
-// never parsing or write behavior.
-function looksLikeJsonc(raw) {
-  return /\/\/|\/\*/.test(raw) || /,\s*[}\]]/.test(raw);
+// --- zero-dependency, string-aware JSONC reader -----------------------------
+//
+// Two independent, string-aware passes (comments, then trailing commas) are
+// enough: removing comments can't change what is or isn't inside a string,
+// and the only thing skipped while looking ahead for a trailing comma is
+// whitespace, which can never open a string. Both passes track whether the
+// scan is currently inside a JSON string literal so comment-like or
+// comma-like text inside a quoted value (e.g. "https://example.com//path")
+// is never mistaken for real // or /* */ syntax.
+
+function stripComments(text) {
+  let out = "";
+  let inString = false;
+  let hadComment = false;
+  const n = text.length;
+  for (let i = 0; i < n; i++) {
+    const ch = text[i];
+    if (inString) {
+      out += ch;
+      if (ch === "\\" && i + 1 < n) {
+        out += text[i + 1];
+        i += 1;
+        continue;
+      }
+      if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+      out += ch;
+      continue;
+    }
+    if (ch === "/" && text[i + 1] === "/") {
+      hadComment = true;
+      i += 1;
+      while (i + 1 < n && text[i + 1] !== "\n") i += 1;
+      continue; // leaves the newline itself (if any) to be copied normally
+    }
+    if (ch === "/" && text[i + 1] === "*") {
+      hadComment = true;
+      i += 1;
+      while (i + 1 < n && !(text[i + 1] === "*" && text[i + 2] === "/")) i += 1;
+      i += 2; // consume the closing "*/" (safe even if unterminated at EOF)
+      continue;
+    }
+    out += ch;
+  }
+  return { text: out, hadComment };
 }
 
-function reportJsoncLikeFailure(target, err) {
-  console.error(`merge-config: ERROR: ${target} could not be parsed as plain JSON (${err.message})`);
+function stripTrailingCommas(text) {
+  let out = "";
+  let inString = false;
+  let hadTrailingComma = false;
+  const n = text.length;
+  for (let i = 0; i < n; i++) {
+    const ch = text[i];
+    if (inString) {
+      out += ch;
+      if (ch === "\\" && i + 1 < n) {
+        out += text[i + 1];
+        i += 1;
+        continue;
+      }
+      if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+      out += ch;
+      continue;
+    }
+    if (ch === ",") {
+      let j = i + 1;
+      while (j < n && /\s/.test(text[j])) j += 1;
+      if (j < n && (text[j] === "}" || text[j] === "]")) {
+        hadTrailingComma = true;
+        continue; // drop the comma; the whitespace/bracket are copied as usual
+      }
+    }
+    out += ch;
+  }
+  return { text: out, hadTrailingComma };
+}
+
+// Attempts to read `raw` as JSONC using only the two string-aware passes
+// above (never a real parser dependency). Returns { ok: false } if it still
+// doesn't parse even after stripping - genuinely corrupt, not just JSONC.
+function readJsonc(raw) {
+  const comments = stripComments(raw);
+  const commas = stripTrailingCommas(comments.text);
+  try {
+    return {
+      ok: true,
+      value: JSON.parse(commas.text),
+      hadComment: comments.hadComment,
+      hadTrailingComma: commas.hadTrailingComma,
+    };
+  } catch {
+    return { ok: false };
+  }
+}
+
+// A file with comments can be read, but rewriting it as plain JSON would
+// silently delete every comment - so nothing is written. Instead, compute
+// what the merge would have done (on a disposable clone, never the real
+// object) and tell the user exactly what to change by hand.
+function reportCommentsNotModified(target, parsedCfg) {
+  const clone = JSON.parse(JSON.stringify(parsedCfg));
+  const changes = merge(clone);
+  console.error(`merge-config: ERROR: ${target}: config contains comments; not modified`);
   console.error(
-    "merge-config: this file may use JSONC syntax (comments and/or a trailing comma), " +
-      "which OpenCode V2 accepts in opencode.json(c) but this script's plain-JSON parser does not."
+    "merge-config: OpenCode V2 accepts JSONC (comments) in opencode.json(c), but rewriting " +
+      "this file would delete them, so nothing was written - no backup was created either, " +
+      "since nothing is wrong with the file."
   );
-  console.error("merge-config: nothing was changed - no backup was created.");
-  console.error(
-    "merge-config: to apply the defaults by hand: set experimental.subagent_depth to 2 and " +
-      'experimental.todo to true; remove a stale top-level "subagent_depth" and "compaction.prune"; ' +
-      'and remove "observer-bridge.js" from any "plugin" array.'
-  );
+  if (changes.length === 0) {
+    console.error("merge-config: no changes needed - this file already matches the Supervisor defaults.");
+    return;
+  }
+  console.error("merge-config: apply these changes by hand:");
+  for (const change of changes) {
+    console.error(`merge-config:   - ${change}`);
+  }
 }
 
 function loadConfig(target, dryRun) {
@@ -152,11 +262,17 @@ function loadConfig(target, dryRun) {
   try {
     return JSON.parse(raw);
   } catch (err) {
-    if (looksLikeJsonc(raw)) {
-      // Neither a dry run nor a real run writes anything here - this is not
-      // treated as corruption, so no .corrupt-<stamp>.bak is created.
-      reportJsoncLikeFailure(target, err);
-      process.exit(1);
+    const jsonc = readJsonc(raw);
+    if (jsonc.ok) {
+      if (jsonc.hadComment) {
+        // Neither a dry run nor a real run writes anything here - this is
+        // not corruption, so no .corrupt-<stamp>.bak is created either.
+        reportCommentsNotModified(target, jsonc.value);
+        process.exit(1);
+      }
+      // Only trailing commas: nothing of the user's is lost by writing this
+      // back out as strict JSON, so merge and (maybe) write normally.
+      return jsonc.value;
     }
     if (dryRun) {
       // Dry runs must write nothing - not even a backup.

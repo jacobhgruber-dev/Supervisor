@@ -142,46 +142,104 @@ test("--dry-run on an already-clean config writes nothing and reports no changes
   assert.ok(existsSync(path), "fixture file still exists")
 })
 
-// --- JSONC-like parse failures are safe and honest, never "corruption" -----
+// --- JSONC: trailing commas merge normally, comments are never rewritten --
 
-test("a // comment is reported as likely JSONC, not corruption: no backup, nothing changed", () => {
+test("a trailing comma with no comments is parsed, merged, and written like plain JSON", () => {
+  const text = '{\n  "default_agent": "supervisor",\n  "custom_key": "keep me",\n}\n'
+  const path = rawFixture(text)
+  const result = run(path)
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stdout, /experimental\.subagent_depth/)
+  assert.match(result.stdout, /experimental\.todo/)
+  const cfg = readJson(path)
+  assert.equal(cfg.default_agent, "supervisor")
+  assert.equal(cfg.custom_key, "keep me", "arbitrary keys survive the JSONC->JSON rewrite")
+  assert.equal(cfg.experimental.subagent_depth, 2)
+  assert.equal(cfg.experimental.todo, true)
+  assert.notEqual(readFileSync(path, "utf8"), text, "file was rewritten as strict JSON (trailing comma gone)")
+})
+
+test("--dry-run on a trailing-comma-only file computes changes but writes nothing", () => {
+  const text = '{\n  "default_agent": "supervisor",\n  "custom_key": "keep me",\n}\n'
+  const path = rawFixture(text)
+  const result = run(path, ["--dry-run"])
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(result.stdout, /experimental\.subagent_depth/)
+  assert.match(result.stdout, /dry-run - nothing was written/)
+  assert.equal(readFileSync(path, "utf8"), text, "file bytes unchanged under --dry-run")
+})
+
+test("a // inside a string value in an already-valid JSON file needs no stripping and merges normally", () => {
+  const path = fixture({ default_agent: "supervisor", note: "https://example.com//ok" })
+  const result = run(path)
+  assert.equal(result.status, 0, result.stderr)
+  const cfg = readJson(path)
+  assert.equal(cfg.note, "https://example.com//ok")
+})
+
+test("// and /* */ sequences inside a string value are not mistaken for comments, even with a real trailing comma elsewhere", () => {
+  const note = "see https://example.com/x//y and /* not a comment */ inside a string"
+  const text = `{\n  "default_agent": "supervisor",\n  "note": "${note}",\n}\n`
+  const path = rawFixture(text)
+  const result = run(path)
+  assert.equal(result.status, 0, result.stderr)
+  assert.doesNotMatch(
+    result.stderr,
+    /config contains comments/,
+    "a // or /* */ inside a string must not be treated as a real comment"
+  )
+  const cfg = readJson(path)
+  assert.equal(cfg.note, note, "the string value must survive byte-for-byte")
+  assert.equal(cfg.default_agent, "supervisor")
+})
+
+test("a // comment is never rewritten: exact manual changes are reported, no backup, nothing changed", () => {
   const text = '{\n  // a comment\n  "default_agent": "supervisor"\n}\n'
   const path = rawFixture(text)
   const result = run(path)
   assert.equal(result.status, 1)
-  assert.match(result.stderr, /could not be parsed as plain JSON/)
-  assert.match(result.stderr, /JSONC syntax/)
-  assert.match(result.stderr, /nothing was changed - no backup was created/)
+  assert.match(result.stderr, /config contains comments; not modified/)
+  assert.match(result.stderr, /experimental\.subagent_depth/)
+  assert.match(result.stderr, /experimental\.todo/)
   assert.equal(readFileSync(path, "utf8"), text, "original file bytes untouched")
-  assert.equal(corruptBackupCount(path), 0, "no .corrupt-*.bak should be created for likely-JSONC content")
+  assert.equal(corruptBackupCount(path), 0, "no .corrupt-*.bak should be created - nothing is wrong with the file")
 })
 
-test("a trailing comma is reported as likely JSONC, not corruption: no backup, nothing changed", () => {
-  const text = '{\n  "default_agent": "supervisor",\n}\n'
+test("a /* block */ comment's message lists the exact manual changes needed for this file", () => {
+  const text =
+    '{\n  /* block comment */\n  "subagent_depth": 1,\n  "compaction": { "prune": true },\n' +
+    '  "plugin": ["observer-bridge.js", "keep-me"],\n  "default_agent": "supervisor"\n}\n'
   const path = rawFixture(text)
   const result = run(path)
   assert.equal(result.status, 1)
-  assert.match(result.stderr, /JSONC syntax/)
-  assert.equal(readFileSync(path, "utf8"), text)
+  assert.match(result.stderr, /config contains comments; not modified/)
+  assert.match(result.stderr, /experimental\.subagent_depth/)
+  assert.match(result.stderr, /experimental\.todo/)
+  assert.match(result.stderr, /removed stale top-level key/)
+  assert.match(result.stderr, /compaction\.prune/)
+  assert.match(result.stderr, /observer-bridge\.js/)
+  assert.doesNotMatch(result.stderr, /default_agent:/, "default_agent already matched - must not be listed as a change")
+  assert.equal(readFileSync(path, "utf8"), text, "original file bytes untouched")
   assert.equal(corruptBackupCount(path), 0)
 })
 
-test("JSONC-like failure message includes manual instructions", () => {
-  const path = rawFixture('{\n  /* block comment */\n  "default_agent": "supervisor"\n}\n')
-  const result = run(path)
-  assert.equal(result.status, 1)
-  assert.match(result.stderr, /subagent_depth.*2/)
-  assert.match(result.stderr, /experimental\.todo.*true/)
-  assert.match(result.stderr, /observer-bridge\.js/)
-})
-
-test("--dry-run on JSONC-like content also writes nothing and reports the same honest message", () => {
+test("--dry-run on a commented file also writes nothing and reports the same honest message", () => {
   const text = '{\n  "default_agent": "supervisor" // trailing comment\n}\n'
   const path = rawFixture(text)
   const result = run(path, ["--dry-run"])
   assert.equal(result.status, 1)
-  assert.match(result.stderr, /JSONC syntax/)
+  assert.match(result.stderr, /config contains comments; not modified/)
   assert.equal(readFileSync(path, "utf8"), text)
+  assert.equal(corruptBackupCount(path), 0)
+})
+
+test("a real comment takes precedence over a trailing comma in the same file: left untouched", () => {
+  const text = '{\n  // real comment\n  "default_agent": "supervisor",\n}\n'
+  const path = rawFixture(text)
+  const result = run(path)
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /config contains comments; not modified/)
+  assert.equal(readFileSync(path, "utf8"), text, "original file bytes untouched, trailing comma included")
   assert.equal(corruptBackupCount(path), 0)
 })
 
@@ -192,6 +250,18 @@ test("genuinely non-JSON content (no comments/trailing commas) still backs up as
   assert.equal(result.status, 1)
   assert.match(result.stderr, /is not valid JSON/)
   assert.doesNotMatch(result.stderr, /JSONC/)
+  assert.doesNotMatch(result.stderr, /contains comments/)
   assert.equal(readFileSync(path, "utf8"), text, "original preserved")
   assert.equal(corruptBackupCount(path), 1, "a .corrupt-*.bak should still be made for genuinely broken content")
+})
+
+test("--dry-run on genuinely non-JSON content still writes nothing and creates no backup", () => {
+  const text = "this is not json at all\n"
+  const path = rawFixture(text)
+  const result = run(path, ["--dry-run"])
+  assert.equal(result.status, 1)
+  assert.match(result.stderr, /is not valid JSON/)
+  assert.match(result.stderr, /dry-run - nothing was written/)
+  assert.equal(readFileSync(path, "utf8"), text)
+  assert.equal(corruptBackupCount(path), 0, "dry-run must never create a backup, even for genuinely corrupt content")
 })
