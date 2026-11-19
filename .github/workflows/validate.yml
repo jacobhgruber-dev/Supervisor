@@ -22,3 +22,13 @@ jobs:
 
       - name: Run template validator tests
         run: python3 -m pytest scripts/test_validate_template.py -q
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run plugin and config-merge tests
+        run: node --test scripts/test_observer_bridge.mjs scripts/test_merge_config.mjs
+
+      - name: Shellcheck installers
+        run: shellcheck install.sh update.sh
