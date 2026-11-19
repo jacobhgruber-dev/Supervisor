@@ -120,7 +120,7 @@ cd Supervisor
 
 ### ⚡ Fastest path — the one-line installer (recommended)
 
-Run one command and you're done. The installer copies the Supervisor, all 45 subagents, the 22 bundled skills, the Observer plugin, and AGENTS.md into place. On a fresh machine, add `--with-config` — that's what installs `opencode.json` (with `default_agent: supervisor`, `subagent_depth: 3`, and the MCP servers). If an `opencode.json` already exists, it's always safely **merged** instead of overwritten (your existing config is backed up first, and your settings always win):
+Run one command and you're done. The installer copies the Supervisor, all 45 subagents, the 22 bundled skills, the Observer plugin, and AGENTS.md into place. On a fresh machine, add `--with-config` — that's what installs `opencode.json` (with `default_agent: supervisor`, `experimental.subagent_depth: 2`, and the MCP servers). If an `opencode.json` already exists, it's always safely **merged** instead of overwritten (your existing config is backed up first, and your settings always win):
 
 | Platform | Install | Update later |
 |----------|---------|--------------|
@@ -177,7 +177,7 @@ cp AGENTS.md ~/.config/opencode/AGENTS.md
 
 > 📌 **Where agents go.** OpenCode loads agent markdown from both `agent/` and `agents/` (`{agent,agents}/**/*.md`). This install puts the Supervisor in `agent/` and the subagents in `agents/`. What makes the Supervisor primary is `mode: primary` in its frontmatter — not the folder name. Don't drop non-agent docs into either folder (they'll show up as phantom agents).
 
-> 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! The agents, plugin, and AGENTS.md are safe to add — they won't clash with anything. The template is optional if you already have a config; if you skip it, merge in at least `"default_agent": "supervisor"` and `"subagent_depth": 3` (required for mule chains).
+> 📌 **Already have an OpenCode config?** Don't overwrite your existing `opencode.json`! The agents, plugin, and AGENTS.md are safe to add — they won't clash with anything. The template is optional if you already have a config; if you skip it, merge in at least `"default_agent": "supervisor"` and `"experimental": {"subagent_depth": 2, "todo": true}` (required for mule chains and the `todowrite` tool).
 
 ---
 
@@ -274,7 +274,7 @@ The Claude-powered agents sit ready but inactive until the key is present — no
 
 > 💰 **Heads up on cost.** Claude (especially Opus/"senior") is **much** pricier than DeepSeek. Use junior agents by default; call in the seniors only when it really matters. The Supervisor already follows this policy automatically.
 
-> 🪝 **Important config detail: `subagent_depth: 3`.** The template file you copied in Step 3 includes `"subagent_depth": 3`. This is what lets subagents spawn mules — supervisor → subagent → mule chains of depth 3. If you skip the template and write your own `opencode.json`, make sure this field is set to `3` (not the default of `1`, which blocks nested agent spawns).
+> 🪝 **Important config detail: `experimental.subagent_depth: 2`.** The template file you copied in Step 3 includes `"experimental": {"subagent_depth": 2, "todo": true}`. This is what lets subagents spawn mules — supervisor → subagent → mule. If you skip the template and write your own `opencode.json`, make sure `experimental.subagent_depth` is set to `2` (not the default of `1`, which blocks nested agent spawns). Note: a top-level `subagent_depth` key is ignored by OpenCode V2 (it warns and does nothing) — the key must live under `experimental`, and `experimental.*` flags may change without notice.
 
 ---
 
@@ -343,7 +343,7 @@ It also includes **eleven optional** MCP servers that are **disabled by default*
 | **Supervisor doesn't appear** | `supervisor.md` missing, or missing `mode: primary` | Confirm `ls ~/.config/opencode/agent/supervisor.md` and that its frontmatter says `mode: primary`. Re-run the Step 3 copy commands if the file is missing. |
 | **A phantom non-agent shows up (e.g. "tier-system-reference")** | A non-agent `.md` landed in an agent folder | Only real agent files belong in `~/.config/opencode/agent/` or `agents/`. Remove any docs that got copied there by mistake. |
 | **"Agent not found"** when it tries to delegate | Subagents missing | Run `ls ~/.config/opencode/agents/*.md` — you should see 45 files. If empty, re-run the copy command in Step 3 (or `./install.sh`). |
-| **Subagent can't spawn a mule / "Task tool not available"** | `subagent_depth` too low | The template sets `"subagent_depth": 3`. If you skipped the template or wrote your own config, make sure this field is set to `3` — the default of `1` blocks nested agent spawns (supervisor → subagent → mule). |
+| **Subagent can't spawn a mule / "Task tool not available"** | `experimental.subagent_depth` too low, or a stale top-level `subagent_depth` left over | The template sets `"experimental": {"subagent_depth": 2, "todo": true}`. If you skipped the template or wrote your own config, make sure `experimental.subagent_depth` is `2` (the default `1` blocks nested spawns) and that there's no leftover top-level `subagent_depth` — OpenCode V2 ignores that key with a warning. |
 | **"Insufficient balance"** | $0 credit on your key | Add a few dollars at [platform.deepseek.com](https://platform.deepseek.com). |
 | **"Model not found" / API errors** | Stale model list | Run `opencode models --refresh`. OpenCode auto-installs its SDK packages itself (DeepSeek is wired via `@ai-sdk/openai-compatible`) — no manual `npm install` needed. |
 | **"Invalid API key" / "not authenticated"** | Key not connected, or a typo | Re-run `opencode auth login` and re-enter the key (no extra spaces). Confirm with `opencode auth list` that the provider shows up. |

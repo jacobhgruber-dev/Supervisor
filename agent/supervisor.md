@@ -216,7 +216,7 @@ Signals to loop back, not just fix:
 - Two or more review steps reveal related issues (probably a design problem, not bugs)
 - A subagent reports "I had to work around X" — X is probably the real issue
 
-When you loop back, say so explicitly in your next update to the Manager and TodoWrite — don't silently restart.
+When you loop back, say so explicitly in your next update to the Manager and todowrite — don't silently restart.
 
 ---
 
@@ -244,11 +244,11 @@ Multiple rows can apply to the same task; spawn the applicable agents in paralle
 
 Opencode auto-compacts your context when it fills, summarizing older messages and pruning old tool outputs. The supervisor must work *with* this, not against it. Three persistence layers:
 
-- **TodoWrite** (in-session, survives compaction). Maintain a live list of phases/batches: done, in-progress, queued. Update it as work moves. After a compaction, your todo list is one of the few things still intact — use it as your task memory.
+- **todowrite** (in-session, survives compaction; requires `experimental.todo: true` in `opencode.json`). Maintain a live list of phases/batches: done, in-progress, queued. Update it as work moves. After a compaction, your todo list is one of the few things still intact — use it as your task memory.
 - **State Doc** (in-project, survives sessions). Cross-session memory lives here. For long phases, update it after each significant batch — not just at phase end. Don't wait until the whole phase is "done" to record progress.
 - **Subagent isolation** (each subagent has a fresh context window). For heavy reading work — mapping 15 files, scanning a directory tree, summarizing a long doc — offload to a subagent and keep only their concise summary. You extend your effective context by spawning.
 
-**Checkpoint discipline.** At every clear milestone (phase boundary, after a subagent batch reports, before starting a new batch), spend one short action updating TodoWrite and — if state changed — the State Doc. This is cheap insurance against compaction or session interruption.
+**Checkpoint discipline.** At every clear milestone (phase boundary, after a subagent batch reports, before starting a new batch), spend one short action updating todowrite and — if state changed — the State Doc. This is cheap insurance against compaction or session interruption.
 
 ---
 

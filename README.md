@@ -16,6 +16,8 @@ SUPERVISOR (plans, delegates, reviews, commits)
 
 A shareable setup for the Supervisor agent workflow in [OpenCode](https://opencode.ai). The Supervisor is a primary agent that plans, delegates to specialized subagents, reviews outputs, fixes issues, and commits — all while keeping its own context window clean. You talk to the Supervisor. It manages the team.
 
+> 🧩 **Requires OpenCode V2.** This template targets OpenCode V2's config schema (`experimental.subagent_depth`, `experimental.todo`). V1 configs are no longer updated by this repo — upgrade OpenCode first if you're still on V1 (see the [V1→V2 migration guide](https://opencode.ai/docs/migrate-v1)).
+
 > 🚀 **New to all this?** If you've never set up OpenCode or used an API key before, start with **[GETTING_STARTED.md](GETTING_STARTED.md)** — a step-by-step, idiot-proof walkthrough that takes you from zero to a working agent team in ~15 minutes. There's also a visual version at [`index.html`](index.html) (open it in a browser, or host it via GitHub Pages). The README below assumes you already know your way around OpenCode.
 
 ## What You Get
@@ -34,7 +36,7 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 
 ### Fastest path: the one-line installers
 
-Clone the repo, then run one command. The installer copies the Supervisor agent, all 45 subagents, the 22 bundled skills, the Observer plugin, and AGENTS.md into your OpenCode config. On a fresh machine, pass `--with-config` to also install `opencode.json` (that's what adds `default_agent: supervisor`, `subagent_depth: 3`, and the MCP servers). If an `opencode.json` already exists, it's always safely **merged** instead of overwritten (backed up first, and your settings always win).
+Clone the repo, then run one command. The installer copies the Supervisor agent, all 45 subagents, the 22 bundled skills, the Observer plugin, and AGENTS.md into your OpenCode config. On a fresh machine, pass `--with-config` to also install `opencode.json` (that's what adds `default_agent: supervisor`, `experimental.subagent_depth: 2`, and the MCP servers). If an `opencode.json` already exists, it's always safely **merged** instead of overwritten (backed up first, and your settings always win).
 
 | Platform | Install | Update later |
 |----------|---------|--------------|
@@ -77,7 +79,7 @@ cp plugin/observer-bridge.js ~/.config/opencode/plugin/observer-bridge.js
 cp AGENTS.md ~/.config/opencode/AGENTS.md
 ```
 
-**If this is your first opencode setup** (and you haven't configured providers yet)**:** copy the full config too — it gives you MCP servers, `default_agent`, and `"subagent_depth": 3` (required for mule chains):
+**If this is your first opencode setup** (and you haven't configured providers yet)**:** copy the full config too — it gives you MCP servers, `default_agent`, and `"experimental": {"subagent_depth": 2, "todo": true}` (required for mule chains and the `todowrite` tool):
 
 ```bash
 # Make sure the config folders exist
@@ -208,7 +210,7 @@ Supervisor/
 ├── update.ps1                     # Safe updater (Windows PowerShell)
 ├── deps.json                      # Dependency Doctor manifest
 ├── agent/supervisor.md   # Primary Supervisor agent (source — install to ~/.config/opencode/agent/)
-├── opencode.template.json         # Template config with MCP servers, subagent_depth: 3
+├── opencode.template.json         # Template config with MCP servers, experimental.subagent_depth: 2
 ├── opencode.json.md               # Config setup instructions
 ├── reference.md                   # Comprehensive agent/mode/command catalog (keep on Desktop!)
 ├── subagents.md                   # Quick reference for the 9 base subagents

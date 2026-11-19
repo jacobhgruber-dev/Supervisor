@@ -503,9 +503,9 @@ OpenCode loads agent markdown from both `~/.config/opencode/agent/` and `~/.conf
 
 (`grok-worker.md` ships in `agents/` — the copy OpenCode loads. The `addons/grok-worker/` folder keeps activation notes only.)
 
-## Config Requirement: `subagent_depth: 3`
+## Config Requirement: `experimental.subagent_depth: 2`
 
-For the mule tier to work, your `opencode.json` must set `"subagent_depth": 3`. This allows chains like Supervisor → subagent → mule (depth 3). The shipped `opencode.template.json` already includes this field. If you write your own config from scratch, make sure to add it — the default depth of `1` blocks nested agent spawns and prevents subagents from spawning mules.
+For the mule tier to work, your `opencode.json` must set `"experimental": {"subagent_depth": 2, "todo": true}`. This allows chains like Supervisor → subagent → mule. The shipped `opencode.template.json` already includes this. If you write your own config from scratch, make sure to add it — the default `experimental.subagent_depth` of `1` blocks nested agent spawns and prevents subagents from spawning mules. Note: a top-level `subagent_depth` key (outside `experimental`) is ignored by OpenCode V2 with a warning. `experimental.*` flags are labeled experimental by OpenCode and may change without notice.
 
 ## How the Naming Convention Works
 
@@ -545,4 +545,4 @@ Mules are subagent infrastructure. The supervisor never spawns mules directly �
 
 All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}`. Like every agent in the template, mules run uncapped — none declares a `steps` cap. Nine are DeepSeek Flash (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 3.8 Flash), `grok-mule` (Grok 4.6), `claude-mule` (Claude Sonnet 5), and `designer-mule` (Grok 4.6).
 
-> ⚠️ **Mules require `subagent_depth >= 3`.** The Supervisor spawns a subagent (depth 2), which spawns a mule (depth 3). Without `"subagent_depth": 3` in `opencode.json`, the mule spawn will be silently blocked.
+> ⚠️ **Mules require `experimental.subagent_depth >= 2`.** The default is `1` (a subagent cannot spawn a subagent). `2` allows the Supervisor's subagent to spawn a mule. Without `"experimental": {"subagent_depth": 2}` in `opencode.json` — or if the key is left at the old top-level `subagent_depth` (ignored by V2) — the mule spawn will be silently blocked.

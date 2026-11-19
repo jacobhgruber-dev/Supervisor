@@ -68,9 +68,12 @@ The shipped `opencode.template.json` configures no providers. It defines:
 |-------|-------|--------------|
 | `model` | `deepseek/deepseek-flash` | Primary model for the supervisor and subagents |
 | `default_agent` | `supervisor` | Makes Supervisor the default agent on startup |
-| `subagent_depth` | `3` | How many levels deep subagents can spawn subagents. 1 = only supervisor can spawn. 3 = supervisor → subagent → mule chains work. |
+| `experimental.subagent_depth` | `2` | How many additional levels subagents may spawn beyond the default. Default `1` = a subagent cannot spawn a subagent. `2` = supervisor → role agent → mule chains work. A top-level `subagent_depth` key is ignored by OpenCode V2 (warns, does nothing) — it must live under `experimental`. |
+| `experimental.todo` | `true` | Enables the `todowrite` tool (in-session task list). |
 | `mcp` | *(see below)* | MCP server definitions (tools available to agents) |
 | `permission` | *(see below)* | Tool permission rules for each MCP |
+
+`experimental.*` flags are labeled experimental by OpenCode and may change without notice.
 
 ## MCP Servers
 
@@ -149,6 +152,6 @@ Restart opencode. Check that everything is wired up correctly:
 2. **Clean agent selector** — you should see your configured agents in the dropdown. No missing providers, no broken model listings.
 3. **Provider check (Desktop)** — open Settings → Providers. Providers you configured through the UI should show as connected. If you added a **cloud** `provider` block (DeepSeek/Anthropic/Google/xAI) with `options.apiKey` or `options.baseURL` overrides, remove those overrides (or the whole block — you don't need it) and restart.
 4. **Model variants (Desktop)** — if you added DeepSeek through Settings, the "Max" toggle should appear in the model selector. If it's missing, you may have `blacklist`/`whitelist` entries in a cloud `provider` block hiding it — remove them. Partial `provider.models` entries merge with the built-in definition, so they don't strip variants on their own.
-5. **`subagent_depth`** — confirm `"subagent_depth": 3` is present so supervisor → subagent → mule chains work.
+5. **`experimental.subagent_depth`** — confirm `"experimental": {"subagent_depth": 2, "todo": true}` is present (not a top-level `subagent_depth`, which V2 ignores) so supervisor → subagent → mule chains work and the `todowrite` tool is enabled.
 
 If something is wrong, double-check that your `opencode.json` has **no cloud `provider` blocks** (DeepSeek/Anthropic/Google/xAI) and that you added those keys through Settings or `opencode auth login`, not by editing the config file directly.
