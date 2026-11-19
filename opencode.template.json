@@ -117,6 +117,5 @@
     "reserved": 20000
   },
   "provider": {},
-  "plugin": ["observer-bridge.js"],
   "disabled_providers": []
 }

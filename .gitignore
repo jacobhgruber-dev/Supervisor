@@ -18,6 +18,12 @@ node_modules/
 *.pyc
 __pycache__/
 
+# Python tooling caches
+.hypothesis/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
 # Local tooling
 .playwright-mcp/
 

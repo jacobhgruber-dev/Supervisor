@@ -448,3 +448,168 @@ def test_real_gemini_agents_pass():
         errors = []
         vt.validate_agent(name, f"agents/{name}.md", path, errors)
         assert errors == []
+
+
+# ---------------------------------------------------------------------------
+# Unit tests: validate_plugin (OpenCode V2 observer-bridge plugin layout)
+# ---------------------------------------------------------------------------
+
+
+def test_validate_plugin_passes_on_real_repo():
+    root = Path(__file__).resolve().parent.parent
+    errors: list = []
+    vt.validate_plugin(root, errors)
+    assert errors == []
+
+
+def test_validate_plugin_flags_missing_entry_point(tmp_path):
+    errors: list = []
+    vt.validate_plugin(tmp_path, errors)
+    assert len(errors) == 1
+    assert "plugins/observer-bridge/index.js" in errors[0]
+
+
+def test_validate_plugin_flags_missing_plugin_define(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "observer-bridge"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "index.js").write_text("export default {}\n", encoding="utf-8")
+    errors: list = []
+    vt.validate_plugin(tmp_path, errors)
+    assert len(errors) == 1
+    assert "Plugin.define" in errors[0]
+
+
+def test_validate_plugin_accepts_plugin_define(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "observer-bridge"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "index.js").write_text(
+        'import { Plugin } from "@opencode/plugin"\n'
+        'export default Plugin.define({ id: "observer-bridge" })\n',
+        encoding="utf-8",
+    )
+    errors: list = []
+    vt.validate_plugin(tmp_path, errors)
+    assert errors == []
+
+
+def test_validate_plugin_flags_v1_leftover_dir(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "observer-bridge"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "index.js").write_text("Plugin.define({})", encoding="utf-8")
+    v1_dir = tmp_path / "plugin"
+    v1_dir.mkdir()
+    (v1_dir / "observer-bridge.js").write_text("stale", encoding="utf-8")
+    errors: list = []
+    vt.validate_plugin(tmp_path, errors)
+    assert len(errors) == 1
+    assert "V1 'plugin/' directory" in errors[0]
+
+
+def test_validate_plugin_ignores_v1_dir_without_js_files(tmp_path):
+    plugin_dir = tmp_path / "plugins" / "observer-bridge"
+    plugin_dir.mkdir(parents=True)
+    (plugin_dir / "index.js").write_text("Plugin.define({})", encoding="utf-8")
+    v1_dir = tmp_path / "plugin"
+    v1_dir.mkdir()
+    (v1_dir / "README.md").write_text("notes", encoding="utf-8")
+    errors: list = []
+    vt.validate_plugin(tmp_path, errors)
+    assert errors == []
+
+
+def test_validate_config_rejects_stale_observer_bridge_plugin_entry(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 2, "todo": True},
+            "plugin": ["observer-bridge.js"],
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert len(errors) == 1
+    assert "top-level 'plugin'" in errors[0]
+    assert "observer-bridge.js" in errors[0]
+    assert "V1" in errors[0]
+
+
+def test_validate_config_rejects_stale_entry_among_other_plugin_entries(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 2, "todo": True},
+            "plugin": ["opencode-wakelock", "observer-bridge.js"],
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert len(errors) == 1
+    assert "observer-bridge.js" in errors[0]
+
+
+def test_validate_config_rejects_bare_string_stale_plugin(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 2, "todo": True},
+            "plugin": "observer-bridge.js",
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert len(errors) == 1
+    assert "observer-bridge.js" in errors[0]
+
+
+def test_validate_config_accepts_plugin_key_with_other_entries(tmp_path):
+    """A 'plugin' array WITHOUT the stale entry must not error — the V1 key
+    itself is deprecated, not harmful; only the known-bad entry is flagged."""
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 2, "todo": True},
+            "plugin": ["opencode-wakelock", "opencode-pty"],
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert errors == []
+
+
+def test_validate_config_accepts_bare_string_other_plugin(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 2, "todo": True},
+            "plugin": "opencode-wakelock",
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert errors == []
+
+
+def test_validate_config_accepts_config_with_no_plugin_key(tmp_path):
+    path = write_config(
+        tmp_path,
+        {
+            "default_agent": "supervisor",
+            "experimental": {"subagent_depth": 2, "todo": True},
+        },
+    )
+    errors: list = []
+    vt.validate_config(path, errors)
+    assert errors == []
+
+
+def test_real_repo_has_no_v1_plugin_directory():
+    root = Path(__file__).resolve().parent.parent
+    assert not (root / "plugin").exists(), (
+        "V1 'plugin/' directory should have been deleted in favor of "
+        "'plugins/observer-bridge/'"
+    )

@@ -37,7 +37,7 @@ usage() {
   cat <<EOF
 Usage: ./install.sh [options]
 
-Install the Supervisor agent template (agents, skills, plugin, AGENTS.md,
+Install the Supervisor agent template (agents, skills, plugins, AGENTS.md,
 config) into your OpenCode config directory (default: ~/.config/opencode).
 
 Options:
@@ -216,8 +216,11 @@ if [ "$DRY_RUN" -eq 1 ]; then
     printf '    agents/%s\n' "$(basename "$f")"
   done
   printf '    %s\n' "skills/ (recursive; $(find "$REPO_ROOT/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ') skill dirs)"
-  printf '    %s\n' "plugin/observer-bridge.js" "AGENTS.md"
+  printf '    %s\n' "plugins/observer-bridge/ (index.js, lib.mjs)" "AGENTS.md"
   echo
+  if [ -e "$CONFIG_DIR/plugin/observer-bridge.js" ] || [ -e "$CONFIG_DIR/observer-bridge.js" ]; then
+    info "stale V1 plugin file(s) found - would be moved to $CONFIG_DIR/backups/"
+  fi
   if [ -e "$CONFIG_DIR/opencode.json" ]; then
     info "existing opencode.json found - merge would apply:"
     if node "$MERGE_SCRIPT" --dry-run "$CONFIG_DIR/opencode.json"; then
@@ -258,7 +261,7 @@ fi
 # Backup, copy, config merge
 # ---------------------------------------------------------------------------
 
-mkdir -p "$CONFIG_DIR/agent" "$CONFIG_DIR/agents" "$CONFIG_DIR/plugin" \
+mkdir -p "$CONFIG_DIR/agent" "$CONFIG_DIR/agents" "$CONFIG_DIR/plugins" \
   "$CONFIG_DIR/skills" "$CONFIG_DIR/backups"
 
 if [ -e "$CONFIG_DIR/opencode.json" ]; then
@@ -278,9 +281,20 @@ for f in "$REPO_ROOT"/agents/*.md; do
   AGENT_COUNT=$((AGENT_COUNT + 1))
 done
 cp -R "$REPO_ROOT/skills/." "$CONFIG_DIR/skills/"
-cp "$REPO_ROOT/plugin/observer-bridge.js" "$CONFIG_DIR/plugin/observer-bridge.js"
+# Move any V1 plugin leftovers out of the way (never deleted) before
+# installing the V2 plugin directory. V2 auto-discovers plugins/<name>/ and
+# would also try (and fail) to load a stray V1 .js file alongside it.
+if [ -e "$CONFIG_DIR/plugin/observer-bridge.js" ]; then
+  mv "$CONFIG_DIR/plugin/observer-bridge.js" "$CONFIG_DIR/backups/plugin-observer-bridge.js.$STAMP.bak"
+  info "moved stale V1 plugin/observer-bridge.js -> backups/plugin-observer-bridge.js.$STAMP.bak"
+fi
+if [ -e "$CONFIG_DIR/observer-bridge.js" ]; then
+  mv "$CONFIG_DIR/observer-bridge.js" "$CONFIG_DIR/backups/observer-bridge.js.$STAMP.bak"
+  info "moved stale V1 root-level observer-bridge.js -> backups/observer-bridge.js.$STAMP.bak"
+fi
+cp -R "$REPO_ROOT/plugins/observer-bridge" "$CONFIG_DIR/plugins/"
 cp "$REPO_ROOT/AGENTS.md" "$CONFIG_DIR/AGENTS.md"
-info "copied agent/supervisor.md, $AGENT_COUNT agents/*.md, skills/, plugin/observer-bridge.js, AGENTS.md"
+info "copied agent/supervisor.md, $AGENT_COUNT agents/*.md, skills/, plugins/observer-bridge/, AGENTS.md"
 
 if [ -e "$CONFIG_DIR/opencode.json" ]; then
   node "$MERGE_SCRIPT" "$CONFIG_DIR/opencode.json"
@@ -325,7 +339,9 @@ write_state_file() {
   while IFS= read -r f; do
     add_state_entry "${f#"$REPO_ROOT/"}" "$f"
   done < <(find "$REPO_ROOT/skills" -type f | sort)
-  add_state_entry "plugin/observer-bridge.js" "$REPO_ROOT/plugin/observer-bridge.js"
+  while IFS= read -r f; do
+    add_state_entry "${f#"$REPO_ROOT/"}" "$f"
+  done < <(find "$REPO_ROOT/plugins/observer-bridge" -type f | sort)
   add_state_entry "AGENTS.md" "$REPO_ROOT/AGENTS.md"
 
   count=${#STATE_ENTRIES[@]}
@@ -380,10 +396,10 @@ else
   error "verify FAIL: skills/ has $SKILLS_ACTUAL dirs, expected at least $EXPECTED_SKILL_DIRS"
   FAILS=$((FAILS + 1))
 fi
-if [ -f "$CONFIG_DIR/plugin/observer-bridge.js" ]; then
-  info "verify OK: plugin/observer-bridge.js"
+if [ -f "$CONFIG_DIR/plugins/observer-bridge/index.js" ] && [ -f "$CONFIG_DIR/plugins/observer-bridge/lib.mjs" ]; then
+  info "verify OK: plugins/observer-bridge/"
 else
-  error "verify FAIL: plugin/observer-bridge.js missing"
+  error "verify FAIL: plugins/observer-bridge/ missing or incomplete"
   FAILS=$((FAILS + 1))
 fi
 if [ -f "$CONFIG_DIR/AGENTS.md" ]; then

@@ -29,6 +29,15 @@ Validates, using only the Python standard library:
   without notice.
 * No private/OSINT skills (anything matching ``*osint*``) under
   ``skills/``.
+* The observer-bridge plugin is on the OpenCode V2 layout:
+  ``plugins/observer-bridge/index.js`` exists and calls ``Plugin.define``,
+  no leftover V1 ``plugin/`` directory with ``.js`` files exists, and the
+  config's top-level ``plugin`` key (the deprecated V1 name; OpenCode still
+  reads it) does not contain the stale ``"observer-bridge.js"`` string —
+  that specific entry makes OpenCode V2 try to npm-install a package
+  literally named that (and 404). A ``plugin`` key with other entries is
+  not an error: it is deprecated, not harmful, and this check does not
+  require renaming it to ``plugins``.
 
 Usage:
     python3 scripts/validate-template.py [--fix-hidden] [--installed DIR]
@@ -425,6 +434,19 @@ def validate_config(config_path: Path, errors: List[str]) -> None:
             "OpenCode V2 (with a warning) and must be removed — use "
             "'experimental.subagent_depth' instead"
         )
+    plugin_value = data.get("plugin")
+    plugin_has_stale_entry = plugin_value == "observer-bridge.js" or (
+        isinstance(plugin_value, list) and "observer-bridge.js" in plugin_value
+    )
+    if plugin_has_stale_entry:
+        errors.append(
+            f"{config_path.name}: top-level 'plugin' contains the stale "
+            "\"observer-bridge.js\" entry — OpenCode V2 tries to npm-install "
+            "it as a package (and 404s) — remove just that entry; V2 "
+            "auto-discovers 'plugins/<name>/index.js' with no config entry "
+            "needed for it. Other 'plugin' entries are not flagged by this "
+            "check (the V1 'plugin' key itself is deprecated, not harmful)."
+        )
     experimental = data.get("experimental")
     exp_depth = (
         experimental.get("subagent_depth") if isinstance(experimental, dict) else None
@@ -452,6 +474,40 @@ def validate_skills(skills_dir: Path, errors: List[str]) -> bool:
         if fnmatch.fnmatch(path.name.lower(), "*osint*"):
             errors.append(f"skills/: private/OSINT skill found: {path.name}")
     return True
+
+
+def validate_plugin(root: Path, errors: List[str]) -> None:
+    """OpenCode V2 plugin layout for the observer-bridge plugin.
+
+    ``plugins/observer-bridge/index.js`` must exist and call
+    ``Plugin.define`` (the V2 plugin API), and no leftover V1 ``plugin/``
+    directory with ``.js`` files may exist alongside it — V2 auto-discovers
+    ``plugins/<name>/index.js`` and would also try (and fail) to load a
+    stray V1 file found in a discovered plugin directory.
+    """
+    entry = root / "plugins" / "observer-bridge" / "index.js"
+    if not entry.is_file():
+        errors.append(
+            "missing 'plugins/observer-bridge/index.js' (OpenCode V2 plugin "
+            "entry point)"
+        )
+    else:
+        text = entry.read_text(encoding="utf-8")
+        if "Plugin.define" not in text:
+            errors.append(
+                "plugins/observer-bridge/index.js: must call 'Plugin.define' "
+                "(OpenCode V2 plugin API)"
+            )
+
+    v1_dir = root / "plugin"
+    if v1_dir.is_dir():
+        leftovers = sorted(p.name for p in v1_dir.glob("*.js"))
+        if leftovers:
+            errors.append(
+                "found a V1 'plugin/' directory with leftover .js file(s): "
+                f"{', '.join(leftovers)} — OpenCode V2 auto-discovers "
+                "'plugins/<name>/index.js' instead"
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -553,6 +609,7 @@ def validate(root: Path, config_path: Path) -> Tuple[List[str], bool]:
     for name, rel, path in iter_agent_files(root):
         validate_agent(name, rel, path, errors)
     validate_config(config_path, errors)
+    validate_plugin(root, errors)
     skills_present = validate_skills(root / "skills", errors)
     return errors, skills_present
 
@@ -592,6 +649,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         f"OK: {config_path.name} (default_agent={PRIMARY_AGENT_NAME!r}, "
         f"experimental.subagent_depth>={MIN_SUBAGENT_DEPTH}, experimental.todo=true)"
     )
+    print("OK: plugins/observer-bridge/ (V2 Plugin.define API, no V1 leftovers)")
     if skills_present:
         print("OK: skills/ contains no *osint* entries")
     else:

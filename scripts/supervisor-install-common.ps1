@@ -43,7 +43,7 @@ function Get-RepoFiles {
         @{ Id = 'agents'; SrcDir = (Join-Path $RepoRoot 'agents'); DestRel = 'agents'; Pattern = '*.md'; Recurse = $true },
         @{ Id = 'agents'; SrcDir = $RepoRoot;                      DestRel = '';       Pattern = 'AGENTS.md'; Recurse = $false },
         @{ Id = 'skills'; SrcDir = (Join-Path $RepoRoot 'skills'); DestRel = 'skills'; Pattern = '*'; Recurse = $true },
-        @{ Id = 'plugin'; SrcDir = (Join-Path $RepoRoot 'plugin'); DestRel = 'plugin'; Pattern = 'observer-bridge.js'; Recurse = $false }
+        @{ Id = 'plugin'; SrcDir = (Join-Path $RepoRoot (Join-Path 'plugins' 'observer-bridge')); DestRel = (Join-Path 'plugins' 'observer-bridge'); Pattern = '*'; Recurse = $true }
     )
     $files = @()
     foreach ($u in $units) {
@@ -116,17 +116,22 @@ function Get-ClassifiedFiles {
     foreach ($c in $classified) { $repoRels[$c.RelPath] = $true }
     if ($null -ne $State -and $null -ne $State.files) {
         foreach ($p in $State.files.PSObject.Properties) {
-            if (-not $repoRels.ContainsKey($p.Name)) {
-                $classified += [pscustomobject]@{
-                    Id = ''
-                    RelPath = $p.Name
-                    SourceFull = ''
-                    DestFull = (Join-Path $ConfigDir $p.Name)
-                    Status = 'removed-upstream'
-                    SourceHash = $null
-                    CurrentHash = $null
-                    BaselineHash = $null
-                }
+            if ($repoRels.ContainsKey($p.Name)) { continue }
+            # Mirror update.sh classify_removed's `[ -e ... ]` guard: a
+            # baseline entry whose destination file no longer exists (e.g.
+            # already archived/removed) must not produce a permanent
+            # false "[LEFT]" line.
+            $destFull = Join-Path $ConfigDir $p.Name
+            if (-not (Test-Path -LiteralPath $destFull)) { continue }
+            $classified += [pscustomobject]@{
+                Id = ''
+                RelPath = $p.Name
+                SourceFull = ''
+                DestFull = $destFull
+                Status = 'removed-upstream'
+                SourceHash = $null
+                CurrentHash = $null
+                BaselineHash = $null
             }
         }
     }
@@ -280,10 +285,11 @@ function Show-FileDiff {
 function Invoke-ConfigMerge {
     # Runs the canonical node merge helper: node scripts/merge-config.mjs
     # [--dry-run] <target>. It only ever touches experimental.subagent_depth/
-    # todo, default_agent, plugin, mcp.a11y-color-contrast (added/updated), and
-    # removes a stale top-level subagent_depth plus compaction.prune; everything
-    # else is preserved. Returns the captured output lines (array of strings) or
-    # $null when the invocation could not even start.
+    # todo, default_agent, and mcp.a11y-color-contrast (added/updated), and
+    # removes a stale top-level subagent_depth, compaction.prune, and a stale
+    # "observer-bridge.js" plugin entry; everything else is preserved.
+    # Returns the captured output lines (array of strings) or $null when the
+    # invocation could not even start.
     param([string]$RepoRoot, [string]$ConfigDir, [switch]$Dry)
     $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
     if (-not $nodeCmd) {
@@ -358,6 +364,63 @@ function Copy-TemplateFilteredWindows {
     $json = (ConvertTo-Json -Depth 32 $cfg) + "`n"
     Write-Utf8NoBom -Path $Dest -Text $json
     return $removed
+}
+
+function Get-UniqueBackupPath {
+    # Returns $Path if it does not already exist, else appends ".1", ".2",
+    # ... until a free name is found. Never overwrites an existing file.
+    param([string]$Path)
+    if (-not (Test-Path -LiteralPath $Path)) { return $Path }
+    $n = 1
+    while ($true) {
+        $candidate = "$Path.$n"
+        if (-not (Test-Path -LiteralPath $candidate)) { return $candidate }
+        $n += 1
+    }
+}
+
+function Move-StaleV1PluginFiles {
+    # Moves known V1 leftover plugin files into <ConfigDir>\backups (never
+    # deletes). V2 auto-discovers plugins\observer-bridge\ and would also try
+    # (and fail) to load a stray V1 .js file left behind by the old
+    # plugin\observer-bridge.js layout.
+    #
+    # Each candidate gets a distinct hardcoded backup basename mirroring
+    # install.sh/update.sh (plugin-observer-bridge.js vs observer-bridge.js)
+    # instead of deriving it from Split-Path -Leaf: both candidates share the
+    # same leaf name ("observer-bridge.js"), so a shared-stamp, shared-name
+    # backup path would make the second Move-Item silently clobber the
+    # first's backup. Get-UniqueBackupPath is a second, independent guard
+    # against any remaining collision (e.g. a prior run's backup with the
+    # same stamp). Returns the candidate paths found (-DryRun) or the backup
+    # destination paths actually moved to (a failed move is reported via
+    # Write-Warning and excluded from the result, never silently dropped).
+    param([string]$ConfigDir, [switch]$DryRun)
+    $candidates = @(
+        @{ Path = (Join-Path (Join-Path $ConfigDir 'plugin') 'observer-bridge.js'); BackupName = 'plugin-observer-bridge.js' },
+        @{ Path = (Join-Path $ConfigDir 'observer-bridge.js'); BackupName = 'observer-bridge.js' }
+    )
+    $found = @($candidates | Where-Object { Test-Path -LiteralPath $_.Path -PathType Leaf })
+    if ($found.Count -eq 0) { return @() }
+    if ($DryRun) {
+        foreach ($c in $found) { Write-Host "  would move stale V1 plugin file: $($c.Path)" }
+        return @($found | ForEach-Object { $_.Path })
+    }
+    $backupsDir = Join-Path $ConfigDir 'backups'
+    New-Item -ItemType Directory -Force -Path $backupsDir | Out-Null
+    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+    $moved = @()
+    foreach ($c in $found) {
+        $dest = Get-UniqueBackupPath -Path (Join-Path $backupsDir "$($c.BackupName).$stamp.bak")
+        try {
+            Move-Item -LiteralPath $c.Path -Destination $dest -Force -ErrorAction Stop
+            Write-Host "  moved stale V1 plugin file: $($c.Path) -> $dest"
+            $moved += $dest
+        } catch {
+            Write-Warning "  failed to move stale V1 plugin file $($c.Path): $($_.Exception.Message)"
+        }
+    }
+    return $moved
 }
 
 function Write-WindowsMcpNote {

@@ -19,9 +19,10 @@
 #
 # opencode.json is handled separately: missing -> created from
 # opencode.template.json; managed -> merged via scripts/merge-config.mjs
-# (only experimental.subagent_depth/todo, default_agent, plugin, and the
-# a11y-color-contrast MCP are added/updated; a stale top-level subagent_depth
-# and compaction.prune are removed); modified -> skipped unless --interactive.
+# (only experimental.subagent_depth/todo, default_agent, and the
+# a11y-color-contrast MCP are added/updated; a stale top-level
+# subagent_depth, compaction.prune, and a stale "observer-bridge.js" plugin
+# entry are removed); modified -> skipped unless --interactive.
 #
 # Usage:
 #   ./update.sh                          # update everything (safe defaults)
@@ -85,7 +86,7 @@ Options:
                       with --only-agents).
   --only-agents       Only update agent/, agents/, and AGENTS.md.
   --only-skills       Only update skills/.
-  --only-plugin       Only update plugin/observer-bridge.js.
+  --only-plugin       Only update plugins/observer-bridge/.
   --rollback TS       Restore files from <config-dir>/backups/supervisor-TS
                       (TS format: YYYYMMDD-HHMMSS). Combines with nothing else.
   --config-dir DIR    Override the target config directory.
@@ -291,8 +292,9 @@ collect_files() {
     done < <(find "$REPO_ROOT/skills" -type f | LC_ALL=C sort)
   fi
   if [ "$ONLY_PLUGIN" = 1 ] || { [ "$ONLY_AGENTS" = 0 ] && [ "$ONLY_SKILLS" = 0 ]; }; then
-    [ -f "$REPO_ROOT/plugin/observer-bridge.js" ] \
-      && printf 'plugin/observer-bridge.js\t%s\n' "$REPO_ROOT/plugin/observer-bridge.js" >> "$PLAN_DIR/files.tsv"
+    while IFS= read -r f; do
+      printf '%s\t%s\n' "${f#"$REPO_ROOT"/}" "$f" >> "$PLAN_DIR/files.tsv"
+    done < <(find "$REPO_ROOT/plugins/observer-bridge" -type f | LC_ALL=C sort)
   fi
 }
 
@@ -532,6 +534,29 @@ console.log(Object.keys(j.files ?? {}).join("\n"));' "$manifest")" || exit 1
 
 apply() {
   local rel
+  local v1_moved=0
+
+  # Stale V1 plugin leftovers (plugin/observer-bridge.js, a root-level
+  # observer-bridge.js) are moved into backups/ whenever plugin files are in
+  # scope for this run. V2 auto-discovers plugins/observer-bridge/ and would
+  # also try (and fail) to load a stray V1 .js file left behind by it.
+  if [ "$ONLY_PLUGIN" = 1 ] || { [ "$ONLY_AGENTS" = 0 ] && [ "$ONLY_SKILLS" = 0 ]; }; then
+    if [ -e "$CONFIG_DIR/plugin/observer-bridge.js" ] || [ -e "$CONFIG_DIR/observer-bridge.js" ]; then
+      mkdir -p "$CONFIG_DIR/backups"
+      local v1_ts
+      v1_ts="$(date +%Y%m%d-%H%M%S)"
+      if [ -e "$CONFIG_DIR/plugin/observer-bridge.js" ]; then
+        mv "$CONFIG_DIR/plugin/observer-bridge.js" "$CONFIG_DIR/backups/plugin-observer-bridge.js.$v1_ts.bak"
+        info "moved stale V1 plugin/observer-bridge.js -> backups/plugin-observer-bridge.js.$v1_ts.bak"
+        v1_moved=$((v1_moved + 1))
+      fi
+      if [ -e "$CONFIG_DIR/observer-bridge.js" ]; then
+        mv "$CONFIG_DIR/observer-bridge.js" "$CONFIG_DIR/backups/observer-bridge.js.$v1_ts.bak"
+        info "moved stale V1 root-level observer-bridge.js -> backups/observer-bridge.js.$v1_ts.bak"
+        v1_moved=$((v1_moved + 1))
+      fi
+    fi
+  fi
 
   # User-modified decision (files first, mirroring update.ps1).
   if [ "${#TO_PROMPT[@]}" -gt 0 ]; then
@@ -582,7 +607,11 @@ apply() {
 
   if [ "${#TO_INSTALL[@]}" -eq 0 ] && [ "$cfg_status" != "create" ] && [ "$cfg_status" != "merge" ]; then
     printf '\n'
-    info "nothing to update: the workspace is up to date."
+    if [ "$v1_moved" -gt 0 ]; then
+      info "nothing else to update: the workspace is otherwise up to date."
+    else
+      info "nothing to update: the workspace is up to date."
+    fi
     exit 0
   fi
 
@@ -685,10 +714,22 @@ fi
 
 if [ "$DRY_RUN" = 1 ]; then
   printf '\n'
+  v1_leftovers_present=0
+  if { [ "$ONLY_PLUGIN" = 1 ] || { [ "$ONLY_AGENTS" = 0 ] && [ "$ONLY_SKILLS" = 0 ]; }; } \
+    && { [ -e "$CONFIG_DIR/plugin/observer-bridge.js" ] || [ -e "$CONFIG_DIR/observer-bridge.js" ]; }; then
+    v1_leftovers_present=1
+  fi
   if [ "${#TO_INSTALL[@]}" -eq 0 ] && [ "${#TO_PROMPT[@]}" -eq 0 ]; then
-    info "dry run: nothing to update (workspace is up to date)."
+    if [ "$v1_leftovers_present" -eq 1 ]; then
+      info "dry run: nothing else to update (workspace is otherwise up to date)."
+    else
+      info "dry run: nothing to update (workspace is up to date)."
+    fi
   else
     info "dry run: ${#TO_INSTALL[@]} file(s) would be installed/updated; ${#TO_PROMPT[@]} file(s) conflict (user-modified, skipped unless --interactive)."
+  fi
+  if [ "$v1_leftovers_present" -eq 1 ]; then
+    info "dry run: stale V1 plugin file(s) found - would be moved to $CONFIG_DIR/backups/"
   fi
   info "dry run: no changes written (no backups, no copies, no state update)."
   exit 0

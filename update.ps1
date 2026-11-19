@@ -22,10 +22,10 @@
       - missing      -> created from opencode.template.json (macOS-only MCP
                         entries dropped on Windows)
       - managed      -> merged via node scripts/merge-config.mjs (only
-                        experimental.subagent_depth/todo, default_agent, plugin
-                        and the a11y-color-contrast MCP are added/updated; a
-                        stale top-level subagent_depth and compaction.prune
-                        are removed)
+                        experimental.subagent_depth/todo, default_agent, and
+                        the a11y-color-contrast MCP are added/updated; a
+                        stale top-level subagent_depth, compaction.prune, and
+                        a stale "observer-bridge.js" plugin entry are removed)
       - modified     -> skipped unless -Interactive (merge preserves user edits,
                         but the file is still snapshotted first)
     On Windows, macOS-only MCP servers (macos-use, macos-automator) are never
@@ -50,7 +50,7 @@
     Only update the skills directory.
 
 .PARAMETER OnlyPlugin
-    Only update plugin/observer-bridge.js.
+    Only update plugins/observer-bridge/.
 
 .PARAMETER Rollback
     Restore files from <ConfigDir>\backups\supervisor-<timestamp> and refresh
@@ -283,10 +283,23 @@ if ($updateConfig) {
     }
 }
 
+# --- Stale V1 plugin cleanup (moves leftovers into backups\, never deletes) -
+# V2 auto-discovers plugins\observer-bridge\ and would also try (and fail) to
+# load a stray V1 .js file left behind by the old plugin\observer-bridge.js
+# layout. Runs whenever plugin files are in scope for this update.
+$v1Moved = @()
+if (($null -eq $unitFilter) -or ($unitFilter -contains 'plugin')) {
+    $v1Moved = @(Move-StaleV1PluginFiles -ConfigDir $ConfigDir)
+}
+
 # --- Execute ---------------------------------------------------------------------
 if ($toInstall.Count -eq 0 -and $configAction -eq 'none') {
     Write-Host ''
-    Write-Host 'Nothing to update: the workspace is up to date.'
+    if ($v1Moved.Count -gt 0) {
+        Write-Host 'Nothing else to update: the workspace is otherwise up to date.'
+    } else {
+        Write-Host 'Nothing to update: the workspace is up to date.'
+    }
     if (Test-IsWindows) { Write-WindowsMcpNote }
     exit 0
 }

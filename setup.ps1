@@ -12,9 +12,10 @@
     opencode.json handling:
       - If an opencode.json already exists, it is ALWAYS safely merged via
         `node scripts/merge-config.mjs` (only experimental.subagent_depth/todo,
-        default_agent, plugin, and mcp.a11y-color-contrast are added/updated;
-        a stale top-level subagent_depth and compaction.prune are removed).
-        Everything else is preserved. A backup copy is made first.
+        default_agent, and mcp.a11y-color-contrast are added/updated; a stale
+        top-level subagent_depth, compaction.prune, and a stale
+        "observer-bridge.js" plugin entry are removed). Everything else is
+        preserved. A backup copy is made first.
       - If it does not exist, it is created from opencode.template.json only
         when -WithConfig is passed. On Windows the macOS-only MCP servers
         (macos-use, macos-automator) are dropped from that fresh copy and never
@@ -300,7 +301,7 @@ if ($configExists) {
         Copy-Item -LiteralPath $configDest -Destination $bak
         Write-Host ''
         Write-Host "Backup: opencode.json -> $bak"
-        Write-Host 'Config: merging opencode.json (experimental.subagent_depth/todo, default_agent, plugin, a11y-color-contrast MCP updated; stale top-level subagent_depth and compaction.prune removed)'
+        Write-Host 'Config: merging opencode.json (experimental.subagent_depth/todo, default_agent, a11y-color-contrast MCP updated; stale top-level subagent_depth, compaction.prune, and a stale observer-bridge.js plugin entry removed)'
         $mergeOutput = Invoke-ConfigMerge -RepoRoot $RepoRoot -ConfigDir $ConfigDir
     }
     if ($null -ne $mergeOutput) {
@@ -343,11 +344,13 @@ if ($DryRun) {
     Write-Host ''
     Write-Host "DryRun complete: $($toInstall.Count) file(s) would be written. Nothing was touched."
     Write-Host 'Would write .supervisor-state.json'
+    Move-StaleV1PluginFiles -ConfigDir $ConfigDir -DryRun | Out-Null
     if (Test-IsWindows) { Write-WindowsMcpNote }
     exit 0
 }
 
 $backupRoot = $null
+Move-StaleV1PluginFiles -ConfigDir $ConfigDir | Out-Null
 if ($toInstall.Count -gt 0) {
     $existingToReplace = @($toInstall | Where-Object { Test-Path -LiteralPath $_.DestFull -PathType Leaf })
     if ($existingToReplace.Count -gt 0) {
@@ -401,10 +404,12 @@ if ($actualSkills -eq $expectedSkills) {
     Write-Host "  verify FAIL: skills\ has $actualSkills dirs, expected $expectedSkills"
     $failCount += 1
 }
-if (Test-Path -LiteralPath (Join-Path $ConfigDir 'plugin\observer-bridge.js') -PathType Leaf) {
-    Write-Host '  verify OK: plugin\observer-bridge.js'
+$pluginIndexOk = Test-Path -LiteralPath (Join-Path $ConfigDir 'plugins\observer-bridge\index.js') -PathType Leaf
+$pluginLibOk = Test-Path -LiteralPath (Join-Path $ConfigDir 'plugins\observer-bridge\lib.mjs') -PathType Leaf
+if ($pluginIndexOk -and $pluginLibOk) {
+    Write-Host '  verify OK: plugins\observer-bridge\'
 } else {
-    Write-Host '  verify FAIL: plugin\observer-bridge.js missing'
+    Write-Host '  verify FAIL: plugins\observer-bridge\ missing or incomplete'
     $failCount += 1
 }
 if (Test-Path -LiteralPath (Join-Path $ConfigDir 'AGENTS.md') -PathType Leaf) {

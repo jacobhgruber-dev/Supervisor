@@ -14,7 +14,12 @@
  *   - compaction.prune    -> removed if present (dead in V2, ignored with a
  *     warning)
  *   - default_agent       -> set to "supervisor"
- *   - plugin              -> ensure "observer-bridge.js" is included
+ *   - plugin              -> the stale V1 "observer-bridge.js" entry is
+ *     removed if present (the key itself is removed if that empties the
+ *     array). OpenCode V2 auto-discovers plugins/observer-bridge/ with no
+ *     config entry needed; leaving the V1 string in "plugin" makes V2 try
+ *     to npm-install a package literally named "observer-bridge.js".
+ *     Every other entry in the array is left untouched.
  *   - mcp.a11y-color-contrast -> added (enabled) if absent, enabled if present
  *
  * experimental.* is labeled experimental by OpenCode and may change without
@@ -23,7 +28,12 @@
  * Everything else (provider, model, custom MCPs, custom keys, ...) is
  * preserved byte-for-byte in value, including ordering of existing keys.
  * If the target is not valid JSON, it is backed up (`.corrupt-<stamp>.bak`)
- * and the script exits non-zero without writing anything.
+ * and the script exits non-zero without writing anything. If the content
+ * merely looks like JSONC (comments or trailing commas — OpenCode V2 itself
+ * accepts opencode.json(c) with both), no backup is made and the error
+ * explains that this script's plain-JSON parser can't read it, nothing was
+ * changed, and how to apply the defaults by hand. This script intentionally
+ * has zero npm dependencies, so it never gains a JSONC parser.
  *
  * Usage:
  *   node scripts/merge-config.mjs [path/to/opencode.json] [--dry-run]
@@ -107,6 +117,31 @@ function backupCorruptFile(target) {
   return backup;
 }
 
+// Heuristic only (no parser, no dependency): flags text that looks like it
+// uses JSONC syntax (// or /* */ comments, or a trailing comma before a
+// closing } or ]) so a JSON.parse failure can be reported honestly instead
+// of implying the file is corrupt. OpenCode V2 itself accepts JSONC in
+// opencode.json(c); this script's plain-JSON parser does not. A few false
+// positives/negatives are acceptable here since this only affects wording,
+// never parsing or write behavior.
+function looksLikeJsonc(raw) {
+  return /\/\/|\/\*/.test(raw) || /,\s*[}\]]/.test(raw);
+}
+
+function reportJsoncLikeFailure(target, err) {
+  console.error(`merge-config: ERROR: ${target} could not be parsed as plain JSON (${err.message})`);
+  console.error(
+    "merge-config: this file may use JSONC syntax (comments and/or a trailing comma), " +
+      "which OpenCode V2 accepts in opencode.json(c) but this script's plain-JSON parser does not."
+  );
+  console.error("merge-config: nothing was changed - no backup was created.");
+  console.error(
+    "merge-config: to apply the defaults by hand: set experimental.subagent_depth to 2 and " +
+      'experimental.todo to true; remove a stale top-level "subagent_depth" and "compaction.prune"; ' +
+      'and remove "observer-bridge.js" from any "plugin" array.'
+  );
+}
+
 function loadConfig(target, dryRun) {
   let raw;
   try {
@@ -117,6 +152,12 @@ function loadConfig(target, dryRun) {
   try {
     return JSON.parse(raw);
   } catch (err) {
+    if (looksLikeJsonc(raw)) {
+      // Neither a dry run nor a real run writes anything here - this is not
+      // treated as corruption, so no .corrupt-<stamp>.bak is created.
+      reportJsoncLikeFailure(target, err);
+      process.exit(1);
+    }
     if (dryRun) {
       // Dry runs must write nothing - not even a backup.
       console.error(`merge-config: ERROR: ${target} is not valid JSON (${err.message})`);
@@ -185,19 +226,27 @@ function merge(cfg) {
     changes.push(`default_agent: ${old} -> "supervisor"`);
   }
 
-  // plugin: ensure observer-bridge.js is present without removing others.
-  if (cfg.plugin === undefined || cfg.plugin === null) {
-    cfg.plugin = [];
-  }
-  if (typeof cfg.plugin === "string") {
-    cfg.plugin = [cfg.plugin]; // tolerate single-plugin string configs
-  }
-  if (!Array.isArray(cfg.plugin)) {
-    fail(`"plugin" must be an array (or string), got ${typeof cfg.plugin}`);
-  }
-  if (!cfg.plugin.includes("observer-bridge.js")) {
-    cfg.plugin.push("observer-bridge.js");
-    changes.push(`plugin: added "observer-bridge.js" (${cfg.plugin.length} total)`);
+  // plugin (V1 key): remove the stale "observer-bridge.js" entry if present.
+  // OpenCode V2 auto-discovers plugins/observer-bridge/ with no config entry
+  // needed; leaving the V1 string behind makes V2 try (and fail, with a 404
+  // warning) to npm-install a package literally named "observer-bridge.js".
+  // Every other entry is preserved untouched; configs with no "plugin" key,
+  // or an unrecognized shape, are left alone (this script no longer manages
+  // the key's presence — only the stale entry's absence).
+  if (Array.isArray(cfg.plugin)) {
+    const before = cfg.plugin.length;
+    cfg.plugin = cfg.plugin.filter((entry) => entry !== "observer-bridge.js");
+    if (cfg.plugin.length !== before) {
+      if (cfg.plugin.length === 0) {
+        delete cfg.plugin;
+        changes.push('plugin: removed stale "observer-bridge.js" entry (array now empty; key removed)');
+      } else {
+        changes.push(`plugin: removed stale "observer-bridge.js" entry (${cfg.plugin.length} entry/entries remaining)`);
+      }
+    }
+  } else if (cfg.plugin === "observer-bridge.js") {
+    delete cfg.plugin;
+    changes.push('plugin: removed stale "observer-bridge.js" (was a bare string; key removed)');
   }
 
   // mcp: enable a11y-color-contrast if present, add it enabled if absent.
