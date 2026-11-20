@@ -9,7 +9,7 @@ permission:
   task:
     "*": deny
   edit: allow
-  bash: deny
+  bash: allow
   webfetch: allow
   websearch: allow
   playwright_*: allow

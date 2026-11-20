@@ -8,7 +8,7 @@ color: "#F87171"
 permission:
   task:
     "*": deny
-  edit: deny
+  edit: allow
   bash: allow
   webfetch: allow
   websearch: allow
@@ -70,7 +70,7 @@ Overview of the system's exposure.
 Ordered list of what to fix first.
 ```
 
-Be ruthless. If there's a vulnerability, find it. If the code is clean, say so clearly. Focus on actionable findings; don't flag things that aren't real security concerns. You do NOT write code or edit files.
+Be ruthless. If there's a vulnerability, find it. If the code is clean, say so clearly. Focus on actionable findings; don't flag things that aren't real security concerns. Your default is analysis and planning, not implementation; edit files only when the task explicitly asks you to.
 
 ## Mule Tier Constraints
 
