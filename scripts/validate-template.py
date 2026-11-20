@@ -13,13 +13,37 @@ Validates, using only the Python standard library:
     and ``supervisor`` stay @-mentionable).
   - NO ``steps`` key on any agent: step caps are no longer used anywhere
     in the template — every agent runs uncapped.
-  - ``task: {"*": "deny"}`` (or ``task: deny``) on all mules,
-    ``observer``, and ``observer-claude``.
+  - NO V2-conflicting frontmatter keys (``permissions``, ``request``,
+    ``system``, ``disabled``) on any agent file: OpenCode V2 silently
+    drops that file's V1 ``permission`` block when any of these sibling
+    keys are also present (only a log warning — not a hard error from
+    OpenCode itself).
+  - mules, ``observer``, and ``observer-claude``: ``permission.task``
+    must be EXACTLY ``{"*": "deny"}`` (or the bare string ``"deny"``) —
+    any extra key (e.g. a leaked ``"*-mule": allow``) is rejected, since
+    these agents must be structurally unable to spawn anything.
+  - role agents (junior/mid/senior tiers, ``designer``, ``grok-worker``,
+    ``gemini-worker``): ``permission.task`` must be a mapping whose keys
+    are exactly ``["*", "*-mule"]`` IN THAT ORDER, with ``"*": deny`` and
+    ``"*-mule": allow``. Order is load-bearing — OpenCode permission
+    globs are last-match-wins, so a reversed order silently removes mule
+    spawning with no error from OpenCode.
+  - role agents and mules (NOT ``observer``/``observer-claude``/
+    ``supervisor``) must grant ``allow`` for ``webfetch``, ``websearch``,
+    and ``playwright_*``, and must NOT set ``edit``/``bash`` to ``deny``
+    (observers are exempt from the edit/bash rule and must stay denied).
+  - ``supervisor`` must NOT declare a ``permission`` frontmatter block
+    at all.
+  - any agent whose model is a Grok model (``xai/...``) must NOT set
+    ``variant: max`` — no Grok model exposes a ``max`` variant.
+    Requesting one only fails at actual spawn time (a provider-side
+    rejection this static frontmatter check cannot observe directly), so
+    this only catches the known-bad combination ahead of time.
   - model per tier: junior → ``deepseek/deepseek-flash``, mid →
-    ``anthropic/claude-sonnet-5``, senior → ``anthropic/claude-opus-5``,
-    Grok agents → ``xai/grok-4.6``; Gemini agents (``gemini-worker``,
-    ``gemini-mule``, ``observer``) → ``google/gemini-3.8-flash``;
-    ``observer-claude`` → ``anthropic/claude-sonnet-5``; ``supervisor`` →
+    ``anthropic/claude-sonnet-5-5``, senior → ``anthropic/claude-opus-5-5``,
+    Grok agents → ``xai/grok-4.7``; Gemini agents (``gemini-worker``,
+    ``gemini-mule``, ``observer``) → ``google/gemini-4-hydrogen``;
+    ``observer-claude`` → ``anthropic/claude-sonnet-5-5``; ``supervisor`` →
     ``deepseek/deepseek-flash``.
 * ``opencode.template.json`` (or ``opencode.json`` with ``--installed``):
   valid JSON, ``default_agent: supervisor``, ``experimental.subagent_depth``
@@ -84,12 +108,12 @@ MID_TIER_ROLES = {
 }
 
 JUNIOR_MODEL = "deepseek/deepseek-flash"
-MID_MODEL = "anthropic/claude-sonnet-5"
-SENIOR_MODEL = "anthropic/claude-opus-5"
-GROK_MODEL = "xai/grok-4.6"
-GEMINI_MODEL = "google/gemini-3.8-flash"
+MID_MODEL = "anthropic/claude-sonnet-5-5"
+SENIOR_MODEL = "anthropic/claude-opus-5-5"
+GROK_MODEL = "xai/grok-4.7"
+GEMINI_MODEL = "google/gemini-4-hydrogen"
 SUPERVISOR_MODEL = "deepseek/deepseek-flash"
-OBSERVER_CLAUDE_NAME = "observer-claude"  # Claude Sonnet 5 fallback observer
+OBSERVER_CLAUDE_NAME = "observer-claude"  # Claude Sonnet 5.5 fallback observer
 
 # Gemini-modeled agents (bare names): the Gemini workers and the
 # multimodal observer.
@@ -103,6 +127,54 @@ HIDDEN_EXTRA: set[str] = {"observer", "observer-claude"}
 # (in addition to every *-mule): the observer leaves.
 TASK_DENY_EXTRA = {"observer", "observer-claude"}
 
+# The observer leaves by name. Defined independently of HIDDEN_EXTRA /
+# TASK_DENY_EXTRA (even though the three sets are currently identical) so
+# is_observer() below does not silently change meaning if either of those
+# ever needs to diverge from "exactly the two observer agents".
+OBSERVER_NAMES = {"observer", "observer-claude"}
+
+# Identity-keyed expected model for EVERY template agent name — the single
+# source of truth for check_model(). Each of the 46 names maps to exactly
+# one expected model; there is no provider-prefix fallback, so an agent
+# whose current (possibly wrong) model doesn't happen to start with a
+# recognizable prefix can no longer slip through unchecked (that was the
+# bug: 9 generic DeepSeek mules, ``designer``, ``designer-mule``,
+# ``grok-worker``, and ``grok-mule`` previously had no real enforcement).
+EXPECTED_MODEL_BY_NAME: Dict[str, str] = {
+    PRIMARY_AGENT_NAME: SUPERVISOR_MODEL,
+    OBSERVER_CLAUDE_NAME: MID_MODEL,
+    "grok-worker": GROK_MODEL,
+    "designer": GROK_MODEL,
+    "grok-mule": GROK_MODEL,
+    "designer-mule": GROK_MODEL,
+    "claude-mule": MID_MODEL,
+    **{name: GEMINI_MODEL for name in GEMINI_AGENTS},
+    **{role: MID_MODEL for role in MID_TIER_ROLES},
+    **{f"junior-{role}": JUNIOR_MODEL for role in MID_TIER_ROLES},
+    **{f"senior-{role}": SENIOR_MODEL for role in MID_TIER_ROLES},
+    **{f"{role}-mule": JUNIOR_MODEL for role in MID_TIER_ROLES},
+}
+
+# The 45 template subagent names (every EXPECTED_MODEL_BY_NAME key except
+# the primary supervisor) — i.e. everything that belongs in agents/. Used
+# by --installed mode to confirm every template agent is present even
+# when the user has added their own extra agent files alongside them.
+EXPECTED_SUBAGENT_NAMES = set(EXPECTED_MODEL_BY_NAME) - {PRIMARY_AGENT_NAME}
+
+# Frontmatter keys that conflict with OpenCode V2: V2 silently drops a
+# file's V1 "permission" block (log warning only, no hard error) when any
+# of these sibling keys are also present in frontmatter.
+V2_MARKER_KEYS = ("permissions", "request", "system", "disabled")
+
+# Web-tool permission keys every role agent and mule must grant.
+WEB_TOOL_KEYS = ("webfetch", "websearch", "playwright_*")
+
+# Expected key ORDER for a role agent's permission.task mapping. OpenCode
+# permission globs are last-match-wins, so "*" (deny) must be listed
+# before "*-mule" (allow) — reversing the order silently removes mule
+# spawning with no error from OpenCode.
+ROLE_TASK_KEYS = ["*", "*-mule"]
+
 # Config keys/values that look like hardcoded secrets.
 KEY_NAME_RE = re.compile(
     r"\b(api[_\s-]?key|access[_\s-]?key|secret|token|password|passwd|"
@@ -112,7 +184,10 @@ KEY_NAME_RE = re.compile(
 VALUE_PREFIX_RE = re.compile(
     r"^(sk-|rk-|xai-|ghp_|github_pat_|AKIA|AIza|eyJ|hf_|pk_|dckr_|glpat-)",
 )
-PLACEHOLDER_RE = re.compile(r"^(YOUR_|\$\{|<)")
+# ``{env:VAR}`` and ``{file:path}`` are OpenCode's own documented config
+# substitutions (resolved at load time, e.g. ``"apiKey": "{env:OPENAI_API_KEY}"``)
+# — not hardcoded secrets, so they must not be flagged in --installed mode.
+PLACEHOLDER_RE = re.compile(r"^(YOUR_|\$\{|<|\{env:|\{file:)")
 
 
 class FrontmatterError(Exception):
@@ -140,12 +215,54 @@ def parse_scalar(raw: str) -> str:
     return value
 
 
+def parse_line_key(
+    stripped: str, leading: str, cur: int, indent: int, data: Dict[str, Any]
+) -> Tuple[str, str]:
+    """Validate and split one 'key: rest' frontmatter line for parse_map().
+
+    Returns ``(key, rest)``. Raises :class:`FrontmatterError` for tab
+    indentation, indentation deeper than *indent*, a missing colon, an
+    empty key, or a key already present in *data* (a duplicate key at
+    this nesting level).
+    """
+    if "\t" in leading:
+        raise FrontmatterError("tab indentation is not valid YAML")
+    if cur > indent:
+        raise FrontmatterError(f"unexpected indentation: {stripped!r}")
+    if ":" not in stripped:
+        raise FrontmatterError(f"expected 'key: value', got: {stripped!r}")
+    key, _, rest = stripped.partition(":")
+    key = key.strip().strip("\"'")
+    if not key:
+        raise FrontmatterError(f"empty key: {stripped!r}")
+    if key in data:
+        raise FrontmatterError(f"duplicate key: {key!r}")
+    return key, rest
+
+
 def parse_map(lines: List[str], idx: int, indent: int) -> Tuple[Dict[str, Any], int]:
     """Parse a YAML-subset mapping from *lines* starting at *idx*.
 
     Supports ``key: scalar`` entries (quoted or unquoted scalars, quoted
     keys such as ``"*"``) and nested mappings indented with spaces.
-    Raises :class:`FrontmatterError` on malformed input.
+    Raises :class:`FrontmatterError` on malformed input, including a
+    duplicate key at the same nesting level.
+
+    Intentionally unsupported: inline flow-style maps such as
+    ``task: {"*": allow}``. Anything after ``key:`` on the same line is
+    parsed as a scalar (see :func:`parse_scalar`), so a flow-style map
+    would silently become a *string*, not a mapping, and downstream
+    checks that expect ``permission.task`` to be a dict would then fail
+    in a confusing way. Frontmatter like ``permission.task`` MUST use the
+    nested block form instead::
+
+        task:
+          "*": deny
+          "*-mule": allow
+
+    This is why the template's own agent files never write inline
+    ``{...}`` maps in frontmatter — only this nested block style
+    round-trips correctly through this parser.
     """
 
     def next_nonblank(start: int) -> int:
@@ -159,19 +276,10 @@ def parse_map(lines: List[str], idx: int, indent: int) -> Tuple[Dict[str, Any], 
         line = lines[idx]
         stripped = line.strip()
         leading = line[: len(line) - len(line.lstrip())]
-        if "\t" in leading:
-            raise FrontmatterError("tab indentation is not valid YAML")
         cur = len(leading)
         if cur < indent:
             break
-        if cur > indent:
-            raise FrontmatterError(f"unexpected indentation: {stripped!r}")
-        if ":" not in stripped:
-            raise FrontmatterError(f"expected 'key: value', got: {stripped!r}")
-        key, _, rest = stripped.partition(":")
-        key = key.strip().strip("\"'")
-        if not key:
-            raise FrontmatterError(f"empty key: {stripped!r}")
+        key, rest = parse_line_key(stripped, leading, cur, indent, data)
         idx += 1
         if rest.strip():
             data[key] = parse_scalar(rest)
@@ -238,6 +346,17 @@ def must_deny_task(name: str) -> bool:
     return is_mule(name) or name in TASK_DENY_EXTRA
 
 
+def is_observer(name: str) -> bool:
+    return name in OBSERVER_NAMES
+
+
+def is_role_agent(name: str) -> bool:
+    """True for every agent that is neither a mule, an observer, nor the
+    supervisor — the 30 junior/mid/senior/designer/grok-worker/gemini-worker
+    role agents that must be able to spawn mules (and only mules)."""
+    return not is_mule(name) and not is_observer(name) and name != PRIMARY_AGENT_NAME
+
+
 # ---------------------------------------------------------------------------
 # Per-agent frontmatter checks
 # ---------------------------------------------------------------------------
@@ -256,48 +375,45 @@ def check_mode(fm: Dict[str, Any], name: str, rel: str, errors: List[str]) -> No
         errors.append(f"{rel}: mode must be '{expected}', got {mode!r}")
 
 
-def expected_model(name: str) -> Optional[Tuple[str, str]]:
-    """Return (tier label, expected model) for tiered agents, else None."""
-    if name.startswith("junior-"):
-        return ("junior-tier agents", JUNIOR_MODEL)
-    if name.startswith("senior-"):
-        return ("senior-tier agents", SENIOR_MODEL)
-    if name in MID_TIER_ROLES:
-        return ("mid-tier agents", MID_MODEL)
-    return None
+def check_model(
+    fm: Dict[str, Any],
+    name: str,
+    rel: str,
+    errors: List[str],
+    *,
+    installed: bool = False,
+) -> None:
+    """Check 'model' against the identity-keyed EXPECTED_MODEL_BY_NAME map.
 
+    Every one of the template's 46 agent names maps to exactly one
+    expected model there — no provider-prefix fallback — so an agent
+    whose current (possibly wrong) model string doesn't happen to start
+    with a recognizable prefix can no longer slip through unchecked (the
+    bug this replaces: the 9 generic DeepSeek mules, ``designer``,
+    ``designer-mule``, ``grok-worker``, and ``grok-mule`` previously had
+    no real model enforcement at all).
 
-def check_model(fm: Dict[str, Any], name: str, rel: str, errors: List[str]) -> None:
+    A name absent from the map is a hard error in repo (template) mode:
+    the template defines all 46 names exhaustively, so an unrecognized
+    name there is itself a bug. In ``--installed`` mode a user may have
+    added their own custom agent file alongside the template's; an
+    unrecognized name there is simply skipped — this check has nothing
+    to enforce for an agent the template doesn't define.
+    """
     model = fm.get("model")
     if not isinstance(model, str) or not model.strip():
         errors.append(f"{rel}: missing or empty 'model'")
         return
-    if name == OBSERVER_CLAUDE_NAME:
-        if model != MID_MODEL:
+    expected = EXPECTED_MODEL_BY_NAME.get(name)
+    if expected is None:
+        if not installed:
             errors.append(
-                f"{rel}: '{OBSERVER_CLAUDE_NAME}' must use '{MID_MODEL}', got '{model}'"
+                f"{rel}: '{name}' is not a recognized template agent name — "
+                "no expected model is defined for it"
             )
         return
-    if name in GEMINI_AGENTS:
-        if model != GEMINI_MODEL:
-            errors.append(
-                f"{rel}: Gemini agents must use '{GEMINI_MODEL}', got '{model}'"
-            )
-        return
-    if name == PRIMARY_AGENT_NAME:
-        if model != SUPERVISOR_MODEL:
-            errors.append(
-                f"{rel}: '{PRIMARY_AGENT_NAME}' must use "
-                f"'{SUPERVISOR_MODEL}', got '{model}'"
-            )
-        return
-    tier = expected_model(name)
-    if tier is not None:
-        label, expected = tier
-        if model != expected:
-            errors.append(f"{rel}: {label} must use '{expected}', got '{model}'")
-    elif model.startswith("xai/") and model != GROK_MODEL:
-        errors.append(f"{rel}: Grok agents must use '{GROK_MODEL}', got '{model}'")
+    if model != expected:
+        errors.append(f"{rel}: '{name}' must use '{expected}', got '{model}'")
 
 
 def check_hidden(fm: Dict[str, Any], name: str, rel: str, errors: List[str]) -> None:
@@ -317,18 +433,167 @@ def check_steps(fm: Dict[str, Any], rel: str, errors: List[str]) -> None:
 
 
 def check_task_deny(fm: Dict[str, Any], name: str, rel: str, errors: List[str]) -> None:
+    """Mules, ``observer``, and ``observer-claude`` must deny ALL task
+    spawning — ``task: deny`` or ``task: {"*": deny}`` with NO other key.
+    An extra key (e.g. a leaked ``"*-mule": allow``) must fail: that would
+    let a structural leaf spawn mules, which the mule tier must never do.
+    """
     if not must_deny_task(name):
         return
     perm = fm.get("permission")
     task = perm.get("task") if isinstance(perm, dict) else None
-    ok = task == "deny" or (isinstance(task, dict) and task.get("*") == "deny")
-    if not ok:
+    if task == "deny":
+        return
+    if (
+        isinstance(task, dict)
+        and list(task.keys()) == ["*"]
+        and task.get("*") == "deny"
+    ):
+        return
+    errors.append(
+        f"{rel}: must deny ALL task spawning ('task: deny' or "
+        f"'task: {{\"*\": deny}}' with no other keys), got {task!r}"
+    )
+
+
+def check_no_v2_markers(fm: Dict[str, Any], rel: str, errors: List[str]) -> None:
+    """Agent files must not contain the V2-conflicting frontmatter keys
+    ``permissions``, ``request``, ``system``, ``disabled``: OpenCode V2
+    silently drops a file's V1 ``permission`` block when any of these
+    sibling keys are present — only a log warning, not a hard error."""
+    present = [key for key in V2_MARKER_KEYS if key in fm]
+    if present:
         errors.append(
-            f"{rel}: must deny task spawning ('task: deny' or 'task: {{\"*\": deny}}')"
+            f"{rel}: frontmatter must not contain V2-conflicting key(s) "
+            f"{', '.join(sorted(present))} — OpenCode V2 silently drops "
+            "the V1 'permission' block when any of these are present "
+            "(only a log warning)"
         )
 
 
-def validate_agent(name: str, rel: str, path: Path, errors: List[str]) -> None:
+def check_role_task_permission(
+    fm: Dict[str, Any], name: str, rel: str, errors: List[str]
+) -> None:
+    """Role agents must have ``permission.task`` as a mapping with keys
+    EXACTLY ``["*", "*-mule"]`` in that order: ``"*": deny`` then
+    ``"*-mule": allow``. OpenCode permission globs are last-match-wins, so
+    reversing the order silently removes mule spawning with no error from
+    OpenCode — order is load-bearing, not cosmetic.
+    """
+    if not is_role_agent(name):
+        return
+    perm = fm.get("permission")
+    task = perm.get("task") if isinstance(perm, dict) else None
+    if not isinstance(task, dict):
+        errors.append(
+            f"{rel}: role agents must have 'permission.task' as a mapping "
+            f"{{'*': deny, '*-mule': allow}}, got {task!r}"
+        )
+        return
+    keys = list(task.keys())
+    if keys != ROLE_TASK_KEYS:
+        errors.append(
+            f"{rel}: 'permission.task' keys must be exactly {ROLE_TASK_KEYS} "
+            "in that order (last-match-wins — a reversed order silently "
+            f"removes mule spawning), got {keys!r}"
+        )
+        return
+    if task.get("*") != "deny" or task.get("*-mule") != "allow":
+        errors.append(
+            f"{rel}: 'permission.task' must be {{'*': deny, '*-mule': allow}}, "
+            f"got {task!r}"
+        )
+
+
+def check_web_tools_allowed(
+    fm: Dict[str, Any], name: str, rel: str, errors: List[str]
+) -> None:
+    """Role agents and mules (NOT observer/observer-claude/supervisor)
+    must grant 'allow' for webfetch, websearch, and playwright_*."""
+    if not (is_role_agent(name) or is_mule(name)):
+        return
+    perm = fm.get("permission")
+    perm = perm if isinstance(perm, dict) else {}
+    missing = [key for key in WEB_TOOL_KEYS if perm.get(key) != "allow"]
+    if missing:
+        errors.append(
+            f"{rel}: must grant 'allow' for {', '.join(missing)} "
+            "(role agents and mules require web-tool access)"
+        )
+
+
+def check_edit_bash_not_denied(
+    fm: Dict[str, Any], name: str, rel: str, errors: List[str]
+) -> None:
+    """edit/bash must not be 'deny' on any role agent or mule; observers
+    are exempt from this rule (see check_observer_edit_bash_denied for
+    their opposite requirement)."""
+    if not (is_role_agent(name) or is_mule(name)):
+        return
+    perm = fm.get("permission")
+    perm = perm if isinstance(perm, dict) else {}
+    denied = [key for key in ("edit", "bash") if perm.get(key) == "deny"]
+    if denied:
+        errors.append(
+            f"{rel}: {', '.join(denied)} must not be 'deny' for role agents and mules"
+        )
+
+
+def check_observer_edit_bash_denied(
+    fm: Dict[str, Any], name: str, rel: str, errors: List[str]
+) -> None:
+    """Observers must keep BOTH edit and bash denied — they are read-only
+    analysis agents. This is the enforcement side of the exemption granted
+    to observers in check_edit_bash_not_denied above; without this, a
+    template drift that dropped 'edit: deny'/'bash: deny' from observer.md
+    or observer-claude.md would go uncaught."""
+    if not is_observer(name):
+        return
+    perm = fm.get("permission")
+    perm = perm if isinstance(perm, dict) else {}
+    not_denied = [key for key in ("edit", "bash") if perm.get(key) != "deny"]
+    if not_denied:
+        errors.append(f"{rel}: {', '.join(not_denied)} must be 'deny' for observers")
+
+
+def check_supervisor_no_permission(
+    fm: Dict[str, Any], name: str, rel: str, errors: List[str]
+) -> None:
+    """The supervisor must not declare a 'permission' frontmatter block
+    at all."""
+    if name != PRIMARY_AGENT_NAME:
+        return
+    if "permission" in fm:
+        errors.append(
+            f"{rel}: '{PRIMARY_AGENT_NAME}' must NOT have a 'permission' "
+            "frontmatter block"
+        )
+
+
+def check_grok_variant(fm: Dict[str, Any], rel: str, errors: List[str]) -> None:
+    """Flag 'variant: max' on any Grok-modeled (``xai/...``) agent.
+
+    No Grok model currently exposes a "max" variant. Requesting one only
+    fails at actual spawn time — a provider-side rejection that this
+    static frontmatter check cannot observe directly — so this only
+    catches the known-bad 'variant: max' + Grok-model combination ahead
+    of time; it cannot catch other invalid variants a provider might add
+    or remove later.
+    """
+    model = fm.get("model")
+    variant = fm.get("variant")
+    if isinstance(model, str) and model.startswith("xai/") and variant == "max":
+        errors.append(
+            f"{rel}: Grok agents must not set 'variant: max' — no Grok "
+            "model exposes a 'max' variant (this only fails at spawn "
+            "time; static validation can only catch the frontmatter "
+            "combination itself)"
+        )
+
+
+def validate_agent(
+    name: str, rel: str, path: Path, errors: List[str], *, installed: bool = False
+) -> None:
     try:
         fm = extract_frontmatter(path)
     except FrontmatterError as exc:
@@ -336,10 +601,17 @@ def validate_agent(name: str, rel: str, path: Path, errors: List[str]) -> None:
         return
     check_description(fm, rel, errors)
     check_mode(fm, name, rel, errors)
-    check_model(fm, name, rel, errors)
+    check_model(fm, name, rel, errors, installed=installed)
     check_hidden(fm, name, rel, errors)
     check_steps(fm, rel, errors)
     check_task_deny(fm, name, rel, errors)
+    check_no_v2_markers(fm, rel, errors)
+    check_role_task_permission(fm, name, rel, errors)
+    check_web_tools_allowed(fm, name, rel, errors)
+    check_observer_edit_bash_denied(fm, name, rel, errors)
+    check_edit_bash_not_denied(fm, name, rel, errors)
+    check_supervisor_no_permission(fm, name, rel, errors)
+    check_grok_variant(fm, rel, errors)
 
 
 # ---------------------------------------------------------------------------
@@ -359,7 +631,25 @@ def iter_agent_files(root: Path) -> List[Tuple[str, str, Path]]:
     return found
 
 
-def validate_structure(root: Path, errors: List[str]) -> None:
+def validate_structure(
+    root: Path,
+    errors: List[str],
+    infos: List[str],
+    *,
+    installed: bool = False,
+) -> None:
+    """Check the agent/ and agents/ directory contents.
+
+    ``agent/`` (the primary supervisor) is always strict: exactly one
+    file, named ``supervisor.md``, in both repo and --installed mode.
+
+    ``agents/`` (the 45 subagents) is strict-count in repo (template)
+    mode: exactly ``EXPECTED_SUBAGENT_FILES``. In --installed mode a user
+    may have added their own extra agent files alongside the template's,
+    so the exact-count check is replaced with a presence check: every
+    template subagent name must exist; anything beyond that is reported
+    via *infos* (not an error) rather than failing validation.
+    """
     agent_dir = root / "agent"
     if not agent_dir.is_dir():
         errors.append("missing 'agent/' directory")
@@ -376,13 +666,27 @@ def validate_structure(root: Path, errors: List[str]) -> None:
     agents_dir = root / "agents"
     if not agents_dir.is_dir():
         errors.append("missing 'agents/' directory")
-    else:
-        files = sorted(agents_dir.glob("*.md"))
-        if len(files) != EXPECTED_SUBAGENT_FILES:
+        return
+    names = {path.stem for path in agents_dir.glob("*.md")}
+    if not installed:
+        if len(names) != EXPECTED_SUBAGENT_FILES:
             errors.append(
                 f"'agents/' must contain exactly {EXPECTED_SUBAGENT_FILES} files, "
-                f"found {len(files)}"
+                f"found {len(names)}"
             )
+        return
+    missing = sorted(EXPECTED_SUBAGENT_NAMES - names)
+    if missing:
+        errors.append(
+            f"'agents/' is missing {len(missing)} template agent file(s): "
+            f"{', '.join(missing)}"
+        )
+    extra = sorted(names - EXPECTED_SUBAGENT_NAMES)
+    if extra:
+        infos.append(
+            f"'agents/' has {len(extra)} extra user-added agent file(s) beyond "
+            f"the template's {EXPECTED_SUBAGENT_FILES}: {', '.join(extra)}"
+        )
 
 
 def flag_secret_value(key: str, value: str, where: str) -> Optional[str]:
@@ -441,7 +745,7 @@ def validate_config(config_path: Path, errors: List[str]) -> None:
     if plugin_has_stale_entry:
         errors.append(
             f"{config_path.name}: top-level 'plugin' contains the stale "
-            "\"observer-bridge.js\" entry — OpenCode V2 tries to npm-install "
+            '"observer-bridge.js" entry — OpenCode V2 tries to npm-install '
             "it as a package (and 404s) — remove just that entry; V2 "
             "auto-discovers 'plugins/<name>/index.js' with no config entry "
             "needed for it. Other 'plugin' entries are not flagged by this "
@@ -451,7 +755,11 @@ def validate_config(config_path: Path, errors: List[str]) -> None:
     exp_depth = (
         experimental.get("subagent_depth") if isinstance(experimental, dict) else None
     )
-    if not isinstance(exp_depth, int) or isinstance(exp_depth, bool) or exp_depth < MIN_SUBAGENT_DEPTH:
+    if (
+        not isinstance(exp_depth, int)
+        or isinstance(exp_depth, bool)
+        or exp_depth < MIN_SUBAGENT_DEPTH
+    ):
         errors.append(
             f"{config_path.name}: 'experimental.subagent_depth' must be an "
             f"int >= {MIN_SUBAGENT_DEPTH}, got {exp_depth!r}"
@@ -459,8 +767,7 @@ def validate_config(config_path: Path, errors: List[str]) -> None:
     exp_todo = experimental.get("todo") if isinstance(experimental, dict) else None
     if exp_todo is not True:
         errors.append(
-            f"{config_path.name}: 'experimental.todo' must be true, "
-            f"got {exp_todo!r}"
+            f"{config_path.name}: 'experimental.todo' must be true, got {exp_todo!r}"
         )
     for message in find_hardcoded_keys(data):
         errors.append(f"{config_path.name}: {message}")
@@ -603,19 +910,23 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def validate(root: Path, config_path: Path) -> Tuple[List[str], bool]:
+def validate(
+    root: Path, config_path: Path, *, installed: bool = False
+) -> Tuple[List[str], bool, List[str]]:
     errors: List[str] = []
-    validate_structure(root, errors)
+    infos: List[str] = []
+    validate_structure(root, errors, infos, installed=installed)
     for name, rel, path in iter_agent_files(root):
-        validate_agent(name, rel, path, errors)
+        validate_agent(name, rel, path, errors, installed=installed)
     validate_config(config_path, errors)
     validate_plugin(root, errors)
     skills_present = validate_skills(root / "skills", errors)
-    return errors, skills_present
+    return errors, skills_present, infos
 
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = build_parser().parse_args(argv)
+    installed = bool(args.installed)
 
     if args.installed:
         root = args.installed.resolve()
@@ -630,11 +941,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.fix_hidden:
         apply_hidden_fixes(root)
 
-    errors, skills_present = validate(root, config_path)
+    errors, skills_present, infos = validate(root, config_path, installed=installed)
     files = iter_agent_files(root)
     total = len(files)
 
     print(f"Validating template in {root}")
+    for message in infos:
+        print(f"INFO: {message}")
     if errors:
         for message in errors:
             print(f"ERROR: {message}")
