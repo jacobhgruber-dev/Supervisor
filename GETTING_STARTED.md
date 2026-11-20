@@ -256,8 +256,8 @@ This is part of the core setup, not a bolt-on. The **full 4-tier system ships in
 | You ask for… | Agent used | Model | Powered by |
 |--------------|-----------|-------|------------|
 | (automatic / "the junior worker") | `junior-worker` | DeepSeek Flash | Your DeepSeek key |
-| "send this to the worker / architect" | `worker`, `architect` | Claude Sonnet 5 | Anthropic key |
-| "use the **senior** reviewer" | `senior-reviewer` | Claude Opus 5 | Anthropic key |
+| "send this to the worker / architect" | `worker`, `architect` | Claude Sonnet 5.5 | Anthropic key |
+| "use the **senior** reviewer" | `senior-reviewer` | Claude Opus 5.5 | Anthropic key |
 | (spawned automatically by subagents for bounded tasks) | `worker-mule`, `planner-mule`, … | DeepSeek Flash | Your DeepSeek key |
 
 The Claude-powered agents sit ready but inactive until the key is present — nothing else to configure.
@@ -282,7 +282,7 @@ The Claude-powered agents sit ready but inactive until the key is present — no
 
 These are extras you can ignore until you want them:
 
-- **Grok (xAI)** — `grok-worker` (Grok 4.6), `grok-mule`, `designer`, and `designer-mule` all ship in `agents/` (Step 3 copied them). Add an xAI key through Desktop Settings → Providers (or `opencode auth login`) to activate them. See [PROVIDERS.md](PROVIDERS.md).
+- **Grok (xAI)** — `grok-worker` (Grok 4.7), `grok-mule`, `designer`, and `designer-mule` all ship in `agents/` (Step 3 copied them). Add an xAI key through Desktop Settings → Providers (or `opencode auth login`) to activate them. See [PROVIDERS.md](PROVIDERS.md).
 - **Addons** (`addons/` folder) — behavioral "modes," Grok notes, and a full reference catalog. See [`addons/README.md`](addons/README.md).
 - **Bundled skills (22)** — 19 motion/design skills (animate, framer-motion, gsap-core, motion-design, design-system, ui-styling, and more) plus 3 utility skills (`agent-reach`, `anna`, `use-railway`) ship in `skills/` and install with everything else. Agents load them automatically when a task matches. See [`skills/README.md`](skills/README.md).
 - **CLI quality tools** — the reviewer/debugger agents can use tools like `ruff`, `mypy`, and `trivy` when present. Optional but nice. See [`DEPENDENCIES.md`](DEPENDENCIES.md).
@@ -293,8 +293,8 @@ Your Supervisor runs on a text-only DeepSeek model, so it can't see images. **Ob
 
 Observer has **dual multimodal vision with zero extra setup**:
 
-- **Primary:** Google **Gemini 3.8 Flash** — activates automatically once your **Google (Gemini)** key is in place (`opencode auth login`, choose Google).
-- **Automatic fallback:** if only **Anthropic (Claude)** is configured (no Google key), the Observer plugin switches to **Claude Sonnet 5** — the same structured analysis, either way.
+- **Primary:** Google **Gemini 4 Hydrogen** — activates automatically once your **Google (Gemini)** key is in place (`opencode auth login`, choose Google).
+- **Automatic fallback:** if only **Anthropic (Claude)** is configured (no Google key), the Observer plugin switches to **Claude Sonnet 5.5** — the same structured analysis, either way.
 
 No model names or provider blocks to wire up. Pair it with `macos-automator` (below) and the Supervisor can capture *and* understand on-screen state.
 
@@ -323,7 +323,7 @@ It also includes **eleven optional** MCP servers that are **disabled by default*
 
 > 🪟 **On Windows?** `macos-automator` is macOS-only. For equivalent native desktop control on Windows, use **[CursorTouch/Windows-MCP](https://github.com/CursorTouch/Windows-MCP)** — follow that repo's setup, then add it to your `"mcp"` block the same way (disabled until you opt in).
 
-> 🧠 **Pairs well with Observer.** `macos-automator` captures what's on screen; the built-in **Observer** agent (dual-provider vision — Gemini 3.8 Flash primary, Claude Sonnet 5 fallback — see the Observer section above) then *reads* those screenshots and explains them to your text-only Supervisor.
+> 🧠 **Pairs well with Observer.** `macos-automator` captures what's on screen; the built-in **Observer** agent (dual-provider vision — Gemini 4 Hydrogen primary, Claude Sonnet 5.5 fallback — see the Observer section above) then *reads* those screenshots and explains them to your text-only Supervisor.
 
 **How to turn one on** (the "permissions" part): in `opencode.json`, find the server under `"mcp"` and change `"enabled": false` to `"enabled": true`. For a few servers (`chrome-devtools`, `macos-use`, `vercel`), the template already has a matching `"allow"` entry in the `"permission"` block — just flip `enabled`. For the others (elevenlabs, railway, macos-automator, yt-dlp, gemini-api-docs, context7, github), you'll also need to add a corresponding `"<name>_*": "allow"` line to the `"permission"` block. `twenty-first` ships with a `"deny"` permission entry — change it to `"allow"` too. For example, to enable railway:
 
@@ -351,7 +351,7 @@ It also includes **eleven optional** MCP servers that are **disabled by default*
 | **DeepSeek/Claude stopped working after adding config** | `options.apiKey` or `options.baseURL` overrides in a cloud `provider` block | Auth is loaded independently — a `provider` block never removes your stored key. Check any block for DeepSeek, Anthropic, Google, or xAI in your `opencode.json` and remove `options.apiKey`/`options.baseURL` overrides (or the whole cloud block — you don't need it). |
 | **Too many agents in the agent selector** | Non-agent `.md` files or stray files being picked up | Only agent files should be in `agents/`. Remove any docs, notes, or reference files from that folder. |
 | **Max variant toggle disappeared** | The model or its variants are hidden by `blacklist`/`whitelist` | Partial `provider.models` entries merge with the built-in definition, so check for `blacklist`/`whitelist` entries hiding the model and remove them. Cloud variants are handled by `models.dev`. |
-| **Mules appear in @ autocomplete** | Mule agent file missing `hidden: true` in frontmatter | Add `hidden: true` to mule markdown files. All 13 shipped `*-mule.md` agents already have this set; only the mule tier is hidden — regular subagents are intentionally @-mentionable. If you created custom mules, add it manually. |
+| **Mules appear in @ autocomplete** | Mule agent file missing `hidden: true` in frontmatter | Add `hidden: true` to mule markdown files. All 13 shipped `*-mule.md` agents already have this set; only the mule tier and the two observer agents (observer, observer-claude) are hidden — regular role subagents are intentionally @-mentionable. If you created custom mules, add it manually. |
 
 ---
 

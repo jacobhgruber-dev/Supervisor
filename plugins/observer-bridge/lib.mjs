@@ -87,7 +87,7 @@ async function hasAnthropic(ctx) {
 }
 
 // Resolve the active observer agent: Google (Gemini) wins over Anthropic
-// (Claude Sonnet 5). Returns null when no vision provider is connected.
+// (Claude Sonnet 5.5). Returns null when no vision provider is connected.
 async function resolveObserver(ctx) {
   if (await hasGoogle(ctx)) return "observer"
   if (await hasAnthropic(ctx)) return "observer-claude"

@@ -23,13 +23,13 @@ A shareable setup for the Supervisor agent workflow in [OpenCode](https://openco
 ## What You Get
 
 - **Supervisor agent** — a primary agent that orchestrates work through delegation. It reads the project, plans the work, spawns subagents, reviews their output, fixes issues, and commits — including automated quality verification (ruff, mypy, shellcheck, radon, coverage).
-- **46 agent files: the Supervisor plus 45 subagents across 4 tiers (junior, mid, senior, mule).** 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek Flash), mid (Claude Sonnet 5), senior (Claude Opus 5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
+- **46 agent files: the Supervisor plus 45 subagents across 4 tiers (junior, mid, senior, mule).** 9 roles (worker, architect, planner, reviewer, debugger, security, researcher, editor, quote-auditor) at junior (DeepSeek Flash), mid (Claude Sonnet 5.5), senior (Claude Opus 5.5), and mule (various models) tiers, plus alternative model workers and a design agent pair (`designer` / `designer-mule`). All with built-in awareness of 14+ CLI code quality and security tools.
 - **Behavioral guidelines** (AGENTS.md) — coding conventions that reduce LLM mistakes: simplicity, surgical changes, goal-driven execution, mode switching.
 - **Automated code quality pipeline** — reviewer runs ruff + mypy + trivy on every review; debugger matches tools to symptoms (py-spy, scalene); worker self-verifies before reporting done; supervisor verifies lint/types/coverage before committing.
 - **22 bundled skills (19 motion/design + 3 utility)** — a self-contained skill library in `skills/` that installs with everything else: 19 motion/design skills (animate, framer-motion ×5, gsap-core, motion-design, design-system, ui-styling, apple-design, and more) plus 3 utility skills (`agent-reach` for web research, `anna` for book/article downloads, `use-railway` for Railway infrastructure). See [skills/README.md](skills/README.md).
-- **Grok worker** — an alternative-model worker on xAI's Grok 4.6. Ships in `agents/grok-worker.md` with notes in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
+- **Grok worker** — an alternative-model worker on xAI's Grok 4.7. Ships in `agents/grok-worker.md` with notes in `addons/grok-worker/`. Activate by adding an xAI key; the core system doesn't depend on it.
 - **Full 4-tier system built in** — all 45 subagents (including mule tier, alternative model workers, and designer) ship with the repo. The `junior-*` / `*` / `senior-*` naming convention is already configured with exact specs (model, permissions). Mid and senior tiers activate as soon as you add an Anthropic API key.
-- **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 3.8 Flash — with automatic fallback to Claude Sonnet 5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image. It's an OpenCode V2 plugin (`plugins/observer-bridge/`) whose automatic `prompt.agents` dispatch to `@observer` is unverified, backed by a system-prompt fallback that tells the supervisor to spawn @observer manually.
+- **Observer (built in)** — a multimodal vision subagent plus a paste-interception plugin. Paste a screenshot into chat and Observer returns structured analysis (text extraction, UI comparison, error logs). Primary model: Google Gemini 4 Hydrogen — with automatic fallback to Claude Sonnet 5.5 when only an Anthropic key is configured. The supervisor sees the text; the observer sees the image. It's an OpenCode V2 plugin (`plugins/observer-bridge/`) whose automatic `prompt.agents` dispatch to `@observer` is unverified, backed by a system-prompt fallback that tells the supervisor to spawn @observer manually.
 - **Optional addons** — OpenCode Modes (9 behavioral trigger words) and a comprehensive full reference catalog. See [addons/](addons/).
 
 ## Quick Start
@@ -57,7 +57,7 @@ Visit https://platform.deepseek.com/api_keys and create an API key. This is the 
 
 > **Provider note:** This repo uses 4 providers (DeepSeek, Anthropic, Google, xAI). DeepSeek is the only one required to start — it powers the Supervisor + junior tier. Add Anthropic to unlock mid/senior tiers, Google to activate Observer + Gemini workers, and xAI for Grok workers. See [PROVIDERS.md](PROVIDERS.md) for direct links to get keys.
 >
-> **Claude-only:** say "Claude-only mode" to the Supervisor and it defaults to the mid-tier Claude agents and `claude-mule`, never spawning DeepSeek/Gemini/Grok agents (needs only an Anthropic key for the agents). The Supervisor's own `model:` in `agent/supervisor.md` is `deepseek/deepseek-flash` by default; a Claude-only user should change it to an Anthropic model (e.g. `anthropic/claude-sonnet-5`).
+> **Claude-only:** say "Claude-only mode" to the Supervisor and it defaults to the mid-tier Claude agents and `claude-mule`, never spawning DeepSeek/Gemini/Grok agents (needs only an Anthropic key for the agents). The Supervisor's own `model:` in `agent/supervisor.md` is `deepseek/deepseek-flash` by default; a Claude-only user should change it to an Anthropic model (e.g. `anthropic/claude-sonnet-5-5`).
 
 For a full list of recommended CLI tools, Python packages, and optional services, see [DEPENDENCIES.md](DEPENDENCIES.md).
 
@@ -179,7 +179,7 @@ Supervisor Agent (primary, DeepSeek Flash)
         +---> observer        (visual analysis, multimodal, read-only)
 ```
 
-(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.6).)
+(Each role also has `junior-*`, `*` (mid), `senior-*`, and `*-mule` tier variants. `gemini-worker` and `grok-worker` ship in `agents/` — activate with Google / xAI keys. `designer` / `designer-mule` handle UI/UX (Grok 4.7).)
 No agent sets a `steps` cap — every tier (DeepSeek junior, Claude mid/senior, and all mules) runs uncapped.
 
 ## How It Works
@@ -230,12 +230,12 @@ Supervisor/
 │   ├── editor.md                  # Grammar, spelling, readability
 │   ├── quote-auditor.md           # Quotation verification
 │   ├── junior-* / * / senior-* / *-mule  # Same 9 roles at all 4 tiers (DeepSeek, Claude, Opus, mule)
-│   ├── observer.md                # Multimodal Observer (Gemini 3.8 Flash — primary)
-│   ├── observer-claude.md         # Observer fallback (Claude Sonnet 5 — used when only Anthropic is configured)
-│   ├── gemini-worker.md           # High-powered worker (Gemini 3.8 Flash)
-│   ├── grok-worker.md             # High-powered worker (Grok 4.6)
-│   ├── designer.md                # UI/UX design (Grok 4.6, native image vision)
-│   └── designer-mule.md           # Bounded design leaf (Grok 4.6)
+│   ├── observer.md                # Multimodal Observer (Gemini 4 Hydrogen — primary)
+│   ├── observer-claude.md         # Observer fallback (Claude Sonnet 5.5 — used when only Anthropic is configured)
+│   ├── gemini-worker.md           # High-powered worker (Gemini 4 Hydrogen)
+│   ├── grok-worker.md             # High-powered worker (Grok 4.7)
+│   ├── designer.md                # UI/UX design (Grok 4.7, native image vision)
+│   └── designer-mule.md           # Bounded design leaf (Grok 4.7)
 ├── plugins/
 │   └── observer-bridge/           # Paste-a-screenshot interception (V2 plugin) — deploys to ~/.config/opencode/plugins/observer-bridge/
 │       ├── index.js
@@ -262,7 +262,7 @@ Supervisor/
 
 **Delegate everything.** The Supervisor's job is orchestration, not implementation. Subagents do the work. The Supervisor's value is synthesis — seeing the combined output of multiple subagents and making decisions.
 
-**One model, many roles (junior tier default).** All junior-tier subagents use the same model (DeepSeek Flash) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain. Mid and senior tiers use different models (Claude Sonnet 5, Claude Opus 5) for tasks needing deeper reasoning.
+**One model, many roles (junior tier default).** All junior-tier subagents use the same model (DeepSeek Flash) but different prompts and permission sets. The specialization comes from the instructions, not the model — a security auditor and an editor have very different prompts, same brain. Mid and senior tiers use different models (Claude Sonnet 5.5, Claude Opus 5.5) for tasks needing deeper reasoning.
 
 **Edit permissions by role.** Worker, researcher, debugger, architect, and editor have `edit: allow` — they can create or modify code files. Planner, reviewer, security, and quote auditor are read-only (`edit: deny`). For bash: worker, researcher, debugger, reviewer, and security have `bash: allow`; architect, planner, editor, and quote auditor have `bash: deny`. For web access (webfetch, websearch, playwright): every role has full web access. Tiers differ only in model, description, and color — never in permissions.
 

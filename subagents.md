@@ -1,7 +1,7 @@
 <!-- Not an agent file — do not copy to ~/.config/opencode/agents/ -->
 # Subagents — Quick Reference
 
-45 subagent files across 9 roles at 4 tiers (46 agents total with the Supervisor primary)  •  junior: DeepSeek Flash  •  mid: Claude Sonnet 5  •  senior: Claude Opus 5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
+45 subagent files across 9 roles at 4 tiers (46 agents total with the Supervisor primary)  •  junior: DeepSeek Flash  •  mid: Claude Sonnet 5.5  •  senior: Claude Opus 5.5  •  mule: various models (see tier-system-reference.md)  •  plus designer / designer-mule
 
 For full tier specifications, see [tier-system-reference.md](tier-system-reference.md).
 For the full system reference including modes and commands, see [reference.md](reference.md).
@@ -30,7 +30,7 @@ Designs new ways to do things. Greenfield thinking, tradeoff analysis.
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `architect` | Claude Sonnet 5 | `#3B82F6` | Edit + web + playwright (no bash) |
+| `architect` | Claude Sonnet 5.5 | `#3B82F6` | Edit + web + playwright (no bash) |
 
 **When to use**: Designing new systems, choosing between approaches, refactoring strategy, pattern selection.
 
@@ -42,7 +42,7 @@ Takes a design and sequences the work. Complements architect (what → how → w
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `planner` | Claude Sonnet 5 | `#A78BFA` | Read-only + web |
+| `planner` | Claude Sonnet 5.5 | `#A78BFA` | Read-only + web |
 
 **When to use**: Task breakdown, dependency mapping, milestone planning, effort estimation.
 
@@ -56,7 +56,7 @@ Finds bugs, logic errors, style issues, and security concerns in code. Runs auto
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `reviewer` | Claude Sonnet 5 | `#F87171` | Read-only + bash + web |
+| `reviewer` | Claude Sonnet 5.5 | `#F87171` | Read-only + bash + web |
 
 **When to use**: Pre-merge review, PR feedback, catching edge cases and logic flaws.
 
@@ -68,7 +68,7 @@ Chases bugs that are happening right now — error messages, stack traces, produ
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `debugger` | Claude Sonnet 5 | `#EF4444` | Full (edit, bash, web, playwright) |
+| `debugger` | Claude Sonnet 5.5 | `#EF4444` | Full (edit, bash, web, playwright) |
 
 **When to use**: Something broke. Error logs, crash reports, mysterious behavior.
 
@@ -82,7 +82,7 @@ Finds security holes — injections, exposed secrets, unsafe configs, supply cha
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `security` | Claude Sonnet 5 | `#DC2626` | Read-only + bash + web + playwright |
+| `security` | Claude Sonnet 5.5 | `#DC2626` | Read-only + bash + web + playwright |
 
 **When to use**: Security review before deployment, scanning for exposed secrets, hardening.
 
@@ -96,7 +96,7 @@ Improves writing — structure, clarity, tone, grammar.
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `editor` | Claude Sonnet 5 | `#FDE68A` | Read + edit + web |
+| `editor` | Claude Sonnet 5.5 | `#FDE68A` | Read + edit + web |
 
 **When to use**: Blog posts, documentation, transcripts, any written content that needs polish.
 
@@ -108,7 +108,7 @@ Finds, verifies, and synthesizes information from multiple sources.
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `researcher` | Claude Sonnet 5 | `#6EE7B7` | Full |
+| `researcher` | Claude Sonnet 5.5 | `#6EE7B7` | Full |
 
 **When to use**: "Research how X works," "compare Y and Z," "find best practices for W."
 
@@ -120,7 +120,7 @@ Verifies that quotes match their sources exactly. Detects paraphrasing disguised
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `quote-auditor` | Claude Sonnet 5 | `#FDBA74` | Read-only + web |
+| `quote-auditor` | Claude Sonnet 5.5 | `#FDBA74` | Read-only + web |
 
 **When to use**: Verifying transcript quotes, fact-checking article claims, legal/journalistic accuracy.
 
@@ -132,7 +132,7 @@ The go-to for any task that doesn't fit a specialized role. Full access to edit 
 
 | Agent | Model | Color | Permissions |
 |-------|-------|-------|-------------|
-| `worker` | Claude Sonnet 5 | `#818CF8` | Full |
+| `worker` | Claude Sonnet 5.5 | `#818CF8` | Full |
 
 **When to use**: Implementation, feature building, test writing, migrations, any general task.
 
@@ -140,11 +140,11 @@ The go-to for any task that doesn't fit a specialized role. Full access to edit 
 
 ## Bonus: Alternative Model Worker (Built In)
 
-When you want a specific model's strengths, the built-in `grok-worker` adds a full-access worker on xAI's Grok 4.6 (`xai/grok-4.6`). It ships in `agents/` and activates automatically once you connect an xAI key.
+When you want a specific model's strengths, the built-in `grok-worker` adds a full-access worker on xAI's Grok 4.7 (`xai/grok-4.7`). It ships in `agents/` and activates automatically once you connect an xAI key.
 
 | Agent | Model | Setup | Permissions |
 |-------|-------|-------|------------|
-| `grok-worker` | Grok 4.6 (xAI) | Add an xAI key through Desktop Settings → Providers. Nothing else — the agent file is already installed. | Full |
+| `grok-worker` | Grok 4.7 (xAI) | Add an xAI key through Desktop Settings → Providers. Nothing else — the agent file is already installed. | Full |
 
 See [`addons/grok-worker/README.md`](addons/grok-worker/README.md) for background and activation notes.
 
@@ -156,8 +156,8 @@ Specialized design agents with native image vision. The supervisor prefers `@des
 
 | Agent | Model | Permissions |
 |-------|-------|-------------|
-| `designer` | Grok 4.6 (xAI) | Full + design MCPs (chrome-devtools, twenty-first, a11y-color-contrast) |
-| `designer-mule` | Grok 4.6 (xAI) | Same tools; leaf node (`task: deny`) |
+| `designer` | Grok 4.7 (xAI) | Full + design MCPs (chrome-devtools, twenty-first, a11y-color-contrast) |
+| `designer-mule` | Grok 4.7 (xAI) | Same tools; leaf node (`task: deny`) |
 
 **When to use**: UI/UX styling, component design, wireframes, mockups, layout, animation, accessibility styling. Spawn `designer` from the supervisor; `designer` may spawn `designer-mule` for bounded sub-tasks.
 
@@ -167,7 +167,7 @@ Specialized design agents with native image vision. The supervisor prefers `@des
 
 The repo also ships with **13 mule-tier agents** — safe-to-spawn leaf workers that can never spawn further subagents. This eliminates recursion risk: any agent that spawns a mule is guaranteed the work terminates there.
 
-Mules are subagent infrastructure — architects, workers, debuggers, and reviewers spawn them internally for bounded sub-tasks. The supervisor never spawns mules directly.
+Mules are subagent infrastructure — role agents (junior/mid/senior tiers, designer, grok-worker, gemini-worker) can spawn only `*-mule` agents (enforced via permission.task); mules and observers cannot spawn. The supervisor never spawns mules directly.
 
 | Mule | Model | Best for |
 |---|---|---|
@@ -180,10 +180,10 @@ Mules are subagent infrastructure — architects, workers, debuggers, and review
 | `planner-mule` | DeepSeek Flash | Task breakdown, sequencing |
 | `editor-mule` | DeepSeek Flash | Documentation polish |
 | `quote-auditor-mule` | DeepSeek Flash | Source verification |
-| `gemini-mule` | Gemini 3.8 Flash | Long-context, multimodal, web research |
-| `grok-mule` | Grok 4.6 | Coding, reasoning, creative |
-| `claude-mule` | Claude Sonnet 5 | Nuanced reasoning, careful analysis, code review |
-| `designer-mule` | Grok 4.6 | Bounded UI/UX, component styling, CSS/Tailwind |
+| `gemini-mule` | Gemini 4 Hydrogen | Long-context, multimodal, web research |
+| `grok-mule` | Grok 4.7 | Coding, reasoning, creative |
+| `claude-mule` | Claude Sonnet 5.5 | Nuanced reasoning, careful analysis, code review |
+| `designer-mule` | Grok 4.7 | Bounded UI/UX, component styling, CSS/Tailwind |
 
 See [tier-system-reference.md](tier-system-reference.md) for full mule tier specifications.
 

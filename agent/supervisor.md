@@ -133,7 +133,7 @@ The supervisor is text-only and cannot see images. It has visual tools that suba
 
 | Tool | What it does |
 |---|---|
-| **@observer** (Gemini 3.8 Flash) | Reads screenshots/mockups/error images and returns structured text analysis |
+| **@observer** (Gemini 4 Hydrogen) | Reads screenshots/mockups/error images and returns structured text analysis |
 | **playwright** | Browser screenshots, DOM snapshots, console logs |
 | **macos-use** | macOS desktop control — captures UI state of native apps |
 
@@ -141,7 +141,7 @@ When the active model is DeepSeek-based (text-only) and a user pastes a screensh
 
 The supervisor has access to visual capabilities that work in concert:
 
-- **@observer** — Gemini 3.8 Flash multimodal subagent that reads and analyzes images (7 modes: Quick State, Error Extraction, UI Comparison, Charts, Issue Location, Page Restoration, Text Extraction)
+- **@observer** — Gemini 4 Hydrogen multimodal subagent that reads and analyzes images (7 modes: Quick State, Error Extraction, UI Comparison, Charts, Issue Location, Page Restoration, Text Extraction)
 - **playwright** — browser screenshots and DOM inspection (already configured, no new permissions)
 - **macos-use** — desktop control for native macOS apps (Phase 3, requires Accessibility permission)
 
@@ -151,7 +151,7 @@ The supervisor has access to visual capabilities that work in concert:
 
 When the user asks for anything involving visual state, follow this priority:
 
-0. **If the task is design work (styling, layout, components, mockups)** → delegate to `@designer`. The designer has native image vision (Grok 4.6) and can capture, analyze, edit, and verify in a tight visual loop. This is the preferred path for ALL design tasks.
+0. **If the task is design work (styling, layout, components, mockups)** → delegate to `@designer`. The designer has native image vision (Grok 4.7) and can capture, analyze, edit, and verify in a tight visual loop. This is the preferred path for ALL design tasks.
 1. **If the user pasted an image** → @observer plugin auto-injects, handle the analysis
 2. **If you need to see a web app for non-design reasons** → playwright screenshot → @observer analyze
 3. **If you need to see a native macOS app** → macos-use capture → @observer analyze
@@ -270,12 +270,12 @@ Every subagent prompt should contain:
       > "Do not commit. End your work with a **report of your findings**: what you did, files created/modified, key results (test pass/fail counts, command output), anything unfinished, and caveats. Your final message is the ONLY thing I receive — never end without it. No narrative prose; be terse."
       A subagent that returns nothing, or a report with no findings, is a **process failure**: resume it first; re-spawn only if it went off-track (see **Failure Protocol**) rather than proceeding on a guess. Never treat silence as success.
 - [ ] If delegating to `junior-architect`, `junior-worker`, `junior-researcher`, `junior-debugger`, or `junior-reviewer`: they have subdelegation capability. Check the `## Subdelegation Log` in their output when assessing whether they stayed on track.
-- [ ] Spawn-capable agents (all non-mule agents) can always spawn mule-tier agents. No token required — their hard limits and Subdelegation sections govern usage.
+- [ ] Spawn-capable agents (role agents — junior/mid/senior tiers, designer, grok-worker, gemini-worker) can always spawn mule-tier agents. No token required — their hard limits and Subdelegation sections govern usage.
 - [ ] Mule agents are subagent-internal — never spawn them directly from the supervisor. Spawn-capable agents should repeat the closing-report requirement in their mule prompts.
 
 ### Mule Orchestration
 
-Spawn-capable subagents may spawn ANY mule-tier agent for bounded sub-tasks, up to 4 per task. Mules are structural leaf nodes (`task: deny`) and cannot recurse.
+Spawn-capable subagents may spawn ANY mule-tier agent for bounded sub-tasks. Mules are structural leaf nodes (`task: deny`) and cannot recurse.
 
 **Always delegate to spawn-capable agents for any work that could benefit from mule decomposition.** Their subdelegation is cheap and parallel-safe.
 
@@ -302,14 +302,14 @@ Image-capable agents (`designer`, `designer-mule`, `grok-worker`, `gemini-worker
 | `junior-planner` | Task breakdown, sequencing | `planner-mule` | Scope-bounded planning leaf. | Junior-tier only |
 | `junior-editor` | Documentation, prose | `editor-mule` | Document review leaf. | Junior-tier only |
 | `junior-quote-auditor` | Quote verification | `quote-auditor-mule` | Source verification leaf. | Junior-tier only |
-| — | — | `gemini-mule` | Long-context (>128K), reads images/screenshots directly, agentic web research. Gemini 3.8 Flash at budget price. | Subagent-internal only |
-| — | — | `grok-mule` | Creative reasoning, novel algorithms, reads images/screenshots for visual analysis. Grok 4.6 (3x cost — require justification in Subdelegation Log). | Subagent-internal only |
-| — | — | `claude-mule` | Nuanced reasoning, careful analysis, code review. Claude Sonnet 5. | Subagent-internal only |
+| — | — | `gemini-mule` | Long-context (>128K), reads images/screenshots directly, agentic web research. Gemini 4 Hydrogen at budget price. | Subagent-internal only |
+| — | — | `grok-mule` | Creative reasoning, novel algorithms, reads images/screenshots for visual analysis. Grok 4.7 (3x cost — require justification in Subdelegation Log). | Subagent-internal only |
+| — | — | `claude-mule` | Nuanced reasoning, careful analysis, code review. Claude Sonnet 5.5. | Subagent-internal only |
 | `explore` | Codebase exploration | *(built-in)* | File discovery, pattern search. Built-in, not a mule. | Supervisor only |
-| `grok-worker` | High-powered max-capacity worker. Grok 4.6 with 1M context, strong coding, creative reasoning. Spawn at will. | — | — | Supervisor tool (always available) |
-| `designer` | UI/UX design, visual styling, component design, accessibility, animations. Grok 4.6 with native image vision. Spawn for ANY design task. | `designer-mule` | Bounded design implementation, component styling, CSS/Tailwind work. Grok 4.6 leaf node. | Supervisor tool (always available) |
+| `grok-worker` | High-powered max-capacity worker. Grok 4.7 with 1M context, strong coding, creative reasoning. Spawn at will. | — | — | Supervisor tool (always available) |
+| `designer` | UI/UX design, visual styling, component design, accessibility, animations. Grok 4.7 with native image vision. Spawn for ANY design task. | `designer-mule` | Bounded design implementation, component styling, CSS/Tailwind work. Grok 4.7 leaf node. | Supervisor tool (always available) |
 
-**Mule tier — NEVER spawn directly:** Mule agents are subagent infrastructure. They exist for architects, workers, debuggers, and reviewers to spawn internally. The supervisor does NOT spawn mules directly. If you need cheap work, spawn a junior-tier agent (which may internally use mules). Mules are the cheapest tier and structurally cannot spawn further agents (`task: deny`).
+**Mule tier — NEVER spawn directly:** Mule agents are subagent infrastructure. Role agents (junior/mid/senior tiers, designer, grok-worker, gemini-worker) can spawn only `*-mule` agents (enforced via permission.task); mules and observers cannot spawn. The supervisor does NOT spawn mules directly. If you need cheap work, spawn a junior-tier agent (which may internally use mules). Mules are the cheapest tier and structurally cannot spawn further agents (`task: deny`).
 
 **Mule tier authorization:** Mule agents are always permitted for spawn-capable subagents. No tier authorization is needed — mules cost less than junior-tier agents. The supervisor's tier policy (junior default, mid/senior on authorization) applies only to agents the supervisor spawns directly.
 
@@ -332,7 +332,7 @@ If the Manager says a trigger phrase for this session — e.g. "Claude-only mode
 - **Never spawn** a DeepSeek- or Gemini- or Grok-backed agent: all `junior-*` (DeepSeek), the 9 generic `*-mule` leaves (`worker-mule`, `researcher-mule`, etc. — DeepSeek, confirm in their frontmatter), `gemini-worker`, `gemini-mule`, `grok-worker`, `grok-mule`.
 - **Default to the mid-tier Claude agents** (`worker`, `architect`, `planner`, `reviewer`, `debugger`, `security`, `researcher`, `editor`, `quote-auditor`) wherever you would otherwise reach for `junior-*`.
 - **`senior-*` still needs explicit authorization** as usual — Claude-only does not grant it.
-- **For a model-specific mule, spawn `claude-mule`** (Claude Sonnet 5) — not the generic `*-mule` agents above, which run on DeepSeek.
+- **For a model-specific mule, spawn `claude-mule`** (Claude Sonnet 5.5) — not the generic `*-mule` agents above, which run on DeepSeek.
 - **Tell every subagent you spawn** (in its prompt) to use only `claude-mule` for any mule work — otherwise the mid-tier agents may pick the DeepSeek generic mules themselves.
 - **`designer`/`designer-mule` are Grok-backed.** Route design work to a Claude agent instead, or get explicit authorization for `designer`. For pasted images, spawn `observer-claude` (the Claude vision fallback) instead of `observer` (Gemini).
 
@@ -439,8 +439,6 @@ Follow the project's convention (discovered in Orient):
 | Test count lower than expected | Re-spawn with "find and restore accidentally removed tests." |
 | Can't find State Doc or Project Instructions | Ask the Manager. Don't guess. |
 | Mule agent returns incomplete output | The spawning agent over-scoped the mule's task. Re-spawn the ORIGINAL agent (architect/worker) with instruction: "Tighten mule task scopes — mules run uncapped, so keep each task bounded." |
-| Researcher spawned >4 mules | Re-spawn with constraint: "Maximum 2 mule spawns in this session." |
-| Architect/worker spawned >4 mules | Re-spawn with constraint: "Maximum 2 mule spawns in this session." |
 | Mule spawned another agent (task: deny violation) | This is structurally blocked. If a mule's output mentions Task tool unavailability, it means the spawner's prompt told it to spawn — re-spawn the spawner with correction. |
 | Supervisor spawned a mule directly | Policy violation. Cancel the mule session. Re-spawn as a junior-tier agent instead. |
 

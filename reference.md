@@ -17,15 +17,15 @@ The Supervisor is a primary agent that orchestrates work through specialized sub
 | Component | Model | Purpose |
 |-----------|-------|---------|
 | **Supervisor** (primary) | DeepSeek Flash | Orchestration — plans, delegates, reviews, commits |
-| **45 agents** (4 tiers) | DeepSeek Flash / Claude Sonnet 5 / Claude Opus 5 / Gemini 3.8 Flash / Grok 4.6 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
-| **Observer** (built in) | Gemini 3.8 Flash (primary), Claude Sonnet 5 fallback (`observer-claude`) | Reads pasted screenshots / UI states / error images and returns structured text |
+| **45 agents** (4 tiers) | DeepSeek Flash / Claude Sonnet 5.5 / Claude Opus 5.5 / Gemini 4 Hydrogen / Grok 4.7 | Implementation, research, debugging, design, review, security, planning, editing, quote auditing — 9 roles at 4 tiers, plus designer / designer-mule and alternative model workers |
+| **Observer** (built in) | Gemini 4 Hydrogen (primary), Claude Sonnet 5.5 fallback (`observer-claude`) | Reads pasted screenshots / UI states / error images and returns structured text |
 | **9 behavioral modes** (addon) | N/A — changes agent behavior, not model | Trigger words that shift how the agent thinks for one request |
 
 ---
 
 ## Subagent Tiers
 
-The Supervisor ships with 45 subagent files across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers (46 agents total including the Supervisor itself). The junior tier (DeepSeek Flash) is the default workhorse. Mid (Claude Sonnet 5) and senior (Claude Opus 5) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
+The Supervisor ships with 45 subagent files across 4 tiers — 9 roles at each tier, plus designer / designer-mule and alternative model workers (46 agents total including the Supervisor itself). The junior tier (DeepSeek Flash) is the default workhorse. Mid (Claude Sonnet 5.5) and senior (Claude Opus 5.5) agents are also present in the repo and activate as soon as you configure an Anthropic API key.
 
 | Subagent | Use For | Permissions |
 |----------|---------|-------------|
@@ -39,7 +39,7 @@ The Supervisor ships with 45 subagent files across 4 tiers — 9 roles at each t
 | `editor` | Grammar, spelling, punctuation, readability | Read + edit + web |
 | `quote-auditor` | Quotation verification against sources | Read-only + web |
 
-All nine mid-tier agents run Claude Sonnet 5 and are uncapped, like every agent in the template — no agent sets a `steps` cap. See [tier-system-reference.md](tier-system-reference.md).
+All nine mid-tier agents run Claude Sonnet 5.5 and are uncapped, like every agent in the template — no agent sets a `steps` cap. See [tier-system-reference.md](tier-system-reference.md).
 
 ### When to Use
 
@@ -64,9 +64,9 @@ The 4-tier system is fully configured in the repo. The naming convention:
 | Tier | Model | Naming | Default Behavior |
 |------|-------|--------|-----------------|
 | Junior | DeepSeek Flash | `junior-worker`, etc. | Default — automatic spawning |
-| Mid | Claude Sonnet 5 | `worker`, etc. (bare name) | Explicitly invoked |
-| Senior | Claude Opus 5 | `senior-worker`, etc. | Highest stakes only |
-| Mule | DeepSeek Flash (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned internally by non-mule agents |
+| Mid | Claude Sonnet 5.5 | `worker`, etc. (bare name) | Explicitly invoked |
+| Senior | Claude Opus 5.5 | `senior-worker`, etc. | Highest stakes only |
+| Mule | DeepSeek Flash (+ cross-provider) | `worker-mule`, etc. | Leaf workers — spawned only by role agents (junior/mid/senior tiers, designer, grok-worker, gemini-worker) via permission.task; mules and observers cannot spawn |
 
 This gives you 45 subagent files across 9 roles at 4 tiers (plus designer / designer-mule and alternative model workers). See `tier-system-reference.md` for the complete spec table and agent specifications.
 
@@ -75,8 +75,8 @@ This gives you 45 subagent files across 9 roles at 4 tiers (plus designer / desi
 | Tier | Model | Relative Cost | Best For |
 |------|-------|--------------|----------|
 | Junior | DeepSeek Flash | $ | 80% of all tasks |
-| Mid | Claude Sonnet 5 | $$ | Complex reasoning, deeper reviews |
-| Senior | Claude Opus 5 | $$$$ | Production-critical, highest stakes |
+| Mid | Claude Sonnet 5.5 | $$ | Complex reasoning, deeper reviews |
+| Senior | Claude Opus 5.5 | $$$$ | Production-critical, highest stakes |
 
 ---
 
@@ -84,7 +84,7 @@ This gives you 45 subagent files across 9 roles at 4 tiers (plus designer / desi
 
 13 mule-tier leaf agents that cannot spawn further subagents (`task: deny` in their permission block). This eliminates recursion risk — any agent that spawns a mule is guaranteed the work terminates there.
 
-Mules are subagent infrastructure. The supervisor never spawns mules directly; junior, mid, and senior agents spawn them internally for bounded work.
+Mules are subagent infrastructure. The supervisor never spawns mules directly — role agents (junior/mid/senior tiers, designer, grok-worker, gemini-worker) can spawn only `*-mule` agents (enforced via permission.task); mules and observers cannot spawn.
 
 - **9 DeepSeek mules** mirror the 9 roles (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`)
 - **4 cross-provider mules** for specialized workloads (`gemini-mule` for long-context/multimodal, `grok-mule` for creative reasoning, `claude-mule` for nuanced analysis, `designer-mule` for bounded UI/UX)
@@ -170,9 +170,9 @@ Supervisor Agent (primary, DeepSeek Flash)
       |
       +---> mule-tier (13 leaf workers — subagent infrastructure, spawned internally)
       |
-      +---> designer / designer-mule  (UI/UX, Grok 4.6)
-      +---> grok-worker / gemini-worker  (alternative model workers, built in — Grok 4.6 / Gemini 3.8 Flash)
-      +---> observer / observer-claude  (visual analysis, Gemini 3.8 Flash / Claude Sonnet 5)
+      +---> designer / designer-mule  (UI/UX, Grok 4.7)
+      +---> grok-worker / gemini-worker  (alternative model workers, built in — Grok 4.7 / Gemini 4 Hydrogen)
+      +---> observer / observer-claude  (visual analysis, Gemini 4 Hydrogen / Claude Sonnet 5.5)
 
 Behavioral Modes (overlay on any agent):
   /architect | /refine | /plan | /debug | /test | /explain | /review | /security | /verifyquotes | /auditquotes

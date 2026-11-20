@@ -9,8 +9,8 @@ For the complete catalog including modes and commands, see [reference.md](refere
 | Tier | Model | Role | Naming Convention |
 |------|-------|------|-------------------|
 | **Junior** | DeepSeek Flash | Default workhorse, most tasks | `junior-worker`, `junior-architect`, etc. |
-| **Mid** | Claude Sonnet 5 | Complex reasoning, deeper reviews | `worker`, `architect`, etc. (no prefix) |
-| **Senior** | Claude Opus 5 | Highest stakes, production-critical | `senior-worker`, `senior-architect`, etc. |
+| **Mid** | Claude Sonnet 5.5 | Complex reasoning, deeper reviews | `worker`, `architect`, etc. (no prefix) |
+| **Senior** | Claude Opus 5.5 | Highest stakes, production-critical | `senior-worker`, `senior-architect`, etc. |
 
 ## Why 3 Tiers?
 
@@ -32,14 +32,15 @@ These are the frontmatter specs for each agent. The prompt content (the body of 
 
 ```
 ---
-description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Sonnet 5.
+description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#818CF8"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -52,14 +53,15 @@ permission:
 
 ```
 ---
-description: Software architect for design decisions, refactoring plans, and system structure. Powered by Claude Sonnet 5.
+description: Software architect for design decisions, refactoring plans, and system structure. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#3B82F6"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: deny
   webfetch: allow
@@ -72,14 +74,15 @@ permission:
 
 ```
 ---
-description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Sonnet 5.
+description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#A78BFA"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: deny
   bash: deny
   webfetch: allow
@@ -92,14 +95,15 @@ permission:
 
 ```
 ---
-description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Sonnet 5.
+description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#F87171"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: deny
   bash: allow
   webfetch: allow
@@ -112,14 +116,15 @@ permission:
 
 ```
 ---
-description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Sonnet 5.
+description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#EF4444"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -132,14 +137,15 @@ permission:
 
 ```
 ---
-description: Security auditor for vulnerability scanning — secrets, injections, unsafe dependencies, and common attack vectors. Powered by Claude Sonnet 5.
+description: Security auditor for vulnerability scanning — secrets, injections, unsafe dependencies, and common attack vectors. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#DC2626"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: deny
   bash: allow
   webfetch: allow
@@ -152,14 +158,15 @@ permission:
 
 ```
 ---
-description: Content editor for clarity, flow, and readability. Powered by Claude Sonnet 5.
+description: Content editor for clarity, flow, and readability. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#FDE68A"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: deny
   webfetch: allow
@@ -172,14 +179,15 @@ permission:
 
 ```
 ---
-description: Researcher for topic exploration, source gathering, and structured answers. Powered by Claude Sonnet 5.
+description: Researcher for topic exploration, source gathering, and structured answers. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#6EE7B7"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -192,14 +200,15 @@ permission:
 
 ```
 ---
-description: Quote auditor for verifying quotations against their sources. Powered by Claude Sonnet 5.
+description: Quote auditor for verifying quotations against their sources. Powered by Claude Sonnet 5.5.
 mode: subagent
-model: anthropic/claude-sonnet-5
+model: anthropic/claude-sonnet-5-5
 variant: max
 color: "#FDBA74"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: deny
   bash: deny
   webfetch: allow
@@ -214,14 +223,15 @@ permission:
 
 ```
 ---
-description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Opus 5.
+description: General-purpose worker subagent — handles any task that doesn't fit a specialized role. Full edit/bash/web capability. Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#6366F1"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -234,14 +244,15 @@ permission:
 
 ```
 ---
-description: Architecture subagent for design decisions, tradeoff analysis, refactor scoping, cross-cutting concerns, API design, and fresh first-principles thinking. Powered by Claude Opus 5.
+description: Architecture subagent for design decisions, tradeoff analysis, refactor scoping, cross-cutting concerns, API design, and fresh first-principles thinking. Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#B026FF"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: deny
   webfetch: allow
@@ -254,14 +265,15 @@ permission:
 
 ```
 ---
-description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Opus 5.
+description: Planner subagent for task breakdown, dependency mapping, sequencing, milestone planning, and risk assessment. Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#8B5CF6"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: deny
   bash: deny
   webfetch: allow
@@ -274,14 +286,15 @@ permission:
 
 ```
 ---
-description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Opus 5.
+description: Code reviewer subagent — bug detection, logic flaws, edge cases, code quality, severity-tiered findings. Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#FF4444"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: deny
   bash: allow
   webfetch: allow
@@ -294,14 +307,15 @@ permission:
 
 ```
 ---
-description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Opus 5.
+description: Debugger subagent — runtime error investigation, root cause analysis, hypothesis testing for the hardest bugs. Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#DC2626"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -314,14 +328,15 @@ permission:
 
 ```
 ---
-description: Security auditor subagent — comprehensive vulnerability assessment across injection, auth, secrets, dependencies, crypto, configuration, and business logic. Powered by Claude Opus 5.
+description: Security auditor subagent — comprehensive vulnerability assessment across injection, auth, secrets, dependencies, crypto, configuration, and business logic. Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#991B1B"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: deny
   bash: allow
   webfetch: allow
@@ -334,14 +349,15 @@ permission:
 
 ```
 ---
-description: Editor subagent — structural revision, clarity, flow, voice, audience awareness, and mechanical proofreading (grammar/spelling/punctuation/formatting). Powered by Claude Opus 5.
+description: Editor subagent — structural revision, clarity, flow, voice, audience awareness, and mechanical proofreading (grammar/spelling/punctuation/formatting). Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#EAB308"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: deny
   webfetch: allow
@@ -354,14 +370,15 @@ permission:
 
 ```
 ---
-description: Researcher subagent — multi-source investigation, synthesis, contradiction-mapping, gap identification, and actionable recommendations. Powered by Claude Opus 5.
+description: Researcher subagent — multi-source investigation, synthesis, contradiction-mapping, gap identification, and actionable recommendations. Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#10B981"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: allow
   bash: allow
   webfetch: allow
@@ -374,14 +391,15 @@ permission:
 
 ```
 ---
-description: Quote auditor subagent — line-by-line source verification, paraphrasing detection, attribution accuracy, flagging every uncertainty. Powered by Claude Opus 5.
+description: Quote auditor subagent — line-by-line source verification, paraphrasing detection, attribution accuracy, flagging every uncertainty. Powered by Claude Opus 5.5.
 mode: subagent
-model: anthropic/claude-opus-5
+model: anthropic/claude-opus-5-5
 variant: max
 color: "#F97316"
 permission:
   task:
-    "*": allow
+    "*": deny
+    "*-mule": allow
   edit: deny
   bash: deny
   webfetch: allow
@@ -397,32 +415,32 @@ Complete configuration for all 9 roles across all 3 escalation tiers:
 | Role | Tier | File Name | Model | Edit | Bash | Web/Playwright |
 |------|------|-----------|-------|------|------|-----|
 | **Worker** | Junior | `junior-worker.md` | `deepseek/deepseek-flash` | ✅ | ✅ | ✅ |
-| | Mid | `worker.md` | `anthropic/claude-sonnet-5` | ✅ | ✅ | ✅ |
-| | Senior | `senior-worker.md` | `anthropic/claude-opus-5` | ✅ | ✅ | ✅ |
+| | Mid | `worker.md` | `anthropic/claude-sonnet-5-5` | ✅ | ✅ | ✅ |
+| | Senior | `senior-worker.md` | `anthropic/claude-opus-5-5` | ✅ | ✅ | ✅ |
 | **Architect** | Junior | `junior-architect.md` | `deepseek/deepseek-flash` | ✅ | ❌ | ✅ |
-| | Mid | `architect.md` | `anthropic/claude-sonnet-5` | ✅ | ❌ | ✅ |
-| | Senior | `senior-architect.md` | `anthropic/claude-opus-5` | ✅ | ❌ | ✅ |
+| | Mid | `architect.md` | `anthropic/claude-sonnet-5-5` | ✅ | ❌ | ✅ |
+| | Senior | `senior-architect.md` | `anthropic/claude-opus-5-5` | ✅ | ❌ | ✅ |
 | **Planner** | Junior | `junior-planner.md` | `deepseek/deepseek-flash` | ❌ | ❌ | ✅ |
-| | Mid | `planner.md` | `anthropic/claude-sonnet-5` | ❌ | ❌ | ✅ |
-| | Senior | `senior-planner.md` | `anthropic/claude-opus-5` | ❌ | ❌ | ✅ |
+| | Mid | `planner.md` | `anthropic/claude-sonnet-5-5` | ❌ | ❌ | ✅ |
+| | Senior | `senior-planner.md` | `anthropic/claude-opus-5-5` | ❌ | ❌ | ✅ |
 | **Reviewer** | Junior | `junior-reviewer.md` | `deepseek/deepseek-flash` | ❌ | ✅ | ✅ |
-| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5` | ❌ | ✅ | ✅ |
-| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-5` | ❌ | ✅ | ✅ |
+| | Mid | `reviewer.md` | `anthropic/claude-sonnet-5-5` | ❌ | ✅ | ✅ |
+| | Senior | `senior-reviewer.md` | `anthropic/claude-opus-5-5` | ❌ | ✅ | ✅ |
 | **Debugger** | Junior | `junior-debugger.md` | `deepseek/deepseek-flash` | ✅ | ✅ | ✅ |
-| | Mid | `debugger.md` | `anthropic/claude-sonnet-5` | ✅ | ✅ | ✅ |
-| | Senior | `senior-debugger.md` | `anthropic/claude-opus-5` | ✅ | ✅ | ✅ |
+| | Mid | `debugger.md` | `anthropic/claude-sonnet-5-5` | ✅ | ✅ | ✅ |
+| | Senior | `senior-debugger.md` | `anthropic/claude-opus-5-5` | ✅ | ✅ | ✅ |
 | **Security** | Junior | `junior-security.md` | `deepseek/deepseek-flash` | ❌ | ✅ | ✅ |
-| | Mid | `security.md` | `anthropic/claude-sonnet-5` | ❌ | ✅ | ✅ |
-| | Senior | `senior-security.md` | `anthropic/claude-opus-5` | ❌ | ✅ | ✅ |
+| | Mid | `security.md` | `anthropic/claude-sonnet-5-5` | ❌ | ✅ | ✅ |
+| | Senior | `senior-security.md` | `anthropic/claude-opus-5-5` | ❌ | ✅ | ✅ |
 | **Editor** | Junior | `junior-editor.md` | `deepseek/deepseek-flash` | ✅ | ❌ | ✅ |
-| | Mid | `editor.md` | `anthropic/claude-sonnet-5` | ✅ | ❌ | ✅ |
-| | Senior | `senior-editor.md` | `anthropic/claude-opus-5` | ✅ | ❌ | ✅ |
+| | Mid | `editor.md` | `anthropic/claude-sonnet-5-5` | ✅ | ❌ | ✅ |
+| | Senior | `senior-editor.md` | `anthropic/claude-opus-5-5` | ✅ | ❌ | ✅ |
 | **Researcher** | Junior | `junior-researcher.md` | `deepseek/deepseek-flash` | ✅ | ✅ | ✅ |
-| | Mid | `researcher.md` | `anthropic/claude-sonnet-5` | ✅ | ✅ | ✅ |
-| | Senior | `senior-researcher.md` | `anthropic/claude-opus-5` | ✅ | ✅ | ✅ |
+| | Mid | `researcher.md` | `anthropic/claude-sonnet-5-5` | ✅ | ✅ | ✅ |
+| | Senior | `senior-researcher.md` | `anthropic/claude-opus-5-5` | ✅ | ✅ | ✅ |
 | **Quote Auditor** | Junior | `junior-quote-auditor.md` | `deepseek/deepseek-flash` | ❌ | ❌ | ✅ |
-| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5` | ❌ | ❌ | ✅ |
-| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-5` | ❌ | ❌ | ✅ |
+| | Mid | `quote-auditor.md` | `anthropic/claude-sonnet-5-5` | ❌ | ❌ | ✅ |
+| | Senior | `senior-quote-auditor.md` | `anthropic/claude-opus-5-5` | ❌ | ❌ | ✅ |
 
 No agent sets a `steps` cap — every tier runs uncapped, so no step counts appear above.
 
@@ -433,13 +451,13 @@ The "npm Package" column documents which AI SDK package OpenCode itself installs
 | Provider | Model ID in frontmatter | npm Package |
 |----------|------------------------|-------------|
 | DeepSeek | `deepseek/deepseek-flash` | `@ai-sdk/openai-compatible` (via models.dev) |
-| Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `@ai-sdk/anthropic` |
-| Anthropic (Opus) | `anthropic/claude-opus-5` | `@ai-sdk/anthropic` |
-| Google (gemini-mule) | `google/gemini-3.8-flash` | `@ai-sdk/google` |
-| Google (Observer) | `google/gemini-3.8-flash` | `@ai-sdk/google` |
-| Google (gemini-worker) | `google/gemini-3.8-flash` | `@ai-sdk/google` |
-| Anthropic (Observer fallback) | `anthropic/claude-sonnet-5` | `@ai-sdk/anthropic` |
-| xAI (Grok) | `xai/grok-4.6` | `@ai-sdk/xai` |
+| Anthropic (Sonnet) | `anthropic/claude-sonnet-5-5` | `@ai-sdk/anthropic` |
+| Anthropic (Opus) | `anthropic/claude-opus-5-5` | `@ai-sdk/anthropic` |
+| Google (gemini-mule) | `google/gemini-4-hydrogen` | `@ai-sdk/google` |
+| Google (Observer) | `google/gemini-4-hydrogen` | `@ai-sdk/google` |
+| Google (gemini-worker) | `google/gemini-4-hydrogen` | `@ai-sdk/google` |
+| Anthropic (Observer fallback) | `anthropic/claude-sonnet-5-5` | `@ai-sdk/anthropic` |
+| xAI (Grok) | `xai/grok-4.7` | `@ai-sdk/xai` |
 
 ## Agent Directory Layout
 
@@ -495,12 +513,12 @@ OpenCode loads agent markdown from both `~/.config/opencode/agent/` and `~/.conf
      ├── claude-mule.md
      ├── designer-mule.md
      │
-     ├── observer.md           # Multimodal Observer (Gemini 3.8 Flash — primary)
-     ├── observer-claude.md    # Observer fallback (Claude Sonnet 5 — used when only Anthropic is configured)
+     ├── observer.md           # Multimodal Observer (Gemini 4 Hydrogen — primary)
+     ├── observer-claude.md    # Observer fallback (Claude Sonnet 5.5 — used when only Anthropic is configured)
     │
-    ├── gemini-worker.md      # Alternative-model worker (Gemini 3.8 Flash)
-    ├── grok-worker.md        # Alternative-model worker (Grok 4.6)
-    └── designer.md           # UI/UX design (Grok 4.6, native image vision)
+    ├── gemini-worker.md      # Alternative-model worker (Gemini 4 Hydrogen)
+    ├── grok-worker.md        # Alternative-model worker (Grok 4.7)
+    └── designer.md           # UI/UX design (Grok 4.7, native image vision)
 ```
 
 (`grok-worker.md` ships in `agents/` — the copy OpenCode loads. The `addons/grok-worker/` folder keeps activation notes only.)
@@ -524,8 +542,8 @@ When you say "send this to the architect," the Supervisor picks `architect` (Son
 | Tier | Model | Approx. Relative Cost | Best For |
 |------|-------|----------------------|----------|
 | Junior | DeepSeek Flash | $ | 80% of all tasks |
-| Mid | Claude Sonnet 5 | $$ | Complex reasoning, deeper reviews |
-| Senior | Claude Opus 5 | $$$$ | Production-critical, highest stakes |
+| Mid | Claude Sonnet 5.5 | $$ | Complex reasoning, deeper reviews |
+| Senior | Claude Opus 5.5 | $$$$ | Production-critical, highest stakes |
 
 ## Starting Simple
 
@@ -543,8 +561,8 @@ The repo ships with all 4 tiers already configured — 45 agent files in `agents
 
 Beyond the 3 escalation tiers, the repo also ships with **13 mule-tier agents** — safe-to-spawn leaf workers whose defining invariant is that **mules can never spawn further agents** (`task: {"*": "deny"}`). This guarantees termination: any agent that spawns a mule knows the work ends there.
 
-Mules are subagent infrastructure. The supervisor never spawns mules directly — they exist for architects, workers, debuggers, and reviewers to spawn internally for bounded sub-tasks.
+Mules are subagent infrastructure. The supervisor never spawns mules directly — role agents (junior/mid/senior tiers, designer, grok-worker, gemini-worker) can spawn only `*-mule` agents (enforced via permission.task); mules and observers cannot spawn.
 
-All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}`. Like every agent in the template, mules run uncapped — none declares a `steps` cap. Nine are DeepSeek Flash (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 3.8 Flash), `grok-mule` (Grok 4.6), `claude-mule` (Claude Sonnet 5), and `designer-mule` (Grok 4.6).
+All 13 mule agents use the `mode: subagent` frontmatter with `task: {"*": "deny"}`. Like every agent in the template, mules run uncapped — none declares a `steps` cap. Nine are DeepSeek Flash (`worker-mule`, `architect-mule`, `researcher-mule`, `debugger-mule`, `reviewer-mule`, `security-mule`, `planner-mule`, `editor-mule`, `quote-auditor-mule`). Four are cross-provider: `gemini-mule` (Gemini 4 Hydrogen), `grok-mule` (Grok 4.7), `claude-mule` (Claude Sonnet 5.5), and `designer-mule` (Grok 4.7).
 
 > ⚠️ **Mules require `experimental.subagent_depth >= 2`.** The default is `1` (a subagent cannot spawn a subagent). `2` allows the Supervisor's subagent to spawn a mule. Without `"experimental": {"subagent_depth": 2}` in `opencode.json` — or if the key is left at the old top-level `subagent_depth` (ignored by V2) — the mule spawn will be silently blocked.

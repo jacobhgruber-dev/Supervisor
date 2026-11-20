@@ -31,8 +31,8 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 ## Tier 2: Anthropic / Claude (Highly Recommended)
 
 **What it powers:**
-- **Mid tier** — 9 agents on Claude Sonnet 5 (`worker`, `architect`, `reviewer`, etc.)
-- **Senior tier** — 9 agents on Claude Opus 5 (`senior-worker`, `senior-architect`, etc.)
+- **Mid tier** — 9 agents on Claude Sonnet 5.5 (`worker`, `architect`, `reviewer`, etc.)
+- **Senior tier** — 9 agents on Claude Opus 5.5 (`senior-worker`, `senior-architect`, etc.)
 
 **Cost:** More expensive than DeepSeek. Use deliberately — the Supervisor defaults to junior (DeepSeek) agents and only escalates to mid/senior when you explicitly ask.
 
@@ -57,9 +57,9 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 ## Tier 3: Google / Gemini (Recommended)
 
 **What it powers:**
-- `gemini-worker` — full-access Gemini agent (Gemini 3.8 Flash)
-- `gemini-mule` — leaf agent for long-context, multimodal, or web-heavy tasks (Gemini 3.8 Flash)
-- **Observer** — screenshot reading / multimodal vision agent. Primary model: Gemini 3.8 Flash. If only an Anthropic key is configured (no Google key), Observer automatically falls back to Claude Sonnet 5 (`observer-claude.md`) — the same analysis, either way.
+- `gemini-worker` — full-access Gemini agent (Gemini 4 Hydrogen)
+- `gemini-mule` — leaf agent for long-context, multimodal, or web-heavy tasks (Gemini 4 Hydrogen)
+- **Observer** — screenshot reading / multimodal vision agent. Primary model: Gemini 4 Hydrogen. If only an Anthropic key is configured (no Google key), Observer automatically falls back to Claude Sonnet 5.5 (`observer-claude.md`) — the same analysis, either way.
 
 **Cost:** Moderate. Cheaper than Anthropic, pricier than DeepSeek.
 
@@ -83,10 +83,10 @@ The Supervisor system needs API keys to power its agents. This guide walks throu
 ## Tier 4: xAI / Grok (Optional)
 
 **What it powers:**
-- `grok-worker` — alternative-model worker on Grok 4.6 (ships in `agents/`; activates with your key)
+- `grok-worker` — alternative-model worker on Grok 4.7 (ships in `agents/`; activates with your key)
 - `grok-mule` — leaf agent for creative reasoning and complex coding (3x the cost of `worker-mule` — use sparingly)
-- `designer` — UI/UX design agent on Grok 4.6 with native image vision (ships in `agents/`)
-- `designer-mule` — bounded design leaf on Grok 4.6 (ships in `agents/`)
+- `designer` — UI/UX design agent on Grok 4.7 with native image vision (ships in `agents/`)
+- `designer-mule` — bounded design leaf on Grok 4.7 (ships in `agents/`)
 
 **Cost:** Moderate. The Grok worker is optional and independent of the core system.
 
@@ -146,7 +146,7 @@ When configuring providers manually or writing agent frontmatter:
 | Provider | Model ID | Agent Files |
 |----------|----------|-------------|
 | DeepSeek | `deepseek/deepseek-flash` | `supervisor.md`, all `junior-*.md`, the 9 DeepSeek `*-mule.md` agents |
-| Anthropic (Sonnet) | `anthropic/claude-sonnet-5` | `worker.md`, `architect.md`, etc., `observer-claude.md`, `claude-mule.md` |
-| Anthropic (Opus) | `anthropic/claude-opus-5` | all `senior-*.md` |
-| Google | `google/gemini-3.8-flash` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |
-| xAI (Grok) | `xai/grok-4.6` | `grok-worker.md`, `grok-mule.md`, `designer.md`, `designer-mule.md` |
+| Anthropic (Sonnet) | `anthropic/claude-sonnet-5-5` | `worker.md`, `architect.md`, etc., `observer-claude.md`, `claude-mule.md` |
+| Anthropic (Opus) | `anthropic/claude-opus-5-5` | all `senior-*.md` |
+| Google | `google/gemini-4-hydrogen` | `gemini-worker.md`, `gemini-mule.md`, `observer.md` |
+| xAI (Grok) | `xai/grok-4.7` | `grok-worker.md`, `grok-mule.md`, `designer.md`, `designer-mule.md` |
